@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resource xmlns='http://datacite.org/schema/kernel-3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd'>
+    <identifier identifierType='DOI'>10.5072/example</identifier>
+    <creators>
+        <creator>
+            <creatorName>[author1, author2]</creatorName>
+            <creatorName>[author1, author2]</creatorName>
+        </creator>
+    </creators>
+    <titles>
+        <title>publicationTitle</title>
+        <title titleType='Subtitle'>publicationSubtitle</title>
+    </titles>
+    <publisher>publisherName</publisher>
+    <publicationYear>2016</publicationYear>
+    <subjects>
+        <subject>subject1</subject>
+        <subject>subject2</subject>
+    </subjects>
+    <contributors>
+        <contributor contributorType='Editor'>
+            <contributorName>bob</contributorName>
+        </contributor>
+        <contributor contributorType='Editor'>
+            <contributorName>jill</contributorName>
+        </contributor>
+    </contributors>
+    <dates>
+        <date dateType='Created'>createdDate</date>
+    </dates>
+    <language>en</language>
+    <resourceType resourceTypeGeneral='Text'>resourceText</resourceType>
+    <descriptions>
+        <description descriptionType='Other'>description1</description>
+        <description descriptionType='[Other]'>[description2]</description>
+    </descriptions>
+</resource>

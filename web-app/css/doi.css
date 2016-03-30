@@ -1,0 +1,33 @@
+.doi-table {
+    width: 100%;
+    border: 1px solid gainsboro;
+}
+
+.doi-table td, .doi-table th {
+    border: 1px solid gainsboro;
+}
+
+h4 {
+    margin-top: 30px;
+}
+
+h5 {
+    font-weight: bold
+}
+
+.indent {
+    padding-left: 20px;
+}
+
+.citation {
+    padding-left: 10px;
+    padding-bottom: 30px;
+}
+
+.citation:before {
+    content: '\2014 \00A0';
+}
+
+h1 {
+    margin-bottom: 5px
+}
