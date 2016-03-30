@@ -48,7 +48,6 @@
         </ol>
 
         <p>
-
             The request must have JSON object with the following structure:
         </p>
         <pre>
@@ -77,6 +76,41 @@
 
             @return JSON response containing the DOI and the landing page on success, HTTP 500 on failure
         </p>
+
+        <h3 class="padding-top-1">ANDS Metadata</h3>
+
+        ANDS metadata can be provided as a 'flattened' JSON structure in the 'providerMetadata' block, where each ANDS term is a top-level element. E.g.
+
+        <pre>
+            {
+            "authors": [
+            "Fred Smith",
+            "Jill Jones"
+            ],
+            "title": "acacia blablabla",
+            "subtitle": "Version 2",
+            "publisher": "Flora of Australia",
+            "publicationYear": 2016,
+            "subjects": [
+            "acacia blablabla"
+            ],
+            "contributors": [
+            {
+            "type": "Editor",
+            "name": "Fred Smith"
+            }
+            ],
+            "resourceType": "Text",
+            "resourceText": "Species information",
+            "descriptions": [
+            {
+            "type": "Other",
+            "text": "Taxonomic treatment for acacia blablabla"
+            }
+            ],
+            "createdDate": "2016-03-30T04:20:23Z"
+            }
+        </pre>
 
         <h2 class="padding-top-1">Get DOI Metadata</h2>
 
