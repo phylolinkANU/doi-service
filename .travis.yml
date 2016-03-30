@@ -6,25 +6,13 @@ branches:
   only:
   - master
 before_install:
-- export TZ=Australia/Canberra
-- date
-- rm -rf ~/.sdkman
-- curl -s get.sdkman.io > ~/install_sdkman.sh
-- chmod 775 ~/install_sdkman.sh
-- ~/install_sdkman.sh
-- echo "sdkman_auto_answer=true" > ~/.sdkman/etc/config
-- source ~/.sdkman/bin/sdkman-init.sh
-- GRAILS_VERSION=`grep '^app\.grails\.version=' ./application.properties | sed -e
-  's/^app\.grails\.version=//g'`
-- sdk install grails $GRAILS_VERSION || true
-before_script:
-- mkdir -p ~/.grails; wget -q -O ~/.grails/settings.groovy https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_settings_new.groovy
-- MAVEN_REPO="ala-repo-snapshot"; grep '^app\.version=' ./application.properties |
-  grep -q "\-SNAPSHOT"; if [ "$?" = "1" ]; then MAVEN_REPO="ala-repo-release"; fi;
-- echo "MAVEN_REPO:$MAVEN_REPO"
+- wget -q https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/ala_common.sh
+- chmod +x ala_common.sh
+- source ./ala_common.sh
+- ala_travis_grails_setup_env
 script:
 - grails clean && grails refresh-dependencies --non-interactive && grails test-app --non-interactive && grails prod war --non-interactive && grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive --stacktrace
 env:
   global:
-  - secure: cxo0HK6hD3boSClDCedhxNqlxFdZVwwCi9gsObbDGXUpubM/r1fncNtUUrd2I3nb522v6LuUc0X1qAPYf6hEJkPMwYHeDE8j1RH1LL4ZrSPuaflHu5cljUfv6EjC1HUvlJKburWjhMpPp9GgT7FbIoqr2gsK8VjwL7pLZxPu9WoCXS6+4if/BUNWW8exfZRCBB2Kwe1W3rs/YrGzcEYOrdbk80gvlw8ywpk4nxUlRIrnyHa5BKpDclm7pMqQn1mSSHegVZbv9Bn/mW3/CjhUMHYtMkoAb9OFnf/K5bwntiSAKS1ztCNs2bE1P7kJ+cQZdbq1r1HpsVc410BRYpbQ90b4VDHP1NOOq3xcyfJIr+a4kd8ov37FPR4RyOAroY2yeBEcM5FOwS6lewdrLyoFdnQxyc1uN2RbZT66i/iJ1Y4rfPoaVuLmvlhrMXYQlQ5HL6b9fk0NFT9Hb3u1rTO9aHc43YSte8qzRbH8WBssWXztVvLV1a9DWS9eyTgbOR98ADK/QnG/Ltv0IvzezRTgg0f+S0PHJU0BzqnxVJBroHKHKjWKCz10Enj/C+oh4yjtc1pK+FkBjW8NR+TxL4mi4HsxRgYlEB0VoXWwZPv44HJFmKM3MkPBTKj0deHj1ySgejJ44xWeLgM+eNO2sK7Rm1PqNzNH2lSJBMuzOrJXaRg=
-  - secure: MWTBdi4cvZAv2TXU37yEgs6zRqwhDyqKnqG8L1Qj2GuWjCHaVn3/oUvOuTHCXUTPtQEVlZN1N7CtakyCbD46hgco0pO5HoAx1juuJ+cwp3a9KrmKeAAN6WqHzCM4oIzkqmykLNRghCZXOXKIm0NQTuNISgL6WkHYS5BhPAhUkBUlTeI3a3z1BW8JOgID7ky6xEkWBGfygXb02eCP6RWdx5RruqxGmh2tyjKLmtgAWX/gPjez3q+X2Ohfp0MvtDoGZe6z7aVLu7RTmrErSj46JxD4NgIsD0pcQhe4xp4tHDsyrphZB808Dy6vDzoSHib9cZEhu4pSLrDgLiKhZ7xdwjl4R64ks9xeZpgSTh4LLIZU/QzjBTQt2QeDmqCVg23cOofZASjfCIlPEiHlNyYElRDlHRBwhH7UzrpeiBmyzzpg0H98pEYtQi2hw6RO/tWkQqh4TZyOrd+jDhWYuoxI1v7ZVzYiibIykfIOvFYTIALdBbDMUSOBnlt9kyi/5TAtMYLrY/Yyx6DgpOFqBlULpVLpTKLcSK+i45JFF7njBSqmVKQBvLRhkyITryQect+K6hqrKlgpV95oZ/Y5WVcBqFVkq4n5wbMMmI9bkFzSO+aKE8zcWhBmpozvaYJhVsj71hPGF3F53e8T/xKZTWvHNkDcfAnL7dDbLcp6ihJz2ME=
+  - secure: bu1zbUALDuhpEVYohFHnf0ZsxW8kERbhv1bhruFLA1skRES+gHmLN/d7w/KpRFPpTlY9/2dC3KzHUYz38P3XclsatzwJY3Tkrir/xdC0yA4rAyLDJH8GcG6whc2gxMuc7i/iXPrfz8iabxhrjvnuCucpHWTGJIeorO6vfXjh8Pg3SyJMyAkP8xxkShtrW/zJjM4ix36GaUL553Cn79cSjl4fgNSB5a8LslzjMjZNlqwRyMJvL/juQ8HW8DiXquZWE7BZ4z3nGKHqUd2SMx2XvYCvNxaUSmTk6PC9RFqQ+PeLS/FUIRSUk5oPN7dFnRpHm8EFFfMcTIzKERlg1phnf/XJTj1lLkDNABy3iXgjv/oBNfydVv2j+6HEj6gIef5zWq811i5TWqUunFBriw6pU2bLV37aU8iV5QMcBVsYFG4xugiABKkJJJMDswtQ67jdY2ldw5vTzXW66aUgD8EfrNDQqoUyHLNzDIKkt4GKhz1Yu6zCz7CrvxUJkJDWBzvK7T+1MGa9yXkmim+J0YZkL+zcLLd4WDeMlrFVM27I1FD/d7Nk3pZaiRcg/P070+wpIHI524q3gEyVqcJxmXLcmav0sKblxEgLc8WkVk/gJ70FoiaRu5ISEyZP+syR1A8NEyeFULgtrxNscpghut5Px+aQkPRW/VhTz0vDVYI5334=
+  - secure: DdxVQ7FMdKcwnO1YcDodblEhtEsIr84UqcbUgC0qGnpnx7ssTycQLGtkiGw3ccOXdgWg2dCruNhNyGjkyfuqRxDTZ8Kaxfp6yOmzkMByDUYQ8GE2aGEpqaYlp3CyaO+6+10BxsCD2AAelnHShLSJNOVd6AcUihPKf2XKiDM9KqtWKjrvKIBarx16PQPXj7gkOktaRVJklnBpsamNZftv1FUtr297qHmQYrjD/72Ksx40CuQTfjboRVODI17ReyvFzy89i1ZJwDXTb5p/f5b/2u7/nOzRm1egb7wQlBOyYzdzaAW5Z49V6/vywPcYo7J9UePtce5C3RraiJGSZIOk+DvL1gAu55u2bRL/MbM+mTWhEVftouK2wNT3qknqlK7FIfkZC143AYN5fEXJMfMFdhZ2LetEz9H2HeI0QNSeCYd9A0rncNH2oWYhpub1OaQ97tOmVUbySTIi84AeGZ+3x7Vg/robUrQBIwRh/wTDdktkOSAVLJWA9am+5jDdMMNqkGOarRuO59o3F8S8WFW4oWyKhTMpJ8WCO+Cdp4mkBIDdEG2cPwIk5yIGYEnrG1M6GHgTjTv+FGJSNJDwsNY8iYYqYrC3LSBX1/BDHJEpv7Mw1Y45ETK4Bx1Dl6yNp2rm7XFHdejSHUUn3V8b6ihPtee7HlpLV9XOCIuRrEXsc3g=
