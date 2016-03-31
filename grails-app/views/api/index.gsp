@@ -27,6 +27,8 @@
 </head>
 
 <body>
+<g:include view="common/_envWarning.gsp"/>
+
 <div class="panel">
     <div class="panel-heading">
         <h1>ALA DOI Web Service v1</h1>

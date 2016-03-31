@@ -27,7 +27,7 @@
 </head>
 
 <body>
-
+<g:include view="common/_envWarning.gsp"/>
 <div class="panel">
     <div class="panel-body">
         <h1>${doi.title}</h1>
