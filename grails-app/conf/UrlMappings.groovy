@@ -10,6 +10,7 @@ class UrlMappings {
 
 
         // User interface
+        "/api/v1/doi/$id/download" controller: "doiResolve", action: [GET: "download"]
         "/doi/$id" controller: "doiResolve", action: [GET: "doi"]
         "/doi" controller: "doiResolve", action: [GET: "index"]
         "/" controller: "doiResolve", action: [GET: "index"]

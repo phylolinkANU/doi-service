@@ -57,7 +57,7 @@
         <p/>
 
         <div class="padding-top-1 center-block">
-            <a class="btn btn-primary btn-lg" href="${request.contextPath}/api/v1/doi/${doi.uuid}/download"
+            <a class="btn btn-primary btn-lg" href="${request.contextPath}/doi/${doi.uuid}/download"
                title="Download file"><span class="fa fa-download">&nbsp;</span>Download</a>
 
             <a class="btn btn-primary btn-lg" href="${doi.applicationUrl}" title="Go to source"><span

@@ -2,6 +2,7 @@ package au.ala.org.doi.ui
 
 import au.org.ala.doi.Doi
 import au.org.ala.doi.DoiService
+import au.org.ala.doi.FileService
 import au.org.ala.doi.ui.DoiResolveController
 import grails.test.mixin.TestFor
 import org.apache.http.HttpStatus
@@ -15,6 +16,7 @@ class DoiResolveControllerSpec extends Specification {
     def setup() {
         controller = new DoiResolveController()
         controller.doiService = Mock(DoiService)
+        controller.fileService = Mock(FileService)
     }
 
     def "index should list all DOIs"() {
@@ -72,5 +74,46 @@ class DoiResolveControllerSpec extends Specification {
         response.status == HttpStatus.SC_OK
         controller.modelAndView.viewName == "/doiResolve/doi"
         controller.modelAndView.model == [doi: doi]
+    }
+
+    def "download should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
+        when:
+        controller.download()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+    }
+
+    def "download should search for DOI records by UUID"() {
+        setup:
+        String uuid = UUID.randomUUID().toString()
+        when:
+        params.id = uuid
+        controller.download()
+
+        then:
+        1 * controller.doiService.findByUuid(uuid)
+        0 * controller.doiService.findByDoi(_)
+    }
+
+    def "download should return the matching DOI's file"() {
+        setup:
+        Doi doi = new Doi(uuid: UUID.randomUUID().toString(), contentType: "text/plain", filename: "bla.txt")
+        File dir = new File("${System.getProperty("java.io.tmpdir")}/${doi.uuid}")
+        dir.mkdirs()
+        File file = new File(dir, "bla.txt")
+        file.createNewFile()
+        file << "file content"
+
+        when:
+        params.id = doi.uuid
+        controller.download()
+
+        then:
+        1 * controller.doiService.findByUuid(doi.uuid) >> doi
+        1 * controller.fileService.getFileForDoi(_) >> file
+        response.getHeader("Content-disposition") == 'attachment;filename=bla.txt'
+        response.contentType == doi.contentType
+        response.text == "file content"
     }
 }
