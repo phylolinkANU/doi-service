@@ -131,6 +131,13 @@ class AndsService extends DoiProviderService {
                     date(dateType: "Created", metadata.createdDate)
                 }
             }
+            if (metadata.rights) {
+                rightsList() {
+                    metadata.rights.each {
+                        rights(it)
+                    }
+                }
+            }
             language("en")
             resourceType(resourceTypeGeneral: metadata.resourceType, metadata.resourceText)
             if (metadata.descriptions) {

@@ -28,6 +28,10 @@
     <dates>
         <date dateType='Created'>createdDate</date>
     </dates>
+    <rightsList>
+        <rights>rights statement 1</rights>
+        <rights>rights statement 2</rights>
+    </rightsList>
     <language>en</language>
     <resourceType resourceTypeGeneral='Text'>resourceText</resourceType>
     <descriptions>

@@ -175,6 +175,7 @@ class AndsServiceSpec extends Specification {
         andsMetadata.resourceText = "resourceText"
         andsMetadata.descriptions = [[type: "Other", text: "description1"], [[type: "Other", text: "description2"]]]
         andsMetadata.createdDate = "createdDate"
+        andsMetadata.rights = ["rights statement 1", "rights statement 2"]
 
         def standardizeSpaces = { text -> text.replaceAll(" +", " ") }
 
