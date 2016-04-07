@@ -3,16 +3,20 @@ package au.org.ala.doi
 import au.org.ala.doi.providers.AndsService
 import au.org.ala.doi.providers.DoiProviderService
 import au.org.ala.doi.util.DoiProvider
+import au.org.ala.doi.util.ServiceResponse
 import org.springframework.web.multipart.MultipartFile
 
 class DoiService extends BaseDataAccessService {
 
+    def grailsApplication
     AndsService andsService
     FileService fileService
+    EmailService emailService
 
     Map mintDoi(DoiProvider provider, Map providerMetadata, String title, String authors, String description,
                 String applicationUrl, String fileUrl, MultipartFile file, Map applicationMetadata = [:],
                 String customLandingPageUrl = null) {
+        checkArgument provider
         checkArgument providerMetadata, "No provider metadata has been sent"
         checkArgument applicationUrl, "No url to the original application has been sent"
 
@@ -37,10 +41,10 @@ class DoiService extends BaseDataAccessService {
             Map result
             if (!success) {
                 log.error("A DOI was generated successfully through ${provider}, but the DB record failed to save. No default landing page will exist for this DOI!")
-                // todo send an email to ALA support to say that a DOI has been generated but the local DB write failed
+                sendPostDOICreationErrorEmail(entity.doi, "<ul><li>${entity.errors.collect().join("</li><li>")}</li></ul>")
                 result = [uuid: null, doi: doi, error: "A DOI was generated, but the server failed to save to the local DB. No default landing page will exist for this DOI!", status: "error"]
             } else {
-                result = [uuid: uuid, doi: doi, landingPage: andsService.generateLandingPageUrl(uuid, customLandingPageUrl), status: "ok"]
+                result = [uuid: uuid, doi: doi, landingPage: getProviderService(provider).generateLandingPageUrl(uuid, customLandingPageUrl), status: "ok"]
             }
 
             result
@@ -48,6 +52,16 @@ class DoiService extends BaseDataAccessService {
             // should never happen, so we can just throw a generic exception which will result in a HTTP 500 response
             throw new IllegalStateException("${entity.errors.allErrors.join(";\n")}")
         }
+    }
+
+    void sendPostDOICreationErrorEmail(String doi, String error) {
+        emailService.sendEmail("${grailsApplication.config.support.email}", "doiservice<no-reply@ala.org.au>", "Failure Alert - DOI ${doi}",
+                """<html><body>
+                        <p>An unexpected error occurred after successfully generating the DOI ${doi}.</p>
+                        <p>The DOI was generated, but the server failed to save to the local DB. No default landing page will exist for this DOI!</p>
+                        ${error}
+                        <p>This is an automated email. Please do not reply.</p>
+                        </body></html>""")
     }
 
     Doi findByUuid(String uuid) {
