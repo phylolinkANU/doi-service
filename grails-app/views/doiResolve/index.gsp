@@ -26,6 +26,8 @@
 <body>
 <g:include view="common/_envWarning.gsp"/>
 
+<ala:systemMessage/>
+
 <div class="panel">
     <div class="panel-heading">
         <h1>ALA DOI Repository</h1>

@@ -2,19 +2,21 @@ package au.org.ala.doi.ws
 
 import au.ala.org.ws.security.RequireApiKey
 import au.org.ala.doi.FileService
+import au.org.ala.ws.controller.BasicWSController
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
+import javax.validation.constraints.NotNull
+
 import static au.org.ala.doi.util.Utils.isUuid
 
-import au.org.ala.doi.BaseController
 import au.org.ala.doi.Doi
 import au.org.ala.doi.util.DoiProvider
 import au.org.ala.doi.DoiService
 import grails.converters.JSON
 
 @RequireApiKey
-class DoiController extends BaseController {
+class DoiController extends BasicWSController {
 
     DoiService doiService
     FileService fileService
@@ -113,47 +115,41 @@ class DoiController extends BaseController {
     /**
      * Retrieve the metadata for a doi by either UUID or DOI
      *
+     * @param id Either the local UUID or the DOI identifier
      * @return JSON response containing the metadata for the requested doi
      */
-    def getDoi() {
-        if (!params.id) {
-            badRequest "id is a required parameter"
-        } else {
-            Doi doi = isUuid(params.id) ? doiService.findByUuid(params.id) : doiService.findByDoi(params.id)
+    def getDoi(@NotNull String id) {
+        Doi doi = isUuid(id) ? doiService.findByUuid(id) : doiService.findByDoi(id)
 
-            if (!doi) {
-                notFound "No doi was found for ${params.id}"
-            } else {
-                render doi as JSON
-            }
+        if (!doi) {
+            notFound "No doi was found for ${params.id}"
+        } else {
+            render doi as JSON
         }
     }
 
     /**
      * Retrieve the file for a doi by either UUID or DOI
      *
+     * @param id Either the local UUID or the DOI identifier
      * @return the file associated with the DOI
      */
-    def download() {
-        if (!params.id) {
-            badRequest "id is a required parameter"
-        } else {
-            Doi doi = isUuid(params.id) ? doiService.findByUuid(params.id) : doiService.findByDoi(params.id)
+    def download(@NotNull String id) {
+        Doi doi = isUuid(id) ? doiService.findByUuid(id) : doiService.findByDoi(id)
 
-            if (!doi) {
-                notFound "No doi was found for ${params.id}"
-            } else {
-                File file = fileService.getFileForDoi(doi)
-                if (file) {
-                    response.setContentType(doi.contentType)
-                    response.setHeader("Content-disposition", "attachment;filename=${file.name}")
-                    file.withInputStream {
-                        response.outputStream << it
-                    }
-                    response.outputStream.flush()
-                } else {
-                    notFound "No file was found for DOI ${doi.doi} (uuid = ${doi.uuid})"
+        if (!doi) {
+            notFound "No doi was found for ${id}"
+        } else {
+            File file = fileService.getFileForDoi(doi)
+            if (file) {
+                response.setContentType(doi.contentType)
+                response.setHeader("Content-disposition", "attachment;filename=${file.name}")
+                file.withInputStream {
+                    response.outputStream << it
                 }
+                response.outputStream.flush()
+            } else {
+                notFound "No file was found for DOI ${doi.doi} (uuid = ${doi.uuid})"
             }
         }
     }
