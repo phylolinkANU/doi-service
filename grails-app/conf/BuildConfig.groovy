@@ -45,7 +45,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build ":release:3.0.1"
+        build ":release:3.1.2"
         build ":tomcat:7.0.55.3"
         runtime ":ala-auth:1.3.1"
         runtime ":ala-ws-security:1.2"
@@ -60,6 +60,5 @@ grails.project.dependency.resolution = {
         }
         compile ":quartz:1.0.2"
         compile ":mail:1.0.7"
-
     }
 }

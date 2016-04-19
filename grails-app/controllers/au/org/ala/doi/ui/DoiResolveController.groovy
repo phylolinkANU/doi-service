@@ -27,7 +27,7 @@ class DoiResolveController extends BasicWSController {
         if (doi) {
             render view: "doi", model: [doi: doi]
         } else {
-            notFound "No DOI record 2was found for UUID ${id}"
+            notFound "No DOI record was found for UUID ${id}"
         }
     }
 

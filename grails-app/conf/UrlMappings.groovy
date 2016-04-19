@@ -15,7 +15,10 @@ class UrlMappings {
         "/doi" controller: "doiResolve", action: [GET: "index"]
         "/" controller: "doiResolve", action: [GET: "index"]
 
-        "500"(view: '/error')
-        "404"(view: '/notFound')
+        "500" controller: "error"
+        "400" controller: "error"
+        "404" controller: "error"
+        "403" controller: "error"
+        "401" controller: "error"
     }
 }
