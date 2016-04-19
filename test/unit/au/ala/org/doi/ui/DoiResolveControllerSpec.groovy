@@ -32,22 +32,22 @@ class DoiResolveControllerSpec extends Specification {
         controller.modelAndView.model == [dois: [doi1, doi2], offset: 0, pageSize: DoiResolveController.DEFAULT_PAGE_SIZE]
     }
 
-    def "doi should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
-        when:
-        controller.doi()
-
-        then:
-        response.status == HttpStatus.SC_BAD_REQUEST
-    }
-
-    def "doi should return a HTTP 400 (BAD_REQUEST) if the id provided is not a UUID"() {
-        when:
-        params.id = "blabla"
-        controller.doi()
-
-        then:
-        response.status == HttpStatus.SC_BAD_REQUEST
-    }
+//    def "doi should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
+//        when:
+//        controller.doi()
+//
+//        then:
+//        response.status == HttpStatus.SC_BAD_REQUEST
+//    }
+//
+//    def "doi should return a HTTP 400 (BAD_REQUEST) if the id provided is not a UUID"() {
+//        when:
+//        params.id = "blabla"
+//        controller.doi()
+//
+//        then:
+//        response.status == HttpStatus.SC_BAD_REQUEST
+//    }
 
     def "doi should return a HTTP 404 (NOT_FOUND) if the id provided does not match any DOI record"() {
         setup:
@@ -76,13 +76,13 @@ class DoiResolveControllerSpec extends Specification {
         controller.modelAndView.model == [doi: doi]
     }
 
-    def "download should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
-        when:
-        controller.download()
-
-        then:
-        response.status == HttpStatus.SC_BAD_REQUEST
-    }
+//    def "download should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
+//        when:
+//        controller.download()
+//
+//        then:
+//        response.status == HttpStatus.SC_BAD_REQUEST
+//    }
 
     def "download should search for DOI records by UUID"() {
         setup:

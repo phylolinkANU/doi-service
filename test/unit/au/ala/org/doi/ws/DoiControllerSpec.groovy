@@ -32,13 +32,13 @@ class DoiControllerSpec extends Specification {
         controller.doiService = doiService
     }
 
-    def "getDoi should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
-        when:
-        controller.getDoi()
-
-        then:
-        response.status == HttpStatus.SC_BAD_REQUEST
-    }
+//    def "getDoi should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
+//        when:
+//        controller.getDoi()
+//
+//        then:
+//        response.status == HttpStatus.SC_BAD_REQUEST
+//    }
 
     def "getDoi should search for DOI records by UUID if the provided id is a UUID"() {
         setup:
@@ -90,13 +90,13 @@ class DoiControllerSpec extends Specification {
         response.contentType == "application/json;charset=UTF-8"
     }
 
-    def "download should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
-        when:
-        controller.download()
-
-        then:
-        response.status == HttpStatus.SC_BAD_REQUEST
-    }
+//    def "download should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
+//        when:
+//        controller.download()
+//
+//        then:
+//        response.status == HttpStatus.SC_BAD_REQUEST
+//    }
 
     def "download should search for DOI records by UUID if the provided id is a UUID"() {
         setup:
