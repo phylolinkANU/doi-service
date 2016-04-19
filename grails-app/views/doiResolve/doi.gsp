@@ -34,7 +34,7 @@
     <h1 class="hidden">Welcome the Atlas of Living Australia</h1>
     <ol class="breadcrumb hidden-print">
         <li><a class="font-xxsmall" href="${grailsApplication.config.ala.base.url}">Home</a></li>
-        <li><a class="font-xxsmall" href="${request.contextPath}">DOI Search Index</a></li>
+        <li><a class="font-xxsmall" href="${request.contextPath}/">DOI Search Index</a></li>
         <li class="font-xxsmall active">DOI entry</li>
     </ol>
 
