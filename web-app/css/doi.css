@@ -42,3 +42,25 @@ h5 {
 h1 {
     margin-bottom: 5px
 }
+
+.pagination .step, .pagination .currentStep, .pagination .nextLink, .pagination .prevLink  {
+    color: #C44D34;
+    text-decoration: none;
+    font-weight: 400;
+    line-height: 1.6em;
+    display: inline-block;
+    padding: 10px 16px;
+    font-size: 18px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin-left: -1px;
+}
+
+.pagination .currentStep {
+    background-color: #DA644E;
+    color: white;
+}
+
+.clear {
+    clear: both;
+}

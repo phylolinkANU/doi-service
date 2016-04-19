@@ -28,40 +28,78 @@
 
 <body>
 <g:include view="common/_envWarning.gsp"/>
-<div class="panel">
-    <div class="panel-body">
-        <h1>${doi.title}</h1>
+<ala:systemMessage/>
 
-        <div class="citation">${doi.authors}</div>
+<div class="container" id="main">
 
-        <p>${doi.description}</p>
+    <div class="col-sm-12 col-md-9 col-lg-9">
+        <h1 class="hidden">Welcome the Atlas of Living Australia</h1>
+        <ol class="breadcrumb hidden-print">
+            <li><a class="font-xxsmall" href="${grailsApplication.config.ala.base.url}">Home</a></li>
+            <li><a class="font-xxsmall" href="${request.contextPath}">DOI Search Index</a></li>
+            <li class="font-xxsmall active">DOI entry</li>
+        </ol>
 
-        <div>
-            <h4>Date Created</h4>
-            ${doi.dateMinted}
-        </div>
+        <h2 class="heading-medium">${doi.title}</h2>
 
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
 
-        <g:if test="${doi.customLandingPageUrl}">
-            <div>
-                <h4>Application-specific landing page</h4>
-                This DOI was registered with an application-specific landing page. <a href="${doi.customLandingPageUrl}"
-                                                                                      title="Application landing page">View the application landing page</a>.
+                        <div class="word-limit">
+                            <h1 class="heading-xlarge">${doi.title} <small>&mdash; ${doi.authors}</small></h1>
+
+                            <div class="row">
+                                <div class="col-md-offset-1 col-md-10">
+
+                                    <p class="help-block">${doi.description}</p>
+
+                                    <!-- Tabular data -->
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                            <tr>
+                                                <th scope="row">Creation Date</th>
+                                                <td>${doi.dateMinted}</td>
+                                            </tr>
+                                            <g:if test="${doi.customLandingPageUrl}">
+                                                <tr>
+                                                    <th scope="row">Landing page</th>
+                                                    <td>This DOI was registered with an application-specific landing page. <a
+                                                            href="${doi.customLandingPageUrl}">View the application landing page.</a>
+                                                    </td>
+                                                </tr>
+                                            </g:if>
+                                            <g:render template="metadata" model="[metadata: doi.applicationMetadata]"/>
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                    <div class="alert alert-info alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert"
+                                                aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        If you are having trouble accessing this document, please <a
+                                            href="https://www.ala.org.au/about-the-atlas/communications-centre/">contact the Atlas of Living Australia</a> to request a copy in a format that you can use.
+                                    </div>
+
+                                    <h4>To access this resource, you can</h4>
+
+                                    <p>
+                                        <a class="btn btn-default" href="${doi.applicationUrl}"
+                                           title="Go to source">Go to the source</a>
+                                        <a class="btn btn-primary"
+                                           href="${request.contextPath}/doi/${doi.uuid}/download"
+                                           title="Download file">Download file</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </g:if>
-
-        <g:if test="${doi.applicationMetadata}">
-            <h4>Additional information</h4>
-            <g:render template="metadata" model="[metadata: doi.applicationMetadata]"/>
-        </g:if>
-        <p/>
-
-        <div class="padding-top-1 center-block">
-            <a class="btn btn-primary btn-lg" href="${request.contextPath}/doi/${doi.uuid}/download"
-               title="Download file"><span class="fa fa-download">&nbsp;</span>Download</a>
-
-            <a class="btn btn-primary btn-lg" href="${doi.applicationUrl}" title="Go to source"><span
-                    class="fa fa-forward">&nbsp;</span>Go to source</a>
         </div>
     </div>
 </div>

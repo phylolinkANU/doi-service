@@ -55,7 +55,7 @@ grails.project.dependency.resolution = {
         runtime ":mongodb:3.0.3"
         runtime ":cors:1.1.6"
         runtime ":resources:1.2.14"
-        runtime(":ala-bootstrap3:1.1") {
+        runtime(":ala-bootstrap3:1.6") {
             excludes "ala-cas-client"
         }
         compile ":quartz:1.0.2"

@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull
 
 class DoiResolveController extends BasicWSController {
 
-    static final int DEFAULT_PAGE_SIZE = 25
+    static final int DEFAULT_PAGE_SIZE = 20
     DoiService doiService
     FileService fileService
 
