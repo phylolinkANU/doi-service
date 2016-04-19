@@ -66,8 +66,9 @@
                                             <g:if test="${doi.customLandingPageUrl}">
                                                 <tr>
                                                     <th scope="row">Landing page</th>
-                                                    <td>This DOI was registered with an application-specific landing page. <a
-                                                            href="${doi.customLandingPageUrl}">View the application landing page.</a>
+                                                    <td>This DOI was registered with an application-specific landing page.
+                                                        <br/>
+                                                        <a href="${doi.customLandingPageUrl}">View the application landing page.</a>
                                                     </td>
                                                 </tr>
                                             </g:if>
