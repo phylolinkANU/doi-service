@@ -63,12 +63,16 @@ class AdminController {
         MultipartFile file = null
         if (request instanceof MultipartHttpServletRequest) {
             file = request.getFile(request.fileNames[0])
+            log.debug("File ${file}")
         }
 
         def applicationMetadata = [foo: 'bar']
 
-        def providerMetadata = JSON.parse(params.providerMetadata)
-        //def applicationMetadata = [foo: 'bar']
+        def providerMetadata
+        if(params?.providerMetadata)
+        {
+            providerMetadata = JSON.parse(params.providerMetadata)
+        }
 
         Map result = doiService.mintDoi(
                 DoiProvider.byName(params.provider),
@@ -85,5 +89,8 @@ class AdminController {
 //        }
 
         log.debug("Result: ${result}")
+        if(result?.status == 'ok') {
+            redirect(url: result.landingPage)
+        }
     }
 }
