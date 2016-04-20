@@ -15,6 +15,10 @@ class UrlMappings {
         "/doi" controller: "doiResolve", action: [GET: "index"]
         "/" controller: "doiResolve", action: [GET: "index"]
 
+        "/admin" controller:'admin', action: [GET: "index"]
+        "/admin/mintDoi" controller:'admin', action: [GET: "mintDoi"]
+        "/admin/createDoi" controller:'admin', action: [POST: "createDoi"]
+
         "500" controller: "error"
         "400" controller: "error"
         "404" controller: "error"
