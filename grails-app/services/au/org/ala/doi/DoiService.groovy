@@ -44,7 +44,43 @@ class DoiService extends BaseDataAccessService {
                 sendPostDOICreationErrorEmail(entity.doi, "<ul><li>${entity.errors.collect().join("</li><li>")}</li></ul>")
                 result = [uuid: null, doi: doi, error: "A DOI was generated, but the server failed to save to the local DB. No default landing page will exist for this DOI!", status: "error"]
             } else {
-                result = [uuid: uuid, doi: doi, landingPage: getProviderService(provider).generateLandingPageUrl(uuid, customLandingPageUrl), status: "ok"]
+                result = [uuid: uuid, doi: doi, landingPage: getProviderService(provider).generateLandingPageUrl(uuid, customLandingPageUrl)
+                          , doiServiceLandingPage: getProviderService(provider).generateLandingPageUrl(uuid, null), status: "ok"]
+            }
+
+            result
+        } else {
+            // should never happen, so we can just throw a generic exception which will result in a HTTP 500 response
+            throw new IllegalStateException("${entity.errors.allErrors.join(";\n")}")
+        }
+    }
+
+    Map registerDoi(String existingDoi, String title, String authors, String description,
+                    String applicationUrl, String fileUrl, MultipartFile file, Map applicationMetadata = [:],
+                    String customLandingPageUrl = null) {
+        checkArgument existingDoi, "No DOI has been provided"
+        checkArgument applicationUrl, "No url to the original application has been sent"
+
+        String uuid = UUID.randomUUID().toString()
+
+        String contentType = file ? file.contentType : new URL(fileUrl).openConnection().contentType
+        Doi entity = new Doi(doi:existingDoi, uuid: uuid, customLandingPageUrl: customLandingPageUrl, dateMinted: new Date(),
+                title: title, authors: authors, description: description,
+                applicationMetadata: applicationMetadata, provider: DoiProvider.ANDS,
+                applicationUrl: applicationUrl, filename: file?.originalFilename ?: uuid, contentType: contentType)
+
+        if (entity.validate()) {
+            file ? fileService.storeFileForDoi(entity, file) : fileService.storeFileForDoi(entity, fileUrl)
+
+            boolean success = save entity
+
+            Map result
+            if (!success) {
+                log.error("Eroor saving DB record DOI ${existingDoi} ")
+                sendPostDOICreationErrorEmail(entity.doi, "<ul><li>${entity.errors.collect().join("</li><li>")}</li></ul>")
+                result = [uuid: null, doi: existingDoi, error: "Eroor saving DB record DOI ${existingDoi} ", status: "error"]
+            } else {
+                result = [uuid: uuid, doi: existingDoi, doiServiceLandingPage: getProviderService(DoiProvider.ANDS).generateLandingPageUrl(uuid, null), status: "ok"]
             }
 
             result

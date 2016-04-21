@@ -15,17 +15,15 @@
     <r:require modules="doi"/>
 </head>
 <body>
-%{--<div class="nav" role="navigation">--}%
-    %{--<ul>--}%
-        %{--<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>--}%
-    %{--</ul>--}%
-%{--</div>--}%
 
-<div class="row-fluid">
+<div class="col-sm-12 col-md-9 col-lg-9">
+    <h1 class="hidden">Welcome the Atlas of Living Australia</h1>
+    <ol class="breadcrumb hidden-print">
+        <li><a class="font-xxsmall" href="${grailsApplication.config.grails.serverURL}">Home</a></li>
+        <li class="font-xxsmall active">Admin</li>
+    </ol>
     <h2 class="heading-medium">DOI Service Administration</h2>
     <div class="span12 panel panel-default" id="page-body" role="main">
-
-        %{--<h1>DOI Service Administration</h1>--}%
         <ul>
             <li><g:link controller="admin" action="mintDoi">Mint a DOI</g:link></li>
         </ul>
