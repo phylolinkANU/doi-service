@@ -15,7 +15,7 @@
     <r:require modules="doi"/>
 </head>
 <body>
-
+<ala:systemMessage/>
 <div class="col-sm-12 col-md-9 col-lg-9">
     <h1 class="hidden">Welcome to the Atlas of Living Australia</h1>
     <ol class="breadcrumb hidden-print">
@@ -25,7 +25,7 @@
     <h2 class="heading-medium">DOI Service Administration</h2>
     <div class="span12 panel panel-default" id="page-body" role="main">
         <ul>
-            <li><g:link controller="admin" action="mintDoi">Mint a DOI</g:link></li>
+            <li><g:link controller="admin" action="mintDoi">Mint/Register a DOI</g:link></li>
         </ul>
     </div>
 </div>

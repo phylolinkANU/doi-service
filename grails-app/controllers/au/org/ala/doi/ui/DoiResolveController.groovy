@@ -6,6 +6,8 @@ import au.org.ala.doi.FileService
 import au.org.ala.ws.controller.BasicWSController
 
 import au.org.ala.ws.validation.constraints.UUID
+import org.springframework.web.context.request.RequestContextHolder
+
 import javax.validation.constraints.NotNull
 
 class DoiResolveController extends BasicWSController {
@@ -14,11 +16,17 @@ class DoiResolveController extends BasicWSController {
     DoiService doiService
     FileService fileService
 
+
     def index() {
         int pageSize = params.getInt("pageSize", DEFAULT_PAGE_SIZE)
         int offset = params.getInt("offset", 0)
 
-        render view: "index", model: [dois: doiService.listDois(pageSize, offset), offset: offset, pageSize: pageSize]
+        def isAdmin = RequestContextHolder.currentRequestAttributes()?.isUserInRole("ROLE_ADMIN")
+
+        render view: "index", model: [dois    : doiService.listDois(pageSize, offset),
+                                      offset  : offset,
+                                      pageSize: pageSize,
+                                      isAdmin : isAdmin]
     }
 
     def doi(@NotNull @UUID String id) {
