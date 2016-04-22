@@ -5,9 +5,10 @@ modules = {
     }
 
     jqueryValidationEngine {
-        resource url: 'js/jquery.validationEngine.js'
-        resource url: 'js/jquery.validationEngine-en.js'
-        resource url: 'css/validationEngine.jquery.css'
+        resource url: 'thirdparty/jquery.validationEngine/css/validationEngine.jquery.css'
+        resource url: 'thirdparty/jquery.validationEngine/js/jquery.validationEngine.js'
+        resource url: 'thirdparty/jquery.validationEngine/js/jquery.validationEngine-en.js'
     }
+
 
 }
