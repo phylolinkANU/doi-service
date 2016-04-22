@@ -117,7 +117,9 @@
             </g:if>
         </div>
         <div style="color:white;" class="pull-right">
-            <g:link style="color:#DDDDDD; font-weight:bold;" controller="admin">Admin tools (${grailsApplication.config.skin.orgNameShort} administrators only)</g:link>
+            <g:if test="${isAdmin}">
+                <g:link controller="admin">Admin tools</g:link>
+            </g:if>
         </div>
     </div>
 </div>

@@ -78,7 +78,7 @@ class AdminController implements StateAssertions {
             )
 
             log.debug("Result: ${result}")
-            if (result?.status == 'ok') {
+            if (!result.error) {
                 redirect(url: result.doiServiceLandingPage)
             } else {
                 throw new Exception(result?.error)

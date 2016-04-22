@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
-    <title>Mint DOI | ${grailsApplication.config.skin.orgNameLong}</title>
+    <title>Mint/Register DOI | ${grailsApplication.config.skin.orgNameLong}</title>
     <r:require modules="doi, jqueryValidationEngine"/>
 </head>
 
@@ -22,7 +22,7 @@
     <ol class="breadcrumb hidden-print">
         <li><a class="font-xxsmall" href="${grailsApplication.config.grails.serverURL}">Home</a></li>
         <li><g:link class="font-xxsmall" controller="admin" action="index">Admin</g:link></li>
-        <li class="font-xxsmall active">Mint DOI</li>
+        <li class="font-xxsmall active">Mint/Register DOI</li>
     </ol>
 
     <g:if test="${status == 'error'}">
@@ -31,7 +31,7 @@
         </div>
     </g:if>
 
-    <h2 class="heading-medium">Mint DOI</h2>
+    <h2 class="heading-medium">Mint/Register DOI</h2>
 
     <div class="panel panel-default">
         <div class="panel-body">
