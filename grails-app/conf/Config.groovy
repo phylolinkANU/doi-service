@@ -39,6 +39,10 @@ grails.mime.types = [ // the first one is the default format
     xml:           ['text/xml', 'application/xml']
 ]
 
+grails.resources.resourceLocatorEnabled = true
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*', '/thirdparty/*']
+grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**', '/thirdparty/**']
+
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
 
