@@ -2,11 +2,12 @@ package au.org.ala.doi.ui
 
 import au.org.ala.doi.DoiService
 import au.org.ala.doi.util.DoiProvider
+import au.org.ala.doi.util.StateAssertions
 import grails.converters.JSON
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
-class AdminController {
+class AdminController implements StateAssertions {
 
     DoiService doiService
 
@@ -24,6 +25,17 @@ class AdminController {
      */
     def createDoi() {
         try {
+            checkArgument params.authors, "Authors is required"
+            checkArgument params.title, "Title is required"
+            checkArgument params.description, "Description is required"
+            checkArgument params.applicationUrl, "Application URL is required"
+            checkArgument params.newExistingDoiRadio, "Either Mint New DOI or Register existing DOI must be selected"
+
+            if (!params.file && !params.fileUrl) {
+                throw new IllegalArgumentException("Either File or File URL needs to be provided")
+            }
+
+            log.debug("params: ${params}")
             MultipartFile file = null
             if (request instanceof MultipartHttpServletRequest) {
                 file = request.getFile(request.fileNames[0])
@@ -39,34 +51,31 @@ class AdminController {
                 applicationMetadata = JSON.parse(params.applicationMetadata)
             }
 
-            Map result
-
+            def providerMetadata
+            def provider
             if (params?.newExistingDoiRadio == "existing") {
-                def providerMetadata = JSON.parse(params.providerMetadata)
-
-                result = doiService.mintDoi(
-                        DoiProvider.byName(params.provider),
-                        providerMetadata,
-                        params.title,
-                        params.authors,
-                        params.description,
-                        params.applicationUrl,
-                        params.fileUrl,
-                        file,
-                        applicationMetadata,
-                        params.customLandingPageUrl)
+                checkArgument params.existingDoi, "Existing DOI is required if registering an existing DOI"
+                provider = DoiProvider.ANDS
             } else {
-                result = doiService.registerDoi(
-                        params.existingDoi,
-                        params.title,
-                        params.authors,
-                        params.description,
-                        params.applicationUrl,
-                        params.fileUrl,
-                        file,
-                        applicationMetadata,
-                        params.customLandingPageUrl)
+                checkArgument params.providerMetadata, "Provider metadata is required if minting a new DOI"
+                checkArgument params.provider, "Provider is required if minting a new DOI"
+                providerMetadata = JSON.parse(params.providerMetadata)
+                provider = DoiProvider.byName(params.provider)
             }
+
+            def result = doiService.mintDoi(
+                    provider,
+                    providerMetadata,
+                    params.title,
+                    params.authors,
+                    params.description,
+                    params.applicationUrl,
+                    params.fileUrl,
+                    file,
+                    applicationMetadata,
+                    params.customLandingPageUrl,
+                    params.existingDoi
+            )
 
             log.debug("Result: ${result}")
             if (result?.status == 'ok') {
@@ -77,9 +86,9 @@ class AdminController {
 
         }
         catch (e) {
-            log.error("Error while trying to mint a DOI from UI: ${e}",e)
-            def errorMessage = e?.cause.message ?: e.message
-            render view: "mintDoi", model: [status:"error", errorMessage: errorMessage, mintParameters: params]
+            log.error("Error while trying to mint a DOI from UI: ${e}", e)
+            def errorMessage = e?.cause?.message ?: e.message
+            render view: "mintDoi", model: [status: "error", errorMessage: errorMessage, mintParameters: params]
         }
     }
 }

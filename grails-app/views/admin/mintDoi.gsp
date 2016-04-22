@@ -18,7 +18,7 @@
 <ala:systemMessage/>
 
 <div class="col-sm-12 col-md-10 col-lg-10">
-    <h1 class="hidden">Welcome to the Atlas of Living Australia</h1>
+    <h1 class="hidden">Welcome the Atlas of Living Australia</h1>
     <ol class="breadcrumb hidden-print">
         <li><a class="font-xxsmall" href="${grailsApplication.config.grails.serverURL}">Home</a></li>
         <li><g:link class="font-xxsmall" controller="admin" action="index">Admin</g:link></li>
@@ -39,28 +39,28 @@
                 <div class="col-sm-6">
                     <g:uploadForm name="mintDoiForm" role="form" controller="admin" action="createDoi" method="POST">
                         <div class="form-group">
-                            <label for="title">Title<span class="req-field"></span></label>
+                            <label for="title">Title<span class="req-field"/></label>
                             <input id="title" name="title" type="text" class="form-control"
                                    value="${mintParameters?.title}"
                                    data-validation-engine="validate[required]"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="authors">Authors<span class="req-field"></label>
+                            <label for="authors">Authors<span class="req-field"/></label>
                             <input id="authors" name="authors" type="text" class="form-control"
                                    value="${mintParameters?.authors}"
                                    data-validation-engine="validate[required]"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="description">Description<span class="req-field"></label>
+                            <label for="description">Description<span class="req-field"/></label>
                             <input id="description" name="description" type="text" class="form-control"
                                    value="${mintParameters?.description}"
                                    data-validation-engine="validate[required]"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="applicationUrl">Application Url<span class="req-field"></label>
+                            <label for="applicationUrl">Application Url<span class="req-field"/></label>
                             <input id="applicationUrl" name="applicationUrl" type="text" class="form-control"
                                    value="${mintParameters?.applicationUrl}"
                                    data-validation-engine="validate[required,custom[url]]"/>
@@ -71,14 +71,14 @@
                                 <div class="radio">
                                     <label>
                                         <input type="radio" id="newDoiRadio" name="newExistingDoiRadio"
-                                               value="existing"
+                                               value="new"
                                                checked="checked">Mint New DOI</label>
                                 </div>
 
                                 <div class="radio">
                                     <label><input type="radio" id="existingDoiRadio"
                                                   name="newExistingDoiRadio"
-                                                  value="new">Register existing DOI</label>
+                                                  value="existing">Register existing DOI</label>
                                 </div>
 
                                 <div class="form-group">
@@ -122,7 +122,7 @@
                                 <div class="form-group">
                                     <label for="file">File</label>
                                     <input id="file" name="file" type="file" class="form-control"
-                                           data-validation-engine="validate[groupRequired[file]]" />
+                                           data-validation-engine="validate[groupRequired[file]]"/>
                                 </div>
 
                             </div>
@@ -207,16 +207,12 @@
 </body>
 <r:script>
     $(function () {
+        $('#mintDoiSubmit').removeAttr('disabled');
         $('#mintDoiForm').validationEngine('attach', {scroll: false});
 
         $("#mintDoiSubmit").click(function (e) {
 
             $("#mintDoiSubmit").attr('disabled', 'disabled');
-
-            //var pm = $('#password').val() == $('#reenteredPassword').val();
-            //if(!pm){
-            //    alert("The supplied passwords do not match!");
-            //}
 
             var valid = $('#mintDoiForm').validationEngine('validate');
 
@@ -227,7 +223,6 @@
                 e.preventDefault();
             }
         });
-
 
         $('#existingDoiRadio').click(function () {
             $('#existingDoi').removeAttr("disabled");
@@ -240,8 +235,6 @@
             $('#providerMetadata').removeAttr("disabled");
             $('#provider').removeAttr("disabled");
         });
-
-
     });
 
     function isJson(field, rules, i, options) {
@@ -256,6 +249,5 @@
             return "This field has to be a valid JSON document";
         }
     }
-
 </r:script>
 </html>
