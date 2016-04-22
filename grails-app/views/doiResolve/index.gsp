@@ -82,6 +82,8 @@
                                                     href="${request.contextPath}/doi/${doi.uuid}">${doi.title}</a>
                                             </h4>
 
+                                            <p class="help-block"><strong>DOI:</strong> <a href="http://dx.doi.org/${doi.doi}">${doi.doi}</a></p>
+
                                             <p class="help-block"><strong>Created:</strong> ${doi.dateMinted}</p>
 
                                             <p class="help-block"><strong>Author(s):</strong> ${doi.authors}</p>

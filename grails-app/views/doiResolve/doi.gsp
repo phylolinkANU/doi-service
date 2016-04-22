@@ -57,6 +57,10 @@
                                     <table class="table table-striped table-hover">
                                         <tbody>
                                         <tr>
+                                            <th scope="row">DOI</th>
+                                            <td>${doi.doi}</td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row">Creation Date</th>
                                             <td>${doi.dateMinted}</td>
                                         </tr>
