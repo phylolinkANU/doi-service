@@ -30,7 +30,7 @@
 <ala:systemMessage/>
 
 <div class="col-sm-12 col-md-9 col-lg-9">
-    <h1 class="hidden">Welcome the Atlas of Living Australia</h1>
+    <h1 class="hidden">Welcome to the Atlas of Living Australia</h1>
     <ol class="breadcrumb hidden-print">
         <li><a class="font-xxsmall" href="${grailsApplication.config.ala.base.url}">Home</a></li>
         <li><a class="font-xxsmall" href="${request.contextPath}/">DOI Search Index</a></li>
