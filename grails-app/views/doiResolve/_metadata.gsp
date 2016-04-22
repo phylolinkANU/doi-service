@@ -16,5 +16,5 @@
     </g:each>
 </g:elseif>
 <g:else>
-    aa${metadata}
+    ${metadata}
 </g:else>
