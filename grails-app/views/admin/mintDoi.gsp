@@ -20,7 +20,7 @@
 <div class="col-sm-12 col-md-10 col-lg-10">
     <h1 class="hidden">Welcome to the Atlas of Living Australia</h1>
     <ol class="breadcrumb hidden-print">
-        <li><a class="font-xxsmall" href="${grailsApplication.config.grails.serverURL}">Home</a></li>
+        <li><a class="font-xxsmall" href="${request.contextPath}">DOI Index</a></li>
         <li><g:link class="font-xxsmall" controller="admin" action="index">Admin</g:link></li>
         <li class="font-xxsmall active">Mint DOI</li>
     </ol>
