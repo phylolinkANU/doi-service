@@ -25,6 +25,8 @@ class AdminController implements StateAssertions {
      */
     def createDoi() {
         try {
+            log.debug("params: ${params}")
+
             checkArgument params.authors, "Authors is required"
             checkArgument params.title, "Title is required"
             checkArgument params.description, "Description is required"
@@ -35,7 +37,6 @@ class AdminController implements StateAssertions {
                 throw new IllegalArgumentException("Either File or File URL needs to be provided")
             }
 
-            log.debug("params: ${params}")
             MultipartFile file = null
             if (request instanceof MultipartHttpServletRequest) {
                 file = request.getFile(request.fileNames[0])
@@ -78,7 +79,7 @@ class AdminController implements StateAssertions {
             )
 
             log.debug("Result: ${result}")
-            if (!result.error) {
+            if (!result?.error) {
                 redirect(url: result.doiServiceLandingPage)
             } else {
                 throw new Exception(result?.error)

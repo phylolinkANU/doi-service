@@ -145,6 +145,8 @@
                                         data-validation-engine="validate[funcCall[isJson]]"/>
                         </div>
                         <button id="mintDoiSubmit" class="btn btn-ala btn-primary">Mint DOI</button>
+                        <i id="spinner"  class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i>
+                        <span class="sr-only">Please wait...</span>
                     </g:uploadForm>
                 </div>
 
@@ -208,6 +210,8 @@
 <r:script>
     $(function () {
         $('#mintDoiSubmit').removeAttr('disabled');
+        $('#spinner').hide();
+
         $('#mintDoiForm').validationEngine('attach', {scroll: false});
 
         $("#mintDoiSubmit").click(function (e) {
@@ -217,6 +221,7 @@
             var valid = $('#mintDoiForm').validationEngine('validate');
 
             if (valid) {
+                $('#spinner').show();
                 $("form[name='mintDoiForm']").submit();
             } else {
                 $('#mintDoiSubmit').removeAttr('disabled');
