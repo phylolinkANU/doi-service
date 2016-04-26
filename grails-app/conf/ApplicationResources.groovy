@@ -10,5 +10,9 @@ modules = {
         resource url: 'thirdparty/jquery.validationEngine/js/jquery.validationEngine-en.js'
     }
 
+    mintDoi {
+        dependsOn 'doi'
+        resource url: 'js/admin/mintDoi.js'
 
+    }
 }
