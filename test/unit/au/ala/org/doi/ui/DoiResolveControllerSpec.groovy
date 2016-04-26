@@ -29,7 +29,7 @@ class DoiResolveControllerSpec extends Specification {
 
         then:
         controller.modelAndView.viewName == "/doiResolve/index"
-        controller.modelAndView.model == [dois: [doi1, doi2], offset: 0, pageSize: DoiResolveController.DEFAULT_PAGE_SIZE]
+        controller.modelAndView.model == [dois: [doi1, doi2], offset: 0, isAdmin:false,  pageSize: DoiResolveController.DEFAULT_PAGE_SIZE]
     }
 
 //    def "doi should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
