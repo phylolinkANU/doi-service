@@ -120,4 +120,22 @@ class DoiServiceSpec extends Specification {
         result.doi == "newDoi"
         result.landingPage != null
     }
+
+    def "mintDoi should not call andsService if a default DOI is provided"() {
+        setup:
+        MultipartFile file = Mock(MultipartFile)
+        file.contentType >> "application/pdf"
+        service.andsService.generateLandingPageUrl(_,null) >> "http://landingpage.com"
+
+        when:
+        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "applicationUrl", "url", file, null, null, "defaultDOI")
+
+        then:
+
+        0 * service.andsService.mintDoi(_) >> [:]
+        !result.error
+        result.uuid != null
+        result.doi == "defaultDOI"
+        result.doiServiceLandingPage != null
+    }
 }

@@ -5,13 +5,13 @@
   Time: 6:04 PM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="au.org.ala.doi.util.DoiProvider" contentType="text/html;charset=UTF-8" %>
 <!doctype html>
 <html>
 <head>
     <meta name="layout" content="main"/>
-    <title>Mint/Register DOI | ${grailsApplication.config.skin.orgNameLong}</title>
-    <r:require modules="doi, jqueryValidationEngine"/>
+    <title>Mint/Register DOI</title>
+    <r:require modules="doi, jqueryValidationEngine, mintDoi"/>
 </head>
 
 <body>
@@ -86,8 +86,8 @@
                                     <g:select id="provider" name="provider" class="form-control"
                                               value="${mintParameters?.provider}"
                                               data-validation-engine="validate[required]"
-                                              keys="['ANDS']"
-                                              from="['ANDS']"/>
+                                              keys="${au.org.ala.doi.util.DoiProvider.values()*.name()}"
+                                              from="${au.org.ala.doi.util.DoiProvider.values()}"/>
                                 </div>
 
                                 <div class="form-group">
@@ -145,6 +145,8 @@
                                         data-validation-engine="validate[funcCall[isJson]]"/>
                         </div>
                         <button id="mintDoiSubmit" class="btn btn-ala btn-primary">Mint DOI</button>
+                        <i id="spinner" class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i>
+                        <span class="sr-only">Please wait...</span>
                     </g:uploadForm>
                 </div>
 
@@ -182,7 +184,7 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;],<br/>
                             &nbsp;&nbsp;&nbsp;&nbsp;"subtitle" : "&lt;Subtitle&gt;",<br/>
                             &nbsp;&nbsp;&nbsp;&nbsp;"publicationYear" : &lt;Year&gt;,<br/>
-                            &nbsp;&nbsp;&nbsp;&nbsp;"createdDate" : "YYY-MM-ddThh:mm:ssZ",<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;"createdDate" : "YYYY-MM-ddThh:mm:ssZ",<br/>
                             &nbsp;&nbsp;&nbsp;&nbsp;"descriptions" : [{<br/>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"text" : "&lt;Description&gt;",<br/>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type" : "&lt;Other|etc&gt;"<br/>
@@ -198,6 +200,20 @@
                         <p/>
 
                         <p>You need to provide an existing resource for File Url or upload a File stored locally.</p>
+
+                        <p>The application metadata field is always optional but when provided it should be a a JSON document with name/value pairs. It will be displayed in the table on the landing page (below creation date).</p>
+
+                        <p>Here below is a template for the application metadata field.</p>
+                        <code>
+                            {<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;"property1" : "value1",<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;"property2" : "value2",<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;...<br/>
+                            }<br/>
+                        </code>
+
+                        <p/>
+
                     </div>
                 </div>
             </div>
@@ -205,49 +221,4 @@
     </div>
 </div>
 </body>
-<r:script>
-    $(function () {
-        $('#mintDoiSubmit').removeAttr('disabled');
-        $('#mintDoiForm').validationEngine('attach', {scroll: false});
-
-        $("#mintDoiSubmit").click(function (e) {
-
-            $("#mintDoiSubmit").attr('disabled', 'disabled');
-
-            var valid = $('#mintDoiForm').validationEngine('validate');
-
-            if (valid) {
-                $("form[name='mintDoiForm']").submit();
-            } else {
-                $('#mintDoiSubmit').removeAttr('disabled');
-                e.preventDefault();
-            }
-        });
-
-        $('#existingDoiRadio').click(function () {
-            $('#existingDoi').removeAttr("disabled");
-            $('#providerMetadata').attr("disabled", "disabled");
-            $('#provider').attr("disabled", "disabled");
-        });
-
-        $('#newDoiRadio').click(function () {
-            $('#existingDoi').attr("disabled", "disabled");
-            $('#providerMetadata').removeAttr("disabled");
-            $('#provider').removeAttr("disabled");
-        });
-    });
-
-    function isJson(field, rules, i, options) {
-        try {
-            if (field.val().trim()) {
-                JSON.parse(field.val());
-            }
-        }
-        catch (err) {
-            console.warn(err.message);
-            console.warn('Field:"' + field.val().trim() + '"');
-            return "This field has to be a valid JSON document";
-        }
-    }
-</r:script>
 </html>
