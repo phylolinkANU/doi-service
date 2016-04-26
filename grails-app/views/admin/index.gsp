@@ -11,7 +11,7 @@
 <head>
     <meta name="layout" content="main"/>
     %{--<meta name="section" content="home"/>--}%
-    <title>DOI Service Administration | ${grailsApplication.config.skin.orgNameLong}</title>
+    <title>DOI Service Administration</title>
     <r:require modules="doi"/>
 </head>
 <body>
