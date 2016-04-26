@@ -3,8 +3,8 @@
     <identifier identifierType='DOI'>10.5072/example</identifier>
     <creators>
         <creator>
-            <creatorName>[author1, author2]</creatorName>
-            <creatorName>[author1, author2]</creatorName>
+            <creatorName>author1</creatorName>
+            <creatorName>author2</creatorName>
         </creator>
     </creators>
     <titles>
@@ -36,6 +36,6 @@
     <resourceType resourceTypeGeneral='Text'>resourceText</resourceType>
     <descriptions>
         <description descriptionType='Other'>description1</description>
-        <description descriptionType='[Other]'>[description2]</description>
+        <description descriptionType='Other'>description2</description>
     </descriptions>
 </resource>

@@ -173,7 +173,7 @@ class AndsServiceSpec extends Specification {
         andsMetadata.contributors = [[type: "Editor", name: "bob"], [type: "Editor", name: "jill"]]
         andsMetadata.resourceType = "Text"
         andsMetadata.resourceText = "resourceText"
-        andsMetadata.descriptions = [[type: "Other", text: "description1"], [[type: "Other", text: "description2"]]]
+        andsMetadata.descriptions = [[type: "Other", text: "description1"], [type: "Other", text: "description2"]]
         andsMetadata.createdDate = "createdDate"
         andsMetadata.rights = ["rights statement 1", "rights statement 2"]
 
