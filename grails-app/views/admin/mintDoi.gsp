@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
-    <title>Mint/Register DOI | ${grailsApplication.config.skin.orgNameLong}</title>
+    <title>Mint/Register DOI</title>
     <r:require modules="doi, jqueryValidationEngine"/>
 </head>
 
