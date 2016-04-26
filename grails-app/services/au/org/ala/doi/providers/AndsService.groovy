@@ -98,7 +98,7 @@ class AndsService extends DoiProviderService {
             creators() {
                 creator() {
                     metadata.authors.each {
-                        creatorName(metadata.authors)
+                        creatorName(it)
                     }
                 }
             }
