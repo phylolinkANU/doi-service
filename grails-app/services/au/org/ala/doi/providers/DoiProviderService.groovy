@@ -32,7 +32,7 @@ abstract class DoiProviderService implements StateAssertions {
         try {
             requestPayload = generateRequestPayload(metadata, landingPageUrl)
         } catch (Exception e) {
-            log.error(e)
+            log.error('Failed to construct the provider request payload', e)
             throw new DoiMintingException("Failed to construct the provider request payload", e)
         }
 
@@ -40,7 +40,7 @@ abstract class DoiProviderService implements StateAssertions {
         try {
             response = invokeService(requestPayload, landingPageUrl)
         } catch (Exception e) {
-            log.error(e)
+            log.error('Failed to invoke the provider web service', e)
             throw new DoiMintingException("Failed to invoke the provider web service", e)
         }
 

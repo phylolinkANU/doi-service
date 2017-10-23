@@ -1,8 +1,8 @@
 package au.org.ala.doi.ws
 
 import au.ala.org.ws.security.RequireApiKey
+import au.org.ala.doi.BasicWSController
 import au.org.ala.doi.FileService
-import au.org.ala.ws.controller.BasicWSController
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 

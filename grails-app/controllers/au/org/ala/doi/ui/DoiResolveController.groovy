@@ -1,9 +1,9 @@
 package au.org.ala.doi.ui
 
+import au.org.ala.doi.BasicWSController
 import au.org.ala.doi.Doi
 import au.org.ala.doi.DoiService
 import au.org.ala.doi.FileService
-import au.org.ala.ws.controller.BasicWSController
 
 import au.org.ala.ws.validation.constraints.UUID
 import org.springframework.web.context.request.RequestContextHolder

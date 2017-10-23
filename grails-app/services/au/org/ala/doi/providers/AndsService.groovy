@@ -5,7 +5,8 @@ import au.org.ala.doi.exceptions.DoiMintingException
 import au.org.ala.doi.util.ServiceResponse
 import groovy.xml.MarkupBuilder
 import groovyx.net.http.ContentType
-import org.apache.commons.httpclient.HttpStatus
+import org.apache.http.HttpStatus
+import org.apache.http.impl.EnglishReasonPhraseCatalog
 
 /**
  * ANDS service documentation can be found here: http://ands.org.au/services/cmd-technical-document.pdf
@@ -36,7 +37,7 @@ class AndsService extends DoiProviderService {
                 status.message = "${response?.data?.response.message} - ${response?.data?.response.verbosemessage}"
             } else {
                 status.statusCode = response.status
-                status.message = HttpStatus.getStatusText(response.status)
+                status.message = EnglishReasonPhraseCatalog.INSTANCE.getReason(response.status, null)
             }
         } catch (Exception e) {
             status.statusCode = ANDS_DEAD_STATUS_CODE
@@ -75,7 +76,7 @@ class AndsService extends DoiProviderService {
                     result = new ServiceResponse(HttpStatus.SC_OK, "${json?.response?.message}: ${json?.response?.verbosemessage}", json.response.responsecode)
                 }
             } else {
-                result = new ServiceResponse(response.status, HttpStatus.getStatusText(response.status))
+                result = new ServiceResponse(response.status, EnglishReasonPhraseCatalog.INSTANCE.getReason(response.status, null))
             }
         } else {
             result = new ServiceResponse(ANDS_UNAVAILABLE_CODE, "The ANDS DOI minting service is not available.")

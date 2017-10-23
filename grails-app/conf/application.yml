@@ -1,0 +1,211 @@
+---
+grails:
+    profile: web
+    codegen:
+        defaultPackage: au.org.ala.doi
+    config:
+        locations:
+            - file:/data/doi-service/config/doi-service-config.properties
+            - file:/data/doi-service/config/doi-service-config.yml
+            - file:/data/doi-service/config/doi-service-config.groovy
+    spring:
+        transactionManagement:
+            proxies: false
+    gorm:
+        reactor:
+            # Whether to translate GORM events into Reactor events
+            # Disabled by default for performance reasons
+            events: false
+info:
+    app:
+        name: '@info.app.name@'
+        version: '@info.app.version@'
+        grailsVersion: '@info.app.grailsVersion@'
+spring:
+    main:
+        banner-mode: "off"
+    groovy:
+        template:
+            check-template-location: false
+
+# Spring Actuator Endpoints are Disabled by Default
+endpoints:
+    enabled: false
+    jmx:
+        enabled: true
+
+---
+grails:
+    mime:
+        disable:
+            accept:
+                header:
+                    userAgents:
+        types:
+            all: '*/*'
+            atom: application/atom+xml
+            css: text/css
+            csv: text/csv
+            form: application/x-www-form-urlencoded
+            html:
+              - text/html
+              - application/xhtml+xml
+            js: text/javascript
+            json:
+              - application/json
+              - text/json
+            multipartForm: multipart/form-data
+            pdf: application/pdf
+            rss: application/rss+xml
+            text: text/plain
+            hal:
+              - application/hal+json
+              - application/hal+xml
+            xml:
+              - text/xml
+              - application/xml
+    urlmapping:
+        cache:
+            maxsize: 1000
+    controllers:
+        defaultScope: singleton
+    converters:
+        encoding: UTF-8
+    scaffolding:
+        templates:
+            domainSuffix: Instance
+    views:
+        default:
+            codec: html
+        gsp:
+            encoding: UTF-8
+            htmlcodec: xml
+            codecs:
+                expression: html
+                scriptlets: html
+                taglib: none
+                staticparts: none
+endpoints:
+    jmx:
+        unique-names: true
+---
+
+environments:
+    development:
+        security:
+            cas:
+                appServerName: http://devt.ala.org.au
+        grails:
+            serverURL: http://devt.ala.org.au
+            # use something like FakeSMTP locally to test without actually sending emails.
+            mail:
+                host: "localhost"
+                port: 1025
+                props:
+                    "mail.debug": "true"
+
+    test:
+        flyway:
+            enabled: false # TODO is necessary?
+    production:
+        grails:
+            mail:
+                host: "localhost"
+                port: 25
+                props:
+                    "mail.debug": "false"
+
+app:
+    http:
+        header:
+            userId: "X-ALA-userId"
+flyway:
+    enabled: true
+
+security:
+    apikey:
+        check:
+            serviceUrl: https://auth.ala.org.au/apikey/ws/check?apikey=
+        ip:
+            whitelist:
+    cas:
+        uriExclusionFilterPattern: '/images.*,/css.*,/js.*,/less.*'
+        authenticateOnlyIfLoggedInFilterPattern: '/.*'
+        uriFilterPattern: '/admin, /admin/.*, /alaAdmin.*'
+
+support:
+    email: support@ala.org.au
+
+ands:
+    doi:
+        service:
+            url: https://services.ands.org.au/doi/1.1/
+        app:
+            id: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        key: xxxxxxxxxx
+        client:
+            id: xx
+
+ala:
+    base:
+        url: https://ala.org.au
+
+file:
+    store: /data/doi-service/files
+
+googleAnalyticsId: UA-4355440-1
+
+
+---
+hibernate:
+    cache:
+        queries: false
+        use_second_level_cache: false
+        use_query_cache: false
+    dialect: au.org.ala.doi.PostgresqlExtensionsDialect
+
+dataSource:
+    dbCreate: validate
+    pooled: true
+    jmxExport: true
+    driverClassName: org.postgresql.Driver
+    username: root
+    password: password
+    loggingSql: false
+
+environments:
+    development:
+        dataSource:
+            dbCreate: validate
+            url: jdbc:postgresql://localhost/doi
+            username: "postgres"
+            passowrd: "password"
+            logSql: false
+    test:
+        dataSource:
+            dbCreate: validate
+    production:
+        dataSource:
+            dbCreate: validate
+            properties:
+                jmxEnabled: true
+                initialSize: 5
+                maxActive: 50
+                minIdle: 5
+                maxIdle: 25
+                maxWait: 10000
+                maxAge: 600000
+                timeBetweenEvictionRunsMillis: 5000
+                minEvictableIdleTimeMillis: 60000
+                validationQuery: SELECT 1
+                validationQueryTimeout: 3
+                validationInterval: 15000
+                testOnBorrow: true
+                testWhileIdle: true
+                testOnReturn: false
+                jdbcInterceptors: ConnectionState;StatementCache(max=200);SlowQueryReport(logFailed=true)
+                defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+                abandonWhenPercentageFull: 100
+                removeAbandonedTimeout: 120
+                removeAbandoned: true
+                logAbandoned: false

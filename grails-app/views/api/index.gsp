@@ -23,7 +23,7 @@
     <script async src='//www.google-analytics.com/analytics.js'></script>
     %{--End Google Analytics--}%
 
-    <r:require modules="doi"/>
+    <asset:stylesheet src="doi.css"/>
 </head>
 
 <body>

@@ -11,7 +11,7 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-	<r:require modules="doi"/>
+	<asset:stylesheet src="doi.css"/>
 </head>
 
 <body>

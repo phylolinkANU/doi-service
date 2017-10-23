@@ -16,7 +16,7 @@ class BaseDataAccessService implements StateAssertions {
 
         if (entity.errors.allErrors.size() > 0) {
             log.error("Failed to save ${entity}")
-            entity.errors.each { log.error(it) }
+            entity.errors.each { log.error('{}', it) }
             saved = false
         } else {
             log.info("Saved ${entity}")

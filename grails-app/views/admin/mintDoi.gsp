@@ -11,7 +11,9 @@
 <head>
     <meta name="layout" content="main"/>
     <title>Mint/Register DOI</title>
-    <r:require modules="doi, jqueryValidationEngine, mintDoi"/>
+    <asset:stylesheet src="doi.css" />
+    <asset:stylesheet src="jqueryValidationEngine.css" />
+    <asset:javascript src="mintDoi" asset-defer="" />
 </head>
 
 <body>
