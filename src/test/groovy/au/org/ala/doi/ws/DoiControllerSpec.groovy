@@ -1,10 +1,9 @@
-package au.ala.org.doi.ws
+package au.org.ala.doi.ws
 
 import au.org.ala.doi.Doi
 import au.org.ala.doi.DoiService
 import au.org.ala.doi.FileService
 import au.org.ala.doi.util.DoiProvider
-import au.org.ala.doi.ws.DoiController
 import grails.converters.JSON
 import grails.testing.gorm.DataTest
 import grails.testing.web.controllers.ControllerUnitTest

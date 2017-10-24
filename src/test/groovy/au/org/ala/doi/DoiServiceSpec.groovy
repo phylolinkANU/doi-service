@@ -1,9 +1,5 @@
-package au.ala.org.doi
+package au.org.ala.doi
 
-import au.org.ala.doi.Doi
-import au.org.ala.doi.DoiService
-import au.org.ala.doi.EmailService
-import au.org.ala.doi.FileService
 import au.org.ala.doi.providers.AndsService
 import au.org.ala.doi.util.DoiProvider
 import grails.testing.gorm.DataTest

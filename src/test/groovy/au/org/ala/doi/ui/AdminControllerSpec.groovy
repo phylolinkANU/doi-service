@@ -1,8 +1,7 @@
-package au.ala.org.doi.ui
+package au.org.ala.doi.ui
 
 import au.org.ala.doi.DoiService
 import au.org.ala.doi.FileService
-import au.org.ala.doi.ui.AdminController
 import au.org.ala.doi.util.DoiProvider
 import grails.testing.web.controllers.ControllerUnitTest
 import spock.lang.Specification

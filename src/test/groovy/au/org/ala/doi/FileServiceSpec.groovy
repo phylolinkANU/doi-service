@@ -1,7 +1,5 @@
-package au.ala.org.doi
+package au.org.ala.doi
 
-import au.org.ala.doi.Doi
-import au.org.ala.doi.FileService
 import grails.testing.services.ServiceUnitTest
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification

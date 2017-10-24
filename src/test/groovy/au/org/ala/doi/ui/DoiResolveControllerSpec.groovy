@@ -1,9 +1,8 @@
-package au.ala.org.doi.ui
+package au.org.ala.doi.ui
 
 import au.org.ala.doi.Doi
 import au.org.ala.doi.DoiService
 import au.org.ala.doi.FileService
-import au.org.ala.doi.ui.DoiResolveController
 import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification

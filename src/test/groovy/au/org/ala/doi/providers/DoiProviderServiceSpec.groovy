@@ -1,7 +1,6 @@
-package au.ala.org.doi.providers
+package au.org.ala.doi.providers
 
 import au.org.ala.doi.exceptions.DoiMintingException
-import au.org.ala.doi.providers.DoiProviderService
 import au.org.ala.doi.util.ServiceResponse
 import org.apache.http.HttpStatus
 import spock.lang.Specification

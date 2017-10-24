@@ -1,7 +1,6 @@
-package au.ala.org.doi.providers
+package au.org.ala.doi.providers
 
 import au.org.ala.doi.RestService
-import au.org.ala.doi.providers.AndsService
 import au.org.ala.doi.util.ServiceResponse
 import com.google.common.io.Resources
 import grails.testing.services.ServiceUnitTest
