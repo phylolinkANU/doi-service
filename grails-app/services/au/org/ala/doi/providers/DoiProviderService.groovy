@@ -4,13 +4,18 @@ import au.org.ala.doi.util.StateAssertions
 import au.org.ala.doi.exceptions.DoiMintingException
 import au.org.ala.doi.util.ServiceResponse
 import grails.util.Holders
+import grails.web.mapping.LinkGenerator
 import org.apache.http.HttpStatus
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Abstract base class for interacting with DOI minting providers such as ANDS. Each individual provider will have its
  * own subclass to handle provider-specific payload construction and service invocation.
  */
 abstract class DoiProviderService implements StateAssertions {
+
+    @Autowired
+    LinkGenerator grailsLinkGenerator
 
     /**
      * Mint a new DOI
@@ -82,10 +87,10 @@ abstract class DoiProviderService implements StateAssertions {
     String generateLandingPageUrl(String uuid, String customLandingPageUrl = null) {
         checkArgument uuid
 
-        customLandingPageUrl ?: "${getGenericLandingPageUrlPrefix()}/doi/${uuid}"
+        customLandingPageUrl ?: grailsLinkGenerator.link(absolute: true, controller: 'doiResolve', action: 'doi', id: uuid)
     }
 
     String getGenericLandingPageUrlPrefix() {
-        Holders.grailsApplication.config.grails.serverURL
+        grailsLinkGenerator.link(uri: '/', absolute: true)
     }
 }

@@ -71,7 +71,7 @@ root(WARN, [TOMCAT_LOG])
                 'grails.plugin.cache.web.filter',
         ],
         (WARN): [
-                'au.org.ala.cas.client'
+                'au.org.ala.cas'
         ],
         (INFO): [
                 'grails.plugin.externalconfig.ExternalConfig',

@@ -104,10 +104,10 @@
 
                 <div class="clear"></div>
 
-                <div class="row-fluid">
+                <div class="row">
                     <nav class="col-sm-12 col-centered text-center">
                         <div class="pagination pagination-lg">
-                            <g:paginate total="${dois.totalCount}" controller="doiResolve" action="index"
+                            <hf:paginate total="${dois.totalCount}" controller="doiResolve" action="index"
                                         omitLast="false" omitFirst="false" prev="&laquo;" next="&raquo;"
                                         max="${pageSize}" offset="${offset}"/>
                         </div>
