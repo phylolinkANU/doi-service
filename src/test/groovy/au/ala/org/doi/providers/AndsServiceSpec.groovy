@@ -5,8 +5,10 @@ import au.org.ala.doi.providers.AndsService
 import au.org.ala.doi.util.ServiceResponse
 import com.google.common.io.Resources
 import grails.testing.services.ServiceUnitTest
+import grails.web.mapping.LinkGenerator
 import groovyx.net.http.ContentType
 import org.apache.http.HttpStatus
+import org.grails.spring.beans.factory.InstanceFactoryBean
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -14,6 +16,9 @@ import spock.lang.Unroll
 class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsService> {
 
     def setup() {
+        defineBeans {
+            grailsLinkGenerator(InstanceFactoryBean, Stub(LinkGenerator), LinkGenerator)
+        }
         service.restService = Mock(RestService)
         service.grailsApplication = [
                 config: [
