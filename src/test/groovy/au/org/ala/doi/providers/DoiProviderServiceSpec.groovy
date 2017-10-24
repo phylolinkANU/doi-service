@@ -26,7 +26,7 @@ class DoiProviderServiceSpec extends Specification {
         DoiProviderService service = [
                 generateRequestPayload: { metadata, landingPage -> "payload"},
                 invokeService: {},
-                getGenericLandingPageUrlPrefix: {"serverUrl"}
+                generateLandingPageUrl: {"serverUrl/doi/uuid1"}
         ] as DoiProviderService
 
         when:
@@ -71,7 +71,7 @@ class DoiProviderServiceSpec extends Specification {
         DoiProviderService service = [
                 generateRequestPayload: { Map m, String s -> throw new Exception("test")},
                 invokeService: {},
-                getGenericLandingPageUrlPrefix: {"serverUrl"}
+                generateLandingPageUrl: {uuid, custom -> "serverUrl/doi/uuid1"}
         ] as DoiProviderService
 
         when:
@@ -86,7 +86,7 @@ class DoiProviderServiceSpec extends Specification {
         DoiProviderService service = [
                 generateRequestPayload: { Map metadata, String landingPage -> "payload"},
                 invokeService: { String s, String t ->  throw new Exception("test")},
-                getGenericLandingPageUrlPrefix: {"serverUrl"}
+                generateLandingPageUrl: {uuid, custom -> "serverUrl/doi/uuid1"}
         ] as DoiProviderService
 
         when:
@@ -101,7 +101,7 @@ class DoiProviderServiceSpec extends Specification {
         DoiProviderService service = [
                 generateRequestPayload: { metadata, landingPage -> "payload"},
                 invokeService: { payload, landingPage -> new ServiceResponse(HttpStatus.SC_BAD_REQUEST, "bad")},
-                getGenericLandingPageUrlPrefix: {"serverUrl"}
+                generateLandingPageUrl: {uuid, custom -> "serverUrl/doi/uuid1"}
         ] as DoiProviderService
 
         when:
@@ -116,7 +116,7 @@ class DoiProviderServiceSpec extends Specification {
         DoiProviderService service = [
                 generateRequestPayload: { metadata, landingPage -> "payload"},
                 invokeService: { payload, landingPage -> new ServiceResponse(HttpStatus.SC_OK, "bad")},
-                getGenericLandingPageUrlPrefix: {"serverUrl"}
+                generateLandingPageUrl: {uuid, custom -> "serverUrl/doi/uuid1"}
         ] as DoiProviderService
 
         when:
@@ -131,7 +131,7 @@ class DoiProviderServiceSpec extends Specification {
         DoiProviderService service = [
                 generateRequestPayload: { metadata, landingPage -> "payload"},
                 invokeService: { payload, landingPage -> new ServiceResponse("newDoi")},
-                getGenericLandingPageUrlPrefix: {"serverUrl"}
+                generateLandingPageUrl: {uuid, custom -> "serverUrl/doi/uuid1"}
         ] as DoiProviderService
 
         when:
