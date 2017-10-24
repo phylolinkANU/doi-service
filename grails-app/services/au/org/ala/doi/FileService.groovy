@@ -30,7 +30,7 @@ class FileService implements StateAssertions {
         checkArgument doi
         checkArgument url
 
-        File file = new File(getDoiDirectory(doi, true), doi.filename ?: doi.uuid)
+        File file = new File(getDoiDirectory(doi, true), doi.filename ?: doi.uuid.toString())
         file.withOutputStream { output ->
             URL urlObject = new URL(url)
             urlObject.withInputStream { input ->
@@ -43,7 +43,7 @@ class FileService implements StateAssertions {
     File getDoiDirectory(Doi doi, boolean create = false) {
         checkArgument doi
 
-        File dir = new File("${grailsApplication.config.file.store}/${doi.uuid}")
+        File dir = new File("${grailsApplication.config.file.store}/${doi.uuid.toString()}")
 
         if (!dir.exists() && create) {
             dir.mkdirs()

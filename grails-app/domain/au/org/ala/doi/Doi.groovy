@@ -11,7 +11,7 @@ class Doi {
 
     Long id
 
-    String uuid
+    UUID uuid
     String doi
     String title
     String authors
@@ -38,7 +38,6 @@ class Doi {
     }
 
     static mapping = {
-        uuid type: CitextType
         doi type: CitextType
         provider defaultValue: DoiProvider.ANDS
         providerMetadata type: JsonbMapType
@@ -47,7 +46,7 @@ class Doi {
 
     def beforeValidate() {
         if (uuid == null) {
-            uuid = UUID.randomUUID().toString()
+            uuid = UUID.randomUUID()
         }
     }
 }

@@ -22,7 +22,7 @@ class DoiService extends BaseDataAccessService {
         }
         checkArgument applicationUrl, "No url to the original application has been sent"
 
-        String uuid = UUID.randomUUID().toString()
+        UUID uuid = UUID.randomUUID()
 
         String contentType = file ? file.contentType : new URL(fileUrl).openConnection().contentType
         Doi entity = new Doi(uuid: uuid, customLandingPageUrl: customLandingPageUrl, dateMinted: new Date(),
@@ -34,7 +34,8 @@ class DoiService extends BaseDataAccessService {
         if (entity.validate()) {
             file ? fileService.storeFileForDoi(entity, file) : fileService.storeFileForDoi(entity, fileUrl)
 
-            String doi = defaultDoi ?:  getProviderService(provider).mintDoi(uuid, providerMetadata, customLandingPageUrl)
+            String uuidString = uuid.toString()
+            String doi = defaultDoi ?:  getProviderService(provider).mintDoi(uuidString, providerMetadata, customLandingPageUrl)
             entity.doi = doi
 
             boolean success = save entity
@@ -45,8 +46,8 @@ class DoiService extends BaseDataAccessService {
                 sendPostDOICreationErrorEmail(entity.doi, "<ul><li>${entity.errors.collect().join("</li><li>")}</li></ul>")
                 result = [uuid: null, doi: doi, error: "A DOI was generated, but the server failed to save to the local DB. No default landing page will exist for this DOI!", status: "error"]
             } else {
-                result = [uuid: uuid, doi: doi, landingPage: getProviderService(provider).generateLandingPageUrl(uuid, customLandingPageUrl)
-                          , doiServiceLandingPage: getProviderService(provider).generateLandingPageUrl(uuid, null), status: "ok"]
+                result = [uuid: uuid, doi: doi, landingPage: getProviderService(provider).generateLandingPageUrl(uuidString, customLandingPageUrl)
+                          , doiServiceLandingPage: getProviderService(provider).generateLandingPageUrl(uuidString, null), status: "ok"]
             }
 
             result
@@ -69,7 +70,7 @@ class DoiService extends BaseDataAccessService {
     Doi findByUuid(String uuid) {
         checkArgument uuid
 
-        Doi.findByUuid(uuid)
+        Doi.findByUuid(UUID.fromString(uuid))
     }
 
     Doi findByDoi(String doi) {

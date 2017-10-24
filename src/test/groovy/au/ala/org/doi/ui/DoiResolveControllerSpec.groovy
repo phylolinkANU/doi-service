@@ -17,8 +17,8 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
 
     def "index should list all DOIs"() {
         setup:
-        Doi doi1 = new Doi(uuid: "1")
-        Doi doi2 = new Doi(uuid: "2")
+        Doi doi1 = new Doi(uuid: UUID.randomUUID())
+        Doi doi2 = new Doi(uuid: UUID.randomUUID())
         controller.doiService.listDois(_, _) >> [doi1, doi2]
         when:
         controller.index()
@@ -59,11 +59,11 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
 
     def "doi should return a HTTP 200 (OK) and render the doi view if the id provided matches a DOI record"() {
         setup:
-        Doi doi = new Doi(uuid: UUID.randomUUID().toString())
+        Doi doi = new Doi(uuid: UUID.randomUUID())
         controller.doiService.findByUuid(_) >> doi
 
         when:
-        params.id = doi.uuid
+        params.id = doi.uuid.toString()
         controller.doi()
 
         then:
@@ -94,7 +94,7 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
 
     def "download should return the matching DOI's file"() {
         setup:
-        Doi doi = new Doi(uuid: UUID.randomUUID().toString(), contentType: "text/plain", filename: "bla.txt")
+        Doi doi = new Doi(uuid: UUID.randomUUID(), contentType: "text/plain", filename: "bla.txt")
         File dir = new File("${System.getProperty("java.io.tmpdir")}/${doi.uuid}")
         dir.mkdirs()
         File file = new File(dir, "bla.txt")
@@ -102,11 +102,11 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
         file << "file content"
 
         when:
-        params.id = doi.uuid
+        params.id = doi.uuid.toString()
         controller.download()
 
         then:
-        1 * controller.doiService.findByUuid(doi.uuid) >> doi
+        1 * controller.doiService.findByUuid(doi.uuid.toString()) >> doi
         1 * controller.fileService.getFileForDoi(_) >> file
         response.getHeader("Content-disposition") == 'attachment;filename=bla.txt'
         response.contentType == doi.contentType

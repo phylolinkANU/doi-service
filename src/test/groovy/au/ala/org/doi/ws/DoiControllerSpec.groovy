@@ -75,14 +75,14 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
 
     def "getDoi should return the matching DOI entity as JSON"() {
         setup:
-        Doi doi = new Doi(uuid: UUID.randomUUID().toString())
+        Doi doi = new Doi(uuid: UUID.randomUUID())
 
         when:
-        params.id = doi.uuid
+        params.id = doi.uuid.toString()
         controller.getDoi()
 
         then:
-        1 * doiService.findByUuid(doi.uuid) >> doi
+        1 * doiService.findByUuid(doi.uuid.toString()) >> doi
         response.contentType == "application/json;charset=UTF-8"
     }
 
@@ -140,14 +140,14 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
 
         then:
         0 * doiService.findByUuid(_)
-        1 * doiService.findByDoi(id) >> new Doi(uuid: "123")
+        1 * doiService.findByDoi(id) >> new Doi(uuid: UUID.randomUUID())
         1 * fileService.getFileForDoi(_) >> null
         response.status == HttpStatus.SC_NOT_FOUND
     }
 
     def "download should return the matching DOI's file"() {
         setup:
-        Doi doi = new Doi(uuid: UUID.randomUUID().toString(), contentType: "text/plain", filename: "bla.txt")
+        Doi doi = new Doi(uuid: UUID.randomUUID(), contentType: "text/plain", filename: "bla.txt")
         File dir = new File("${System.getProperty("java.io.tmpdir")}/${doi.uuid}")
         dir.mkdirs()
         File file = new File(dir, "bla.txt")
@@ -155,11 +155,11 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         file << "file content"
 
         when:
-        params.id = doi.uuid
+        params.id = doi.uuid.toString()
         controller.download()
 
         then:
-        1 * doiService.findByUuid(doi.uuid) >> doi
+        1 * doiService.findByUuid(doi.uuid.toString()) >> doi
         1 * fileService.getFileForDoi(_) >> file
         response.getHeader("Content-disposition") == 'attachment;filename=bla.txt'
         response.contentType == doi.contentType

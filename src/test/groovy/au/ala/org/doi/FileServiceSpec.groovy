@@ -36,7 +36,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "getFileForDoi should return the file when there is a file for the for"() {
         setup:
-        Doi doi = new Doi(uuid: "1", filename: "testFile.txt")
+        Doi doi = new Doi(uuid: UUID.randomUUID(), filename: "testFile.txt")
 
         File dirs = new File("${System.getProperty("java.io.tmpdir")}/${doi.uuid}")
         dirs.mkdirs()
@@ -71,7 +71,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "storeFileForDoi should transfer the MultiPartFile to the DOI's directory in the file store"() {
         setup:
-        Doi doi = new Doi(uuid: "2")
+        Doi doi = new Doi(uuid: UUID.randomUUID())
         File expectedTarget = new File("${System.getProperty("java.io.tmpdir")}/${doi.uuid}/newFile.txt")
 
         MultipartFile file = Mock(MultipartFile)
@@ -94,7 +94,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "storeFileForDoi should download the file from the provided url into the DOI's directory in the file store"() {
         setup:
-        Doi doi = new Doi(uuid: "3")
+        Doi doi = new Doi(uuid: UUID.randomUUID())
         File expectedTarget = new File("${System.getProperty("java.io.tmpdir")}/${doi.uuid}/${doi.uuid}")
 
         when:
@@ -114,7 +114,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "getDoiDirectory should create the directory if it does not exist and create = true"() {
         when:
-        File file = service.getDoiDirectory(new Doi(uuid: "4"), true)
+        File file = service.getDoiDirectory(new Doi(uuid: UUID.randomUUID()), true)
 
         then:
         file.exists()
@@ -122,7 +122,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "getDoiDirectory should not create the directory if it does not exist and create = false"() {
         when:
-        File file = service.getDoiDirectory(new Doi(uuid: "5"))
+        File file = service.getDoiDirectory(new Doi(uuid: UUID.randomUUID()))
 
         then:
         !file.exists()

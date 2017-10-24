@@ -1,4 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 /* Hibernate likes to assign ids before actually inserting things, so create a sequence for it */
 CREATE SEQUENCE hibernate_sequence
@@ -10,7 +11,7 @@ CREATE SEQUENCE hibernate_sequence
 
 CREATE TABLE IF NOT EXISTS doi (
   id bigint NOT NULL,
-  uuid CITEXT NOT NULL,
+  uuid uuid NOT NULL DEFAULT gen_random_uuid(),
   doi CITEXT NOT NULL,
   title text NOT NULL,
   authors text NOT NULL,
