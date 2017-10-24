@@ -2,16 +2,22 @@ package au.org.ala.doi
 
 import au.org.ala.doi.providers.AndsService
 import au.org.ala.doi.providers.DoiProviderService
+import au.org.ala.doi.providers.MockService
 import au.org.ala.doi.util.DoiProvider
 import au.org.ala.doi.util.ServiceResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.multipart.MultipartFile
 
 class DoiService extends BaseDataAccessService {
 
     def grailsApplication
     AndsService andsService
+    MockService mockService
     FileService fileService
     EmailService emailService
+
+    @Value('${doi.service.mock:false}')
+    boolean useMockDoiService
 
     Map mintDoi(DoiProvider provider, Map providerMetadata, String title, String authors, String description,
                 String applicationUrl, String fileUrl, MultipartFile file, Map applicationMetadata = [:],
@@ -89,6 +95,10 @@ class DoiService extends BaseDataAccessService {
     // Replace this with a factory if/when other DOI providers are supported
     private DoiProviderService getProviderService(DoiProvider provider) {
         DoiProviderService service
+
+        if (useMockDoiService) {
+            return mockService
+        }
 
         switch (provider) {
             case DoiProvider.ANDS:

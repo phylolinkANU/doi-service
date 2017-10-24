@@ -97,16 +97,18 @@ environments:
     development:
         security:
             cas:
-                appServerName: http://devt.ala.org.au
+                appServerName: https://devt.ala.org.au
         grails:
-            serverURL: http://devt.ala.org.au
+            serverURL: https://devt.ala.org.au
             # use something like FakeSMTP locally to test without actually sending emails.
             mail:
                 host: "localhost"
                 port: 1025
                 props:
                     "mail.debug": "true"
-
+        doi:
+            service:
+                mock: true
     test:
         flyway:
             enabled: false # TODO is necessary?
@@ -152,7 +154,9 @@ ands:
 ala:
     base:
         url: https://ala.org.au
-
+doi:
+    service:
+        mock: false
 file:
     store: /data/doi-service/files
 
