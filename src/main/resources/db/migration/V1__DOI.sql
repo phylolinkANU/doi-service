@@ -10,9 +10,9 @@ CREATE SEQUENCE hibernate_sequence
   CACHE 1;
 
 CREATE TABLE IF NOT EXISTS doi (
-  id bigint NOT NULL,
-  uuid uuid NOT NULL DEFAULT gen_random_uuid(),
-  doi CITEXT NOT NULL,
+  id bigint NOT NULL PRIMARY KEY,
+  uuid uuid NOT NULL DEFAULT gen_random_uuid() UNIQUE,
+  doi CITEXT NOT NULL UNIQUE,
   title text NOT NULL,
   authors text NOT NULL,
   description text NOT NULL,
