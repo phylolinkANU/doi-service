@@ -35,36 +35,36 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
 //        response.status == HttpStatus.SC_BAD_REQUEST
 //    }
 
-    def "getDoi should search for DOI records by UUID if the provided id is a UUID"() {
+    def "show should search for DOI records by UUID if the provided id is a UUID"() {
         setup:
         String uuid = UUID.randomUUID().toString()
         when:
         params.id = uuid
-        controller.getDoi()
+        controller.show()
 
         then:
         1 * doiService.findByUuid(uuid)
         0 * doiService.findByDoi(_)
     }
 
-    def "getDoi should search for DOI records by DOI if the provided id is not a UUID"() {
+    def "show should search for DOI records by DOI if the provided id is not a UUID"() {
         setup:
         String id = "10.5072/63/56F35A9D3ECF7"
         when:
         params.id = id
-        controller.getDoi()
+        controller.show()
 
         then:
         0 * doiService.findByUuid(_)
         1 * doiService.findByDoi(id)
     }
 
-    def "getDoi should return a 404 (NOT_FOUND) if there was no matching DOI"() {
+    def "show should return a 404 (NOT_FOUND) if there was no matching DOI"() {
         setup:
         String id = "10.5072/63/56F35A9D3ECF7"
         when:
         params.id = id
-        controller.getDoi()
+        controller.show()
 
         then:
         0 * doiService.findByUuid(_)
@@ -72,13 +72,13 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         response.status == HttpStatus.SC_NOT_FOUND
     }
 
-    def "getDoi should return the matching DOI entity as JSON"() {
+    def "show should return the matching DOI entity as JSON"() {
         setup:
         Doi doi = new Doi(uuid: UUID.randomUUID())
 
         when:
         params.id = doi.uuid.toString()
-        controller.getDoi()
+        controller.show()
 
         then:
         1 * doiService.findByUuid(doi.uuid.toString()) >> doi
@@ -165,58 +165,58 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         response.text == "file content"
     }
 
-    def "mintDoi should return a 400 BAD_REQUEST if the request is NOT multipart and there is no fileUrl JSON property"() {
+    def "save should return a 400 BAD_REQUEST if the request is NOT multipart and there is no fileUrl JSON property"() {
         when:
         request.JSON.provider = DoiProvider.ANDS.name()
-        request.JSON.applicationUrl = "applicationUrl"
+        request.JSON.applicationUrl = "http://example.org/applicationUrl"
         request.JSON.providerMetadata = '{"foo": "bar"}'
         request.JSON.title = 'title'
         request.JSON.authors = 'authors'
         request.JSON.description = 'description'
-        controller.mintDoi()
+        controller.save()
 
         then:
         response.status == HttpStatus.SC_BAD_REQUEST
     }
 
-    def "mintDoi should return a 400 BAD_REQUEST if the provider is invalid"() {
+    def "save should return a 400 BAD_REQUEST if the provider is invalid"() {
         when:
         request.JSON.provider = "rubbish"
-        request.JSON.applicationUrl = "applicationUrl"
+        request.JSON.applicationUrl = "http://example.org/applicationUrl"
         request.JSON.providerMetadata = '{"foo": "bar"}'
         request.JSON.title = 'title'
         request.JSON.authors = 'authors'
         request.JSON.description = 'description'
         request.JSON.fileUrl = "url"
-        controller.mintDoi()
+        controller.save()
 
         then:
         response.status == HttpStatus.SC_BAD_REQUEST
     }
 
-    def "mintDoi should invoke the DOI Service if provided all metadata and the fileUrl for non-multipart requests"() {
+    def "save should invoke the DOI Service if provided all metadata and the fileUrl for non-multipart requests"() {
         when:
         request.JSON.provider = DoiProvider.ANDS.name()
-        request.JSON.applicationUrl = "applicationUrl"
+        request.JSON.applicationUrl = "http://example.org/applicationUrl"
         request.JSON.providerMetadata = [foo: "bar"]
         request.JSON.title = 'title'
         request.JSON.authors = 'authors'
         request.JSON.description = 'description'
         request.JSON.fileUrl = "fileUrl"
-        controller.mintDoi()
+        controller.save()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "applicationUrl", "fileUrl", null, null, null) >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "fileUrl", null, null, null) >> [:]
     }
 
-    def "mintDoi should invoke the DOI Service if provided all metadata and a file in a multipart requests"() {
+    def "save should invoke the DOI Service if provided all metadata and a file in a multipart requests"() {
         setup:
         MultipartFile file = Mock(MultipartFile)
 
         when:
         Map data = [:]
         data.provider = DoiProvider.ANDS.name()
-        data.applicationUrl = "applicationUrl"
+        data.applicationUrl = "http://example.org/applicationUrl"
         data.providerMetadata = [foo: "bar"]
         data.title = 'title'
         data.authors = 'authors'
@@ -224,10 +224,10 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
 
         controller.request.addParameter("json", (data as JSON) as String)
         controller.request.addFile(file)
-        controller.mintDoi()
+        controller.save()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "applicationUrl", null, file, null, null) >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", null, file, null, null) >> [:]
     }
 
 

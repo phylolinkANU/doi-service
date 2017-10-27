@@ -5,11 +5,24 @@ class UrlMappings {
     static mappings = {
 
         // service api
-        post "/api/v1/mintDoi"(controller: "doi", action: "mintDoi")
-        get "/api/v1/doi/$id**/download"(controller: "doi", action: "download")
-        get "/api/v1/doi/$id**"(controller: "doi", action: "getDoi")
-        "/api/" view: "/api/index"
+        group("/api") {
+            // Default route, no Accept-Version, should dupe the latest version
+            post "/doi"(controller: "doi", action: "save", namespace: "v1")
+            get "/doi/$id**/download"(controller: "doi", action: "download", namespace: "v1")
+            get "/doi/$id**"(controller: "doi", action: "show", namespace: "v1")
 
+            // Accept-Version: 1.0
+            post "/doi"(version: "1.0", controller: "doi", action: "save", namespace: "v1")
+            get "/doi/$id**/download"(version: "1.0", controller: "doi", action: "download", namespace: "v1")
+            get "/doi/$id**"(version: "1.0", controller: "doi", action: "show", namespace: "v1")
+
+            "/" view: "/api/index"
+
+            // legacy API mappings, DO NOT ADD V2 HERE!
+            post "/v1/mintDoi"(controller: "doi", action: "save", namespace: "v1")
+            get "/v1/doi/$id**/download"(controller: "doi", action: "download", namespace: "v1")
+            get "/v1/doi/$id**"(controller: "doi", action: "show", namespace: "v1")
+        }
 
         // User interface
         get "/doi/$id/download"(controller: "doiResolve", action: "download")

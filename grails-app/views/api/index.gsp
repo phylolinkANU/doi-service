@@ -37,7 +37,7 @@
     <div class="panel-body">
         <h2>Mint a new DOI</h2>
 
-        <h3>POST to /api/v1/mintDoi</h3>
+        <h3>POST to /api/doi <small>Accept-Version: 1.0</small></h3>
 
         <p>
             Mint a new DOI. Must have an ALA API Key.
@@ -116,7 +116,7 @@
 
         <h2 class="padding-top-1">Get DOI Metadata</h2>
 
-        <h3>GET /api/v1/doi/$id</h3>
+        <h3>GET /api/doi/$id <small>Accept-Version: 1.0</small></h3>
 
         <p>
             Retrieves the DOI metadata as JSON. $id can be either the local UUID or the DOI (e.g. 10.5072/63/56FB3479E2515).
@@ -124,7 +124,7 @@
 
         <h2 class="padding-top-1">Download DOI File</h2>
 
-        <h3>GET /api/v1/doi/$id/download</h3>
+        <h3>GET /api/doi/$id/download <small>Accept-Version: 1.0</small></h3>
 
         <p>
             Retrieves the DOI metadata as JSON. $id can be either the local UUID or the DOI (e.g. 10.5072/63/56FB3479E2515).

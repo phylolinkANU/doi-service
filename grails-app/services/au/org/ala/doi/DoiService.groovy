@@ -4,21 +4,24 @@ import au.org.ala.doi.providers.AndsService
 import au.org.ala.doi.providers.DoiProviderService
 import au.org.ala.doi.providers.MockService
 import au.org.ala.doi.util.DoiProvider
-import au.org.ala.doi.util.ServiceResponse
-import org.springframework.beans.factory.annotation.Value
+import grails.core.GrailsApplication
+import grails.gorm.transactions.Transactional
 import org.springframework.web.multipart.MultipartFile
 
 class DoiService extends BaseDataAccessService {
 
-    def grailsApplication
+    GrailsApplication grailsApplication
     AndsService andsService
     MockService mockService
     FileService fileService
     EmailService emailService
 
-    @Value('${doi.service.mock:false}')
-    boolean useMockDoiService
+//    @Value('${doi.service.mock:false}')
+    boolean isUseMockDoiService() {
+        grailsApplication.config.getProperty('doi.service.mock', Boolean, false)
+    }
 
+    @Transactional
     Map mintDoi(DoiProvider provider, Map providerMetadata, String title, String authors, String description,
                 String applicationUrl, String fileUrl, MultipartFile file, Map applicationMetadata = [:],
                 String customLandingPageUrl = null, String defaultDoi = null) {
@@ -56,7 +59,7 @@ class DoiService extends BaseDataAccessService {
                           , doiServiceLandingPage: getProviderService(provider).generateLandingPageUrl(uuidString, null), status: "ok"]
             }
 
-            result
+            return result
         } else {
             // should never happen, so we can just throw a generic exception which will result in a HTTP 500 response
             throw new IllegalStateException("${entity.errors.allErrors.join(";\n")}")

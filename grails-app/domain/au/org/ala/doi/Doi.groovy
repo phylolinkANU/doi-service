@@ -33,8 +33,8 @@ class Doi {
 
     static constraints = {
         applicationMetadata nullable: true
-        customLandingPageUrl nullable: true
-        applicationUrl nullable: true
+        customLandingPageUrl nullable: true, url: true
+        applicationUrl nullable: true, url: true
     }
 
     static mapping = {

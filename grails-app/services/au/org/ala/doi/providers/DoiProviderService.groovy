@@ -3,7 +3,6 @@ package au.org.ala.doi.providers
 import au.org.ala.doi.util.StateAssertions
 import au.org.ala.doi.exceptions.DoiMintingException
 import au.org.ala.doi.util.ServiceResponse
-import grails.util.Holders
 import grails.web.mapping.LinkGenerator
 import org.apache.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
@@ -87,10 +86,10 @@ abstract class DoiProviderService implements StateAssertions {
     String generateLandingPageUrl(String uuid, String customLandingPageUrl = null) {
         checkArgument uuid
 
-        customLandingPageUrl ?: grailsLinkGenerator.link(absolute: true, controller: 'doiResolve', action: 'doi', id: uuid)
+        customLandingPageUrl ?: grailsLinkGenerator.link(absolute: true, method: 'GET', controller: 'doiResolve', action: 'doi', id: uuid)
     }
 
     String getGenericLandingPageUrlPrefix() {
-        grailsLinkGenerator.link(uri: '/', absolute: true)
+        grailsLinkGenerator.link(uri: '/', absolute: true, method: 'GET')
     }
 }

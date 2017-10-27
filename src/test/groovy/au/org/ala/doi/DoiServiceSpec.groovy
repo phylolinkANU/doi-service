@@ -14,17 +14,11 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
     }
 
     def setup() {
+        config.support.email = 'supportEmail'
+        config.doi.service.mock = false
         service.andsService = Mock(AndsService)
         service.emailService = Mock(EmailService)
         service.fileService = Mock(FileService)
-
-        service.grailsApplication = [
-                config: [
-                        support: [
-                                email: "supportEmail"
-                        ]
-                ]
-        ]
     }
 
     def "mintDoi should throw IllegalArgumentException if no provider is given"() {
@@ -64,7 +58,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         MultipartFile file = Mock(MultipartFile)
         file.contentType >> "application/pdf"
         when:
-        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "applicationUrl", "url", file)
+        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "url", file)
 
         then:
         1 * service.andsService.mintDoi(_, _, _) >> "newDoi"
@@ -77,7 +71,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.mintDoi(_, _, _) >> null
 
         when:
-        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "applicationUrl", "url", file)
+        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "url", file)
 
         then:
         1 * service.emailService.sendEmail("supportEmail", "doiservice<no-reply@ala.org.au>", _, _)
@@ -90,7 +84,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.mintDoi(_, _, _) >> null
 
         when:
-        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "applicationUrl", "url", file)
+        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "url", file)
 
         then:
         result.error != null
@@ -105,7 +99,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.generateLandingPageUrl(_, _) >> "http://landingpage.com"
 
         when:
-        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "applicationUrl", "url", file)
+        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "url", file)
 
         then:
         !result.error
@@ -121,7 +115,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.generateLandingPageUrl(_,null) >> "http://landingpage.com"
 
         when:
-        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "applicationUrl", "url", file, null, null, "defaultDOI")
+        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "url", file, null, null, "defaultDOI")
 
         then:
 

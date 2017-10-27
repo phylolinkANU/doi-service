@@ -8,6 +8,7 @@ import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR
 import static org.apache.http.HttpStatus.SC_NOT_FOUND
 import static org.apache.http.HttpStatus.SC_OK
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED
+import static org.apache.http.HttpStatus.SC_UNPROCESSABLE_ENTITY
 
 @Artefact("Controller")
 class BasicWSController {
@@ -25,6 +26,10 @@ class BasicWSController {
 
     protected notAuthorised = { String message = null ->
         sendError(SC_UNAUTHORIZED, message ?: "You do not have permission to perform the requested action.")
+    }
+
+    protected unprocessableEntity = { String message = null ->
+        sendError(SC_UNPROCESSABLE_ENTITY, message ?: "")
     }
 
     /**

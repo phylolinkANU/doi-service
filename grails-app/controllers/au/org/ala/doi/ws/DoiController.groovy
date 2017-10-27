@@ -3,6 +3,7 @@ package au.org.ala.doi.ws
 import au.ala.org.ws.security.RequireApiKey
 import au.org.ala.doi.BasicWSController
 import au.org.ala.doi.FileService
+import grails.web.http.HttpHeaders
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
@@ -15,8 +16,12 @@ import au.org.ala.doi.util.DoiProvider
 import au.org.ala.doi.DoiService
 import grails.converters.JSON
 
+import static javax.servlet.http.HttpServletResponse.SC_CREATED
+
 @RequireApiKey
 class DoiController extends BasicWSController {
+
+    static namespace = "v1"
 
     DoiService doiService
     FileService fileService
@@ -56,7 +61,7 @@ class DoiController extends BasicWSController {
      *
      * @return JSON response containing the DOI and the landing page on success, HTTP 500 on failure
      */
-    def mintDoi() {
+    def save() {
         Map json = getJson(request)
 
         if (validateMintRequest(request)) {
@@ -69,7 +74,10 @@ class DoiController extends BasicWSController {
                     json.authors, json.description, json.applicationUrl, json.fileUrl, file, json.applicationMetadata,
                     json.customLandingPageUrl)
 
-            render result as JSON
+            response.addHeader(HttpHeaders.LOCATION,
+                    grailsLinkGenerator.link( method: 'GET', resource: this.controllerName, action: 'show',id: result.uuid, absolute: true,
+                            namespace: hasProperty('namespace') ? this.namespace : null ))
+            render result as JSON, status: SC_CREATED
         }
     }
 
@@ -118,8 +126,8 @@ class DoiController extends BasicWSController {
      * @param id Either the local UUID or the DOI identifier
      * @return JSON response containing the metadata for the requested doi
      */
-    def getDoi(@NotNull String id) {
-        Doi doi = isUuid(id) ? doiService.findByUuid(id) : doiService.findByDoi(id)
+    def show(@NotNull String id) {
+        Doi doi = queryForResource(id)
 
         if (!doi) {
             notFound "No doi was found for ${params.id}"
@@ -135,7 +143,7 @@ class DoiController extends BasicWSController {
      * @return the file associated with the DOI
      */
     def download(@NotNull String id) {
-        Doi doi = isUuid(id) ? doiService.findByUuid(id) : doiService.findByDoi(id)
+        Doi doi = queryForResource(id)
 
         if (!doi) {
             notFound "No doi was found for ${id}"
@@ -152,5 +160,10 @@ class DoiController extends BasicWSController {
                 notFound "No file was found for DOI ${doi.doi} (uuid = ${doi.uuid})"
             }
         }
+    }
+
+    protected Doi queryForResource(Serializable id) {
+        String idString = id instanceof String ? id : id.toString()
+        isUuid(idString) ? doiService.findByUuid(idString) : doiService.findByDoi(idString)
     }
 }
