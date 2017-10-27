@@ -16,18 +16,60 @@
 </head>
 <body>
 <ala:systemMessage/>
-<div class="col-sm-12 col-md-9 col-lg-9">
-    <h1 class="hidden">Welcome to the Atlas of Living Australia</h1>
-    <ol class="breadcrumb hidden-print">
-        <li><a class="font-xxsmall" href="${request.contextPath}">DOI Index</a></li>
-        <li class="font-xxsmall active">Admin</li>
-    </ol>
+<div class="col-sm-12">
     <h2 class="heading-medium">DOI Service Administration</h2>
-    <div class="span12 panel panel-default" id="page-body" role="main">
+    <div class="panel panel-default" id="page-body" role="main">
         <ul>
             <li><g:link controller="admin" action="mintDoi">Mint/Register a DOI</g:link></li>
         </ul>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2 class="panel-title">DOIs</h2></div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>API (DOI)</th>
+                    <th>API (UUID)</th>
+                    <th>Resolve</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                <g:each var="doi" in="${doiInstanceList}">
+                    <tr>
+                        <td>
+                            <g:link namespace="v1" method="GET" controller="doi" action="show" id="${doi.doi}">${doi.doi}</g:link>
+                        </td>
+                        <td>
+                            <g:link namespace="v1" method="GET" controller="doi" action="show" id="${doi.uuid}">${doi.uuid}</g:link>
+                        </td>
+                        <td>
+                            <g:link absolute="true" method="GET" controller="doiResolve" action="doi" id="${doi.uuid}">${doi.title}</g:link>
+                        </td>
+                        <td>
+                            <g:link method="GET" controller="doiResolve" action="download" id="${doi.uuid}">${createLink(absolute: true, method: 'GET', controller: 'doiResolve', action: 'download', id: doi.uuid)}</g:link>
+                        </td>
+                    </tr>
+                </g:each>
+            </tbody>
+        </table>
+    </div>
+    <g:if test="${doiInstanceList.totalCount > listParams.max}">
+        <div class="small pull-right">Showing ${listParams.offset + 1} to ${Math.min(doiInstanceList.totalCount, listParams.offset + listParams.max)} of ${doiInstanceList.totalCount}</div>
+
+        <div class="clear"></div>
+
+        <div class="row">
+            <nav class="col-sm-12 col-centered text-center">
+                <div class="pagination pagination-lg">
+                    <hf:paginate total="${doiInstanceList.totalCount}" controller="admin" action="index"
+                                 omitLast="false" omitFirst="false" prev="&laquo;" next="&raquo;"
+                                 max="${listParams.max}" offset="${listParams.offset}"/>
+                </div>
+            </nav>
+        </div>
+    </g:if>
+    %{--<hf:paginate total=""></hf:paginate>--}%
 </div>
 </body>
 </html>

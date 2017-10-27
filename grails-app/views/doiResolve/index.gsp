@@ -30,11 +30,6 @@
 <ala:systemMessage/>
 
 <div class="col-sm-12 col-md-9 col-lg-9">
-    <h1 class="hidden">Welcome to the Atlas of Living Australia</h1>
-    <ol class="breadcrumb hidden-print">
-        <li class="font-xxsmall active">DOI Index</li>
-    </ol>
-
     <h2 class="heading-medium">DOI search</h2>
 
     <div class="row">

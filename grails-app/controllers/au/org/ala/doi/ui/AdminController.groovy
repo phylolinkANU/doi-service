@@ -13,6 +13,21 @@ class AdminController implements StateAssertions {
 
     def index() {
         // Only used to render admin main page
+
+        def listParams = [
+            max: params.int('max', 20),
+            offset: params.int('offset', 0)
+
+        ]
+        String sort = params.getOrDefault('sort', 'dateCreated')
+        String order = params.getOrDefault('order', 'desc')
+
+        def doiInstanceList = doiService.listDois(listParams.max, listParams.offset, sort, order)
+
+        [
+                doiInstanceList: doiInstanceList,
+                listParams: listParams
+        ]
     }
 
     def mintDoi() {

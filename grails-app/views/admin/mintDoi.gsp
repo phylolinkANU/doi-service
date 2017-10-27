@@ -19,13 +19,7 @@
 <body>
 <ala:systemMessage/>
 
-<div class="col-sm-12 col-md-10 col-lg-10">
-    <h1 class="hidden">Welcome the Atlas of Living Australia</h1>
-    <ol class="breadcrumb hidden-print">
-        <li><a class="font-xxsmall" href="${request.contextPath}">DOI Index</a></li>
-        <li><g:link class="font-xxsmall" controller="admin" action="index">Admin</g:link></li>
-        <li class="font-xxsmall active">Mint/Register DOI</li>
-    </ol>
+<div class="col-sm-12">
 
     <g:if test="${status == 'error'}">
         <div class="alert alert-danger">

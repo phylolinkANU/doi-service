@@ -5,6 +5,7 @@ import au.org.ala.doi.providers.DoiProviderService
 import au.org.ala.doi.providers.MockService
 import au.org.ala.doi.util.DoiProvider
 import grails.core.GrailsApplication
+import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 import org.springframework.web.multipart.MultipartFile
 
@@ -88,6 +89,7 @@ class DoiService extends BaseDataAccessService {
         Doi.findByDoi(doi)
     }
 
+    @ReadOnly
     def listDois(int pageSize, int startFrom, String sortBy = "dateMinted", String sortOrder = "desc") {
         def criteria = Doi.createCriteria()
         criteria.list (max: pageSize, offset: startFrom) {
