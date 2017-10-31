@@ -1,24 +1,21 @@
-package au.org.ala.doi
+package au.org.ala.doi.storage
 
-import grails.testing.services.ServiceUnitTest
+import au.org.ala.doi.Doi
+import com.google.common.io.ByteSource
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 
-class FileServiceSpec extends Specification implements ServiceUnitTest<FileService> {
+class FileStorageSpec extends Specification {
+
+    FileStorage fileStorage
 
     def setup() {
-        service.grailsApplication = [
-                config: [
-                        file: [
-                                store: System.getProperty("java.io.tmpdir")
-                        ]
-                ]
-        ]
+        fileStorage = new FileStorage(System.getProperty("java.io.tmpdir"))
     }
 
     def "getFileForDoi should throw an IllegalArgumentException if no doi is provided"() {
         when:
-        service.getFileForDoi(null)
+        fileStorage.getFileForDoi(null)
 
         then:
         thrown(IllegalArgumentException)
@@ -26,7 +23,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "getFileForDoi should return null if there is no file for the doi"() {
         when:
-        File file = service.getFileForDoi(new Doi(filename: "bla.txt"))
+        ByteSource file = fileStorage.getFileForDoi(new Doi(filename: "bla.txt"))
 
         then:
         file == null
@@ -45,7 +42,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
         file.exists()
 
         when:
-        File result = service.getFileForDoi(doi)
+        ByteSource result = fileStorage.getFileForDoi(doi)
 
         then:
         result != null
@@ -53,7 +50,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "storeFileForDoi should throw an IllegalArgumentException if no doi is provided"() {
         when:
-        service.storeFileForDoi(null, Mock(MultipartFile))
+        fileStorage.storeFileForDoi(null, Mock(MultipartFile))
 
         then:
         thrown(IllegalArgumentException)
@@ -61,7 +58,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "storeFileForDoi should throw an IllegalArgumentException if no file is provided"() {
         when:
-        service.storeFileForDoi(new Doi(), (MultipartFile) null)
+        fileStorage.storeFileForDoi(new Doi(), (MultipartFile) null)
 
         then:
         thrown(IllegalArgumentException)
@@ -76,7 +73,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
         file.originalFilename >> "newFile.txt"
 
         when:
-        service.storeFileForDoi(doi, file)
+        fileStorage.storeFileForDoi(doi, file)
 
         then:
         1 * file.transferTo(expectedTarget)
@@ -84,7 +81,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "storeFileForDoi should throw an IllegalArgumentException if no url is provided"() {
         when:
-        service.storeFileForDoi(new Doi(), (String) null)
+        fileStorage.storeFileForDoi(new Doi(), (String) null)
 
         then:
         thrown IllegalArgumentException
@@ -96,7 +93,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
         File expectedTarget = new File("${System.getProperty("java.io.tmpdir")}/${doi.uuid}/${doi.uuid}")
 
         when:
-        service.storeFileForDoi(doi, "http://ala.org.au")
+        fileStorage.storeFileForDoi(doi, "http://ala.org.au")
 
         then:
         expectedTarget.exists()
@@ -104,7 +101,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "getDoiDirectory should throw an IllegalArgumentException if no doi is provided"() {
         when:
-        service.getDoiDirectory(null)
+        fileStorage.getDoiDirectory(null)
 
         then:
         thrown IllegalArgumentException
@@ -112,7 +109,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "getDoiDirectory should create the directory if it does not exist and create = true"() {
         when:
-        File file = service.getDoiDirectory(new Doi(uuid: UUID.randomUUID()), true)
+        File file = fileStorage.getDoiDirectory(new Doi(uuid: UUID.randomUUID()), true)
 
         then:
         file.exists()
@@ -120,7 +117,7 @@ class FileServiceSpec extends Specification implements ServiceUnitTest<FileServi
 
     def "getDoiDirectory should not create the directory if it does not exist and create = false"() {
         when:
-        File file = service.getDoiDirectory(new Doi(uuid: UUID.randomUUID()))
+        File file = fileStorage.getDoiDirectory(new Doi(uuid: UUID.randomUUID()))
 
         then:
         !file.exists()

@@ -157,6 +157,8 @@ ala:
 doi:
     service:
         mock: false
+    storage:
+        provider: LOCAL
 file:
     store: /data/doi-service/files
 

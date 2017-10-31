@@ -21,6 +21,7 @@
     <div class="panel panel-default" id="page-body" role="main">
         <ul>
             <li><g:link controller="admin" action="mintDoi">Mint/Register a DOI</g:link></li>
+            <li>Using ${storageType}</li>
         </ul>
     </div>
     <div class="panel panel-default">

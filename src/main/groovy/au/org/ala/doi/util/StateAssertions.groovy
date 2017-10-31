@@ -1,12 +1,15 @@
 package au.org.ala.doi.util
 
-trait StateAssertions {
+class StateAssertions {
+
+    private StateAssertions() {}
+
     /**
      * Throws an IllegalArgumentException if the provided argument is null or empty
      *
      * @param arg The argument to check
      */
-    void checkArgument(arg) {
+    static void checkArgument(arg) {
         checkArgument(arg, "")
     }
 
@@ -16,7 +19,7 @@ trait StateAssertions {
      * @param arg The argument to check
      * @param an optional message to include in the IllegalArgumentException
      */
-    void checkArgument(arg, String message) {
+    static void checkArgument(arg, String message) {
         if (arg == null || (arg.getMetaClass() && arg.getMetaClass().respondsTo(arg, "isEmpty") && arg.isEmpty())) {
             throw new IllegalArgumentException(message)
         }
@@ -27,7 +30,7 @@ trait StateAssertions {
      *
      * @param state The state to check
      */
-    void checkState(state) {
+    static void checkState(state) {
         checkState(state, "")
     }
     /**
@@ -36,7 +39,7 @@ trait StateAssertions {
      * @param state The state to check
      * @param message an optional message to include in the IllegalArgumentException
      */
-    void checkState(state, String message) {
+    static void checkState(state, String message) {
         if (!state) {
             throw new IllegalStateException(message)
         }

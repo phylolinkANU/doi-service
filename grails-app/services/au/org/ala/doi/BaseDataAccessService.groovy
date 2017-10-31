@@ -1,8 +1,8 @@
 package au.org.ala.doi
 
-import au.org.ala.doi.util.StateAssertions
+import static au.org.ala.doi.util.StateAssertions.*
 
-class BaseDataAccessService implements StateAssertions {
+class BaseDataAccessService {
     boolean validate(entity) {
         entity?.validate
     }

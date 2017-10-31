@@ -3,9 +3,9 @@ package au.org.ala.doi.ui
 import au.org.ala.doi.BasicWSController
 import au.org.ala.doi.Doi
 import au.org.ala.doi.DoiService
-import au.org.ala.doi.FileService
-
+import au.org.ala.doi.storage.Storage
 import au.org.ala.ws.validation.constraints.UUID
+import com.google.common.io.ByteSource
 import org.springframework.web.context.request.RequestContextHolder
 
 import javax.validation.constraints.NotNull
@@ -14,7 +14,7 @@ class DoiResolveController extends BasicWSController {
 
     static final int DEFAULT_PAGE_SIZE = 20
     DoiService doiService
-    FileService fileService
+    Storage storage
 
 
     def index() {
@@ -45,11 +45,11 @@ class DoiResolveController extends BasicWSController {
         if (!doi) {
             notFound "No doi was found for ${id}"
         } else {
-            File file = fileService.getFileForDoi(doi)
-            if (file) {
+            ByteSource byteSource = storage.getFileForDoi(doi)
+            if (byteSource) {
                 response.setContentType(doi.contentType)
-                response.setHeader("Content-disposition", "attachment;filename=${file.name}")
-                file.withInputStream {
+                response.setHeader("Content-disposition", "attachment;filename=${doi.filename}")
+                byteSource.openStream().withStream {
                     response.outputStream << it
                 }
                 response.outputStream.flush()

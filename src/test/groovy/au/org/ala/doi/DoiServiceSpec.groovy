@@ -1,6 +1,7 @@
 package au.org.ala.doi
 
 import au.org.ala.doi.providers.AndsService
+import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.util.DoiProvider
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -18,7 +19,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         config.doi.service.mock = false
         service.andsService = Mock(AndsService)
         service.emailService = Mock(EmailService)
-        service.fileService = Mock(FileService)
+        service.storage = Mock(Storage)
     }
 
     def "mintDoi should throw IllegalArgumentException if no provider is given"() {

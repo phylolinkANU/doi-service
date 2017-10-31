@@ -1,15 +1,18 @@
 package au.org.ala.doi.ui
 
 import au.org.ala.doi.DoiService
+import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.util.DoiProvider
-import au.org.ala.doi.util.StateAssertions
 import grails.converters.JSON
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
-class AdminController implements StateAssertions {
+import static au.org.ala.doi.util.StateAssertions.*
+
+class AdminController {
 
     DoiService doiService
+    Storage storage
 
     def index() {
         // Only used to render admin main page
@@ -26,7 +29,8 @@ class AdminController implements StateAssertions {
 
         [
                 doiInstanceList: doiInstanceList,
-                listParams: listParams
+                listParams: listParams,
+                storageType: storage.description
         ]
     }
 

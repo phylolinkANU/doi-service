@@ -3,18 +3,21 @@ package au.org.ala.doi
 import au.org.ala.doi.providers.AndsService
 import au.org.ala.doi.providers.DoiProviderService
 import au.org.ala.doi.providers.MockService
+import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.util.DoiProvider
 import grails.core.GrailsApplication
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 import org.springframework.web.multipart.MultipartFile
 
+import static au.org.ala.doi.util.StateAssertions.*
+
 class DoiService extends BaseDataAccessService {
 
     GrailsApplication grailsApplication
     AndsService andsService
     MockService mockService
-    FileService fileService
+    Storage storage
     EmailService emailService
 
 //    @Value('${doi.service.mock:false}')
@@ -42,7 +45,7 @@ class DoiService extends BaseDataAccessService {
 
         entity.doi = "dummyForValidation" // doi is a mandatory field, so we set a temp value to validate the rest of the entity
         if (entity.validate()) {
-            file ? fileService.storeFileForDoi(entity, file) : fileService.storeFileForDoi(entity, fileUrl)
+            file ? storage.storeFileForDoi(entity, file) : storage.storeFileForDoi(entity, fileUrl)
 
             String uuidString = uuid.toString()
             String doi = defaultDoi ?:  getProviderService(provider).mintDoi(uuidString, providerMetadata, customLandingPageUrl)

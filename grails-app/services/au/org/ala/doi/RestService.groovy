@@ -1,11 +1,12 @@
 package au.org.ala.doi
 
-import au.org.ala.doi.util.StateAssertions
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 
-class RestService implements StateAssertions {
+import static au.org.ala.doi.util.StateAssertions.*
+
+class RestService {
 
     Map get(String url, ContentType contentType, ContentType requestContentType) {
         RESTClient client = new RESTClient(url)

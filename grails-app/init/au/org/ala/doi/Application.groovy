@@ -1,15 +1,66 @@
 package au.org.ala.doi
 
+import au.org.ala.doi.providers.DoiAmazonS3Service
+import au.org.ala.doi.storage.DoiStorageProvider
+import au.org.ala.doi.storage.FileStorage
+import au.org.ala.doi.storage.S3Storage
+import au.org.ala.doi.storage.Storage
+import au.org.ala.doi.storage.SwiftStorage
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory
+import groovy.util.logging.Slf4j
+import org.javaswift.joss.client.factory.AccountConfig
+import org.javaswift.joss.client.factory.AccountFactory
+import org.javaswift.joss.model.Account
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Lazy
 
+@Slf4j
 class Application extends GrailsAutoConfiguration {
     static void main(String[] args) {
         System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true")
         GrailsApp.run(Application, args)
+    }
+
+    @Bean
+    Storage storage(DoiAmazonS3Service doiAmazonS3Service) {
+        String doiStorageProvider = grailsApplication.config.getProperty('doi.storage.provider', String)
+        String fileStoreLocation = grailsApplication.config.getProperty('file.store', String)
+
+        DoiStorageProvider provider = DoiStorageProvider.fromString(doiStorageProvider)
+        switch(provider) {
+            case DoiStorageProvider.S3:
+                log.debug("Using S3 for storage provider")
+                return new S3Storage(doiAmazonS3Service)
+            case DoiStorageProvider.LOCAL:
+                log.debug("Using local file system for storage provider")
+                return new FileStorage(fileStoreLocation)
+            case DoiStorageProvider.SWIFT:
+                log.debug("Using SwiftStack for storage provider")
+                return new SwiftStorage(account(), grailsApplication.config.getProperty('doi.storage.swift.container', String))
+            default:
+                throw new IllegalStateException("Configuration property doi.storage.provider not supported.  Value is ${doiStorageProvider}.")
+        }
+    }
+
+    @Bean
+    @Lazy
+    Account account() {
+        def username = grailsApplication.config.getProperty('doi.storage.swift.username', String)
+        def password = grailsApplication.config.getProperty('doi.storage.swift.password', String)
+        def authUrl = grailsApplication.config.getProperty('doi.storage.swift.authUrl', String)
+        def tenantId = grailsApplication.config.getProperty('doi.storage.swift.tenantId', String)
+        def tenantName = grailsApplication.config.getProperty('doi.storage.swift.tenantName', String)
+        AccountConfig config = new AccountConfig()
+        config.with {
+            setUsername(username)
+            setPassword(password)
+            setAuthUrl(authUrl)
+            setTenantId(tenantId)
+            setTenantName(tenantName)
+        }
+
+        return new AccountFactory(config).createAccount()
     }
 
 }

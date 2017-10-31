@@ -1,20 +1,20 @@
 package au.org.ala.doi.ui
 
 import au.org.ala.doi.DoiService
-import au.org.ala.doi.FileService
+import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.util.DoiProvider
 import grails.testing.web.controllers.ControllerUnitTest
 import spock.lang.Specification
 
 class AdminControllerSpec extends Specification implements ControllerUnitTest<AdminController> {
 
-    FileService fileService
+    Storage storage
     DoiService doiService
 
 
     def setup() {
-        fileService = Mock(FileService)
-        //controller.fileService = fileService
+        storage = Mock(Storage)
+        //controller.storage = storage
         doiService = Mock(DoiService)
         controller.doiService = doiService
     }

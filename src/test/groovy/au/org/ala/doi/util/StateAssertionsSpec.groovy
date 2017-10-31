@@ -2,13 +2,13 @@ package au.org.ala.doi.util
 
 import spock.lang.Specification
 
-class StateAssertionsSpec extends Specification {
+import static au.org.ala.doi.util.StateAssertions.*
 
-    StateAssertions stateAssertions = new Object() as StateAssertions
+class StateAssertionsSpec extends Specification {
 
     def "checkArgument should throw an IllegalArgumentException for null or empty arguments"() {
         when:
-        stateAssertions.checkArgument(value)
+        checkArgument(value)
 
         then:
         thrown(IllegalArgumentException)
@@ -19,7 +19,7 @@ class StateAssertionsSpec extends Specification {
 
     def "checkState should not throw an IllegalArgumentException non-null or non-empty arguments or booleans"() {
         when:
-        stateAssertions.checkArgument(value)
+        checkArgument(value)
 
         then:
         noExceptionThrown()
@@ -30,7 +30,7 @@ class StateAssertionsSpec extends Specification {
 
     def "checkState should throw an IllegalStateException for null, empty arguments, or false"() {
         when:
-        stateAssertions.checkState(value)
+        checkState(value)
 
         then:
         thrown(IllegalStateException)
@@ -41,7 +41,7 @@ class StateAssertionsSpec extends Specification {
 
     def "checkState should not throw an IllegalStateException non-null, non-empty arguments or true"() {
         when:
-        stateAssertions.checkState(value)
+        checkState(value)
 
         then:
         noExceptionThrown()

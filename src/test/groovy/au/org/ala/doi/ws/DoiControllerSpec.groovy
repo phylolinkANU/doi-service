@@ -2,8 +2,10 @@ package au.org.ala.doi.ws
 
 import au.org.ala.doi.Doi
 import au.org.ala.doi.DoiService
-import au.org.ala.doi.FileService
+import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.util.DoiProvider
+import com.google.common.io.ByteSource
+import com.google.common.io.Files
 import grails.converters.JSON
 import grails.testing.gorm.DataTest
 import grails.testing.web.controllers.ControllerUnitTest
@@ -13,7 +15,7 @@ import spock.lang.Specification
 
 class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiController>, DataTest {
 
-    FileService fileService
+    Storage storage
     DoiService doiService
 
     def setupSpec() {
@@ -21,8 +23,8 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
     }
 
     def setup() {
-        fileService = Mock(FileService)
-        controller.fileService = fileService
+        storage = Mock(Storage)
+        controller.storage = storage
         doiService = Mock(DoiService)
         controller.doiService = doiService
     }
@@ -140,7 +142,7 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         then:
         0 * doiService.findByUuid(_)
         1 * doiService.findByDoi(id) >> new Doi(uuid: UUID.randomUUID())
-        1 * fileService.getFileForDoi(_) >> null
+        1 * storage.getFileForDoi(_) >> null
         response.status == HttpStatus.SC_NOT_FOUND
     }
 
@@ -152,6 +154,7 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         File file = new File(dir, "bla.txt")
         file.createNewFile()
         file << "file content"
+        ByteSource bs = Files.asByteSource(file)
 
         when:
         params.id = doi.uuid.toString()
@@ -159,7 +162,7 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
 
         then:
         1 * doiService.findByUuid(doi.uuid.toString()) >> doi
-        1 * fileService.getFileForDoi(_) >> file
+        1 * storage.getFileForDoi(_) >> bs
         response.getHeader("Content-disposition") == 'attachment;filename=bla.txt'
         response.contentType == doi.contentType
         response.text == "file content"

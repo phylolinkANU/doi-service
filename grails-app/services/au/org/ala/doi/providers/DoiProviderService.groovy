@@ -1,17 +1,18 @@
 package au.org.ala.doi.providers
 
-import au.org.ala.doi.util.StateAssertions
 import au.org.ala.doi.exceptions.DoiMintingException
 import au.org.ala.doi.util.ServiceResponse
 import grails.web.mapping.LinkGenerator
 import org.apache.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
 
+import static au.org.ala.doi.util.StateAssertions.*
+
 /**
  * Abstract base class for interacting with DOI minting providers such as ANDS. Each individual provider will have its
  * own subclass to handle provider-specific payload construction and service invocation.
  */
-abstract class DoiProviderService implements StateAssertions {
+abstract class DoiProviderService {
 
     @Autowired
     LinkGenerator grailsLinkGenerator

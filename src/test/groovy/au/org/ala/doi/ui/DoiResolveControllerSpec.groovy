@@ -2,7 +2,9 @@ package au.org.ala.doi.ui
 
 import au.org.ala.doi.Doi
 import au.org.ala.doi.DoiService
-import au.org.ala.doi.FileService
+import au.org.ala.doi.storage.Storage
+import com.google.common.io.ByteSource
+import com.google.common.io.Files
 import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
@@ -11,7 +13,7 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
 
     def setup() {
         controller.doiService = Mock(DoiService)
-        controller.fileService = Mock(FileService)
+        controller.storage = Mock(Storage)
     }
 
     def "index should list all DOIs"() {
@@ -99,6 +101,7 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
         File file = new File(dir, "bla.txt")
         file.createNewFile()
         file << "file content"
+        ByteSource bs = Files.asByteSource(file)
 
         when:
         params.id = doi.uuid.toString()
@@ -106,7 +109,7 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
 
         then:
         1 * controller.doiService.findByUuid(doi.uuid.toString()) >> doi
-        1 * controller.fileService.getFileForDoi(_) >> file
+        1 * controller.storage.getFileForDoi(_) >> bs
         response.getHeader("Content-disposition") == 'attachment;filename=bla.txt'
         response.contentType == doi.contentType
         response.text == "file content"
