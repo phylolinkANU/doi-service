@@ -34,10 +34,10 @@ class UrlMappings {
         get "/admin/mintDoi"(controller:'admin', action:"mintDoi")
         post "/admin/createDoi"(controller:'admin', action: "createDoi")
 
-        "500" controller: "error"
-        "400" controller: "error"
-        "404" controller: "error"
-        "403" controller: "error"
-        "401" controller: "error"
+        "500" view: "/error"
+        "400" view: "/error"
+        "404" view: "/notfound"
+        "403" view: "/unauthorised"
+        "401" view: "/unauthorised"
     }
 }
