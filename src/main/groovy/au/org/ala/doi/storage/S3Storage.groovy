@@ -1,13 +1,14 @@
 package au.org.ala.doi.storage
 
 import au.org.ala.doi.Doi
-import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.Headers
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.google.common.io.ByteSource
 import grails.plugin.awssdk.s3.AmazonS3Service
 import org.springframework.web.multipart.MultipartFile
+
+import static au.org.ala.doi.util.StateAssertions.checkArgument
 
 class S3Storage extends BaseStorage {
 
@@ -31,6 +32,9 @@ class S3Storage extends BaseStorage {
 
     @Override
     void storeFileForDoi(Doi doi, MultipartFile incoming) {
+        checkArgument doi
+        checkArgument incoming
+
         def filename = doi.filename ?: incoming.originalFilename ?: doi.uuid
         def key = "${doi.uuid}/${filename}"
         doi.filename = filename

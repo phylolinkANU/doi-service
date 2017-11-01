@@ -4,7 +4,6 @@ import au.org.ala.doi.Doi
 import au.org.ala.doi.util.Utils
 
 import static au.org.ala.doi.util.StateAssertions.checkArgument
-import static au.org.ala.doi.util.StateAssertions.checkArgument
 import static grails.web.http.HttpHeaders.CONTENT_DISPOSITION
 
 abstract class BaseStorage implements Storage {

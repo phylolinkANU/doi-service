@@ -42,7 +42,7 @@ class FileStorage extends BaseStorage {
         checkArgument doi
         checkArgument incoming
 
-        incoming.transferTo(new File(getDoiDirectory(doi, true), incoming.originalFilename))
+        incoming.transferTo(new File(getDoiDirectory(doi, true), doi.filename))
     }
 
     @Override

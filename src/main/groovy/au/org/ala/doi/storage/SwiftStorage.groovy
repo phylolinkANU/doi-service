@@ -7,6 +7,8 @@ import org.javaswift.joss.model.Account
 import org.javaswift.joss.model.Container
 import org.springframework.web.multipart.MultipartFile
 
+import static au.org.ala.doi.util.StateAssertions.checkArgument
+
 class SwiftStorage extends BaseStorage {
 
     Account account
@@ -39,6 +41,9 @@ class SwiftStorage extends BaseStorage {
 
     @Override
     void storeFileForDoi(Doi doi, MultipartFile incoming) {
+        checkArgument doi
+        checkArgument incoming
+
         def filename = doi.filename ?: incoming.originalFilename ?: doi.uuid
         doi.filename = filename
         def key = keyForDoi(doi)
