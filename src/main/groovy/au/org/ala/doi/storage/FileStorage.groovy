@@ -42,6 +42,8 @@ class FileStorage extends BaseStorage {
         checkArgument doi
         checkArgument incoming
 
+        doi.filename = incoming.originalFilename ?: doi.uuid
+
         incoming.transferTo(new File(getDoiDirectory(doi, true), doi.filename))
     }
 
