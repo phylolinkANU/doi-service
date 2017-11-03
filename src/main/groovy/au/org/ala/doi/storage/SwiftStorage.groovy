@@ -5,9 +5,6 @@ import com.google.common.io.ByteSource
 import org.javaswift.joss.instructions.UploadInstructions
 import org.javaswift.joss.model.Account
 import org.javaswift.joss.model.Container
-import org.springframework.web.multipart.MultipartFile
-
-import static au.org.ala.doi.util.StateAssertions.checkArgument
 
 class SwiftStorage extends BaseStorage {
 
@@ -37,21 +34,6 @@ class SwiftStorage extends BaseStorage {
             return new SwiftByteSource(obj: obj)
         }
         return null
-    }
-
-    @Override
-    void storeFileForDoi(Doi doi, MultipartFile incoming) {
-        checkArgument doi
-        checkArgument incoming
-
-        def filename = doi.filename ?: incoming.originalFilename ?: doi.uuid
-        doi.filename = filename
-        def key = keyForDoi(doi)
-
-        def obj = acquireContainer().getObject(key)
-        def upload = new UploadInstructions(incoming.inputStream)
-        upload.contentType = incoming.contentType
-        obj.uploadObject(upload)
     }
 
     @Override

@@ -32,16 +32,12 @@ class S3Storage extends BaseStorage {
 
     @Override
     void storeFileForDoi(Doi doi, MultipartFile incoming) {
-        checkArgument doi
-        checkArgument incoming
-
-        def filename = doi.filename ?: incoming.originalFilename ?: doi.uuid
-        def key = "${doi.uuid}/${filename}"
-        doi.filename = filename
-
-        def url = amazonS3Service.storeMultipartFile(key, incoming, CannedAccessControlList.PublicRead)
-        if (!url) {
-            throw new IOException("Couldn't store $incoming.originalFilename in S3")
+        storeMultipartFile(doi, incoming) {
+            def key = keyForDoi(doi)
+            def url = amazonS3Service.storeMultipartFile(key, incoming, CannedAccessControlList.PublicRead)
+            if (!url) {
+                throw new IOException("Couldn't store $incoming.originalFilename in S3")
+            }
         }
     }
 
@@ -63,7 +59,7 @@ class S3Storage extends BaseStorage {
         }
     }
 
-    String keyForDoi(Doi doi) {
+    static String keyForDoi(Doi doi) {
         "${doi.uuid}/${doi.filename}"
     }
 

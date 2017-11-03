@@ -39,12 +39,9 @@ class FileStorage extends BaseStorage {
 
     @Override
     void storeFileForDoi(Doi doi, MultipartFile incoming) {
-        checkArgument doi
-        checkArgument incoming
-
-        doi.filename = incoming.originalFilename ?: doi.uuid
-
-        incoming.transferTo(new File(getDoiDirectory(doi, true), doi.filename))
+        storeMultipartFile(doi, incoming) {
+            incoming.transferTo(new File(getDoiDirectory(doi, true), doi.filename))
+        }
     }
 
     @Override
