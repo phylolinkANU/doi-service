@@ -43,7 +43,7 @@ abstract class DoiProviderService {
 
         ServiceResponse response
         try {
-            response = invokeService(requestPayload, landingPageUrl)
+            response = invokeCreateService(requestPayload, landingPageUrl)
         } catch (Exception e) {
             log.error('Failed to invoke the provider web service', e)
             throw new DoiMintingException("Failed to invoke the provider web service", e)
@@ -58,6 +58,45 @@ abstract class DoiProviderService {
         }
     }
 
+    void updateDoi(String doi, String uuid, Map metadata = null, String customLandingPageUrl = null) throws DoiMintingException {
+        checkArgument doi
+        checkArgument uuid
+        checkArgument metadata
+
+        String landingPageUrl
+        if (customLandingPageUrl != null) {
+            landingPageUrl = generateLandingPageUrl(uuid, customLandingPageUrl)
+        } else {
+            landingPageUrl = null
+        }
+
+        def requestPayload
+        if (metadata) {
+            try {
+                requestPayload = generateRequestPayload(metadata, landingPageUrl, doi)
+            } catch (Exception e) {
+                log.error('Failed to construct the provider request payload', e)
+                throw new DoiMintingException("Failed to construct the provider request payload", e)
+            }
+        } else {
+            requestPayload = null
+        }
+
+        ServiceResponse response
+        try {
+            response = invokeUpdateService(doi, requestPayload, landingPageUrl)
+        } catch (Exception e) {
+            log.error('Failed to invoke the provider web service', e)
+            throw new DoiMintingException("Failed to invoke the provider web service", e)
+        }
+
+        if (response?.httpStatus == HttpStatus.SC_OK && response?.doi) {
+            log.info("DOI ${response.doi} generated for local id ${uuid}: resolves to ${landingPageUrl}")
+        } else {
+            throw new DoiMintingException("Failed to invoke the provider web service: ${response.getErrorMessage()}")
+        }
+    }
+
     /**
      * Convert the provider metadata Map into whatever format is required for the web service (e.g. JSON, XML, etc)
      *
@@ -65,7 +104,7 @@ abstract class DoiProviderService {
      * @param landingPageUrl The landing page that the DOI needs to resolve to
      * @return The payload for the DOI minting request to be sent to the provider
      */
-    abstract def generateRequestPayload(Map metadata, String landingPageUrl)
+    abstract def generateRequestPayload(Map metadata, String landingPageUrl, String doi = null)
 
     /**
      * Invoke the DOI provider's minting service, passing it the payload constructed in {@link #generateRequestPayload(java.util.Map, java.lang.String)}
@@ -74,7 +113,17 @@ abstract class DoiProviderService {
      * @param landingPageUrl The landing page that the DOI needs to resolve to
      * @return ServiceResponse object containing the doi if successful, or the error message, httpStatus and/or provider-specific error code if the call failed
      */
-    abstract ServiceResponse invokeService(requestPayload, String landingPageUrl)
+    abstract ServiceResponse invokeCreateService(requestPayload, String landingPageUrl)
+
+    /**
+     * Invoke the DOI provider's update service.  The request payload or landingPageUrl may be null, which indicates
+     * that they do not need to be updated.
+     *
+     * @param requestPayload The payload required by the provider, may be null to indicate no update
+     * @param landingPageUrl The landing page that the DOI needs to resolve to, may be null to indicate no update
+     * @return ServiceResponse object containing the doi if successful, or the error message, httpStatus and/or provider-specific error code if the call failed
+     */
+    abstract ServiceResponse invokeUpdateService(String doi, Map requestPayload, String landingPageUrl)
 
     /**
      * Construct the final landing page url for the DOI. If a custom landing page is provided, that will be used,

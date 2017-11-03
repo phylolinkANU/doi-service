@@ -2,12 +2,17 @@ package au.org.ala.doi.ws
 
 import au.ala.org.ws.security.RequireApiKey
 import au.org.ala.doi.BasicWSController
+import au.org.ala.doi.exceptions.DoiNotFoundException
+import au.org.ala.doi.exceptions.DoiUpdateException
+import au.org.ala.doi.exceptions.DoiValidationException
 import au.org.ala.doi.storage.Storage
 import com.google.common.io.ByteSource
 import grails.web.http.HttpHeaders
+import org.grails.web.json.JSONArray
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
+import javax.servlet.http.HttpServletRequest
 import javax.validation.constraints.NotNull
 
 import static au.org.ala.doi.util.Utils.isUuid
@@ -18,6 +23,7 @@ import au.org.ala.doi.DoiService
 import grails.converters.JSON
 
 import static javax.servlet.http.HttpServletResponse.SC_CREATED
+import static javax.servlet.http.HttpServletResponse.SC_OK
 
 @RequireApiKey
 class DoiController extends BasicWSController {
@@ -65,7 +71,7 @@ class DoiController extends BasicWSController {
     def save() {
         Map json = getJson(request)
 
-        if (validateMintRequest(request)) {
+        if (validateMintRequest(json)) {
             MultipartFile file = null
             if (request instanceof MultipartHttpServletRequest) {
                 file = request.getFile(request.fileNames[0])
@@ -73,16 +79,18 @@ class DoiController extends BasicWSController {
 
             Map result = doiService.mintDoi(DoiProvider.byName(json.provider), json.providerMetadata, json.title,
                     json.authors, json.description, json.applicationUrl, json.fileUrl, file, json.applicationMetadata,
-                    json.customLandingPageUrl)
+                    json.customLandingPageUrl, null)
 
-            response.addHeader(HttpHeaders.LOCATION,
-                    grailsLinkGenerator.link( method: 'GET', resource: this.controllerName, action: 'show',id: result.uuid, absolute: true,
-                            namespace: hasProperty('namespace') ? this.namespace : null ))
+            if (result.uuid) {
+                response.addHeader(HttpHeaders.LOCATION,
+                        grailsLinkGenerator.link( method: 'GET', resource: this.controllerName, action: 'show',id: result.uuid, absolute: true,
+                                namespace: hasProperty('namespace') ? this.namespace : null ))
+            }
             render result as JSON, status: SC_CREATED
         }
     }
 
-    private static Map getJson(request) {
+    private static Map getJson(HttpServletRequest request) {
         Map json = request.getJSON()
 
         if (!json && request instanceof MultipartHttpServletRequest) {
@@ -92,15 +100,13 @@ class DoiController extends BasicWSController {
         json
     }
 
-    private boolean validateMintRequest(request) {
+    private boolean validateMintRequest(Map json) {
         boolean valid = true
 
-        Map json = getJson(request)
-
-        if (areMandatoryMetadataFieldsMissing(json) || areFileAndUrlMissing(json, request)) {
-            log.debug("Rejecting request with missing mandatory parameters. Provided parameters: ${params}")
+        if (areMandatoryMetadataFieldsMissing(json)) {
+            log.debug("Rejecting request with missing mandatory parameters. Provided parameters: ${json}")
             badRequest "provider, title, authors, description, applicationUrl and providerMetadata must be provided " +
-                    "in the request's JSON body, and you must either provide a fileUrl or a multipart request"
+                    "in the request's JSON body"
 
             valid = false
         } else if (!DoiProvider.byName(json.provider)) {
@@ -161,6 +167,38 @@ class DoiController extends BasicWSController {
                 notFound "No file was found for DOI ${doi.doi} (uuid = ${doi.uuid})"
             }
         }
+    }
+
+    def patch(@NotNull String id) {
+        update(id)
+    }
+
+    def update(@NotNull String id) {
+
+        def objectToBind = getJson(request)
+        MultipartFile file = null
+        if (request instanceof MultipartHttpServletRequest) {
+            file = request.getFile(request.fileNames[0])
+        }
+
+        Doi instance
+        try {
+            instance = doiService.updateDoi(id, objectToBind, file)
+        } catch (DoiNotFoundException e) {
+            notFound()
+            return
+        } catch (DoiUpdateException e) {
+            badRequest(e.message)
+            return
+        } catch (DoiValidationException e) {
+            unprocessableEntity()
+            return
+        }
+
+        response.addHeader(HttpHeaders.LOCATION,
+                grailsLinkGenerator.link( resource: this.controllerName, action: 'show',id: id, absolute: true,
+                        namespace: hasProperty('namespace') ? this.namespace : null ))
+        respond instance, [status: SC_OK]
     }
 
     protected Doi queryForResource(Serializable id) {

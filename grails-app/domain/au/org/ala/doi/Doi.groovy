@@ -9,6 +9,11 @@ import net.kaleidos.hibernate.usertype.JsonbMapType
 @EqualsAndHashCode
 class Doi {
 
+    static final Set<String> ALLOWED_UPDATABLE_PROPERTIES = [
+            'providerMetadata', 'customLandingPageUrl', 'title', 'authors', 'description', 'applicationUrl', 'fileUrl',
+            'applicationMetadata'
+    ].toSet()
+
     Long id
 
     UUID uuid
@@ -35,6 +40,8 @@ class Doi {
         applicationMetadata nullable: true
         customLandingPageUrl nullable: true, url: true
         applicationUrl nullable: true, url: true
+        filename nullable: true
+        contentType nullable: true
     }
 
     static mapping = {

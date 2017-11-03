@@ -70,7 +70,7 @@ class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsServi
         when:
         service.restService.get(_, _, _) >> { throw new Exception("test") }
 
-        ServiceResponse resp = service.invokeService("bla", "bla")
+        ServiceResponse resp = service.invokeCreateService("bla", "bla")
 
         then:
         resp.httpStatus == AndsService.ANDS_UNAVAILABLE_CODE
@@ -80,7 +80,7 @@ class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsServi
         when:
         service.restService.get(_, _, _) >> [status: HttpStatus.SC_OK, data: [response: [responsecode: AndsService.ANDS_RESPONSE_STATUS_OK]]]
 
-        service.invokeService("some xml", "blabla")
+        service.invokeCreateService("some xml", "blabla")
 
         then:
         1 * service.restService.post("andsUrl/mint.json/", _, _, _, _, _) >> [status: HttpStatus.SC_OK, data: [response: [responsecode: AndsService.ANDS_RESPONSE_MINT_SUCCESS, doi: "newDoi"]]]
@@ -90,7 +90,7 @@ class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsServi
         when:
         service.restService.get(_, _, _) >> [status: HttpStatus.SC_OK, data: [response: [responsecode: AndsService.ANDS_RESPONSE_STATUS_OK]]]
 
-        service.invokeService("some xml", "blabla")
+        service.invokeCreateService("some xml", "blabla")
 
         then:
         1 * service.restService.post(_, [xml: "some xml"], ContentType.JSON, ContentType.URLENC, _, _) >> [status: HttpStatus.SC_OK, data: [response: [responsecode: AndsService.ANDS_RESPONSE_MINT_SUCCESS, doi: "newDoi"]]]
@@ -103,7 +103,7 @@ class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsServi
         Map expectedHeaders = [Accept: ContentType.JSON, Authorization: "Basic ${expectedSecret}"]
 
         when:
-        service.invokeService("some xml", "blabla")
+        service.invokeCreateService("some xml", "blabla")
 
         then:
         1 * service.restService.post(_, _, _, _, expectedHeaders, _) >> [status: HttpStatus.SC_OK, data: [response: [responsecode: AndsService.ANDS_RESPONSE_MINT_SUCCESS, doi: "newDoi"]]]
@@ -115,7 +115,7 @@ class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsServi
         Map expectedQuery = [app_id: "appId", url: "landingPageUrl"]
 
         when:
-        service.invokeService("some xml", "landingPageUrl")
+        service.invokeCreateService("some xml", "landingPageUrl")
 
         then:
         1 * service.restService.post(_, _, _, _, _, expectedQuery) >> [status: HttpStatus.SC_OK, data: [response: [responsecode: AndsService.ANDS_RESPONSE_MINT_SUCCESS, doi: "newDoi"]]]
@@ -128,7 +128,7 @@ class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsServi
 
 
         when:
-        ServiceResponse resp = service.invokeService("some xml", "landingPageUrl")
+        ServiceResponse resp = service.invokeCreateService("some xml", "landingPageUrl")
 
         then:
         resp.doi == "newDoi"
@@ -141,7 +141,7 @@ class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsServi
 
 
         when:
-        ServiceResponse resp = service.invokeService("some xml", "landingPageUrl")
+        ServiceResponse resp = service.invokeCreateService("some xml", "landingPageUrl")
 
         then:
         resp.httpStatus == HttpStatus.SC_BAD_REQUEST
@@ -154,7 +154,7 @@ class AndsServiceSpec extends Specification implements ServiceUnitTest<AndsServi
 
 
         when:
-        ServiceResponse resp = service.invokeService("some xml", "landingPageUrl")
+        ServiceResponse resp = service.invokeCreateService("some xml", "landingPageUrl")
 
         then:
         resp.httpStatus == HttpStatus.SC_OK // the http call succeeded, but ANDS itself failed

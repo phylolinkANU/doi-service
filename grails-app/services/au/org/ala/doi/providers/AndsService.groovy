@@ -20,6 +20,7 @@ class AndsService extends DoiProviderService {
     static final String ANDS_RESPONSE_STATUS_OK = "MT090"
     static final String ANDS_RESPONSE_STATUS_DEAD = "MT091"
     static final String ANDS_RESPONSE_MINT_SUCCESS = "MT001"
+    static final String ANDS_RESPONSE_UPDATE_SUCCESS = "MT002"
     static final String ANDS_DEAD_STATUS_CODE = "E001"
     static final int ANDS_UNAVAILABLE_CODE = 0
 
@@ -48,7 +49,7 @@ class AndsService extends DoiProviderService {
         status
     }
 
-    ServiceResponse invokeService(requestXml, String landingPageUrl) throws DoiMintingException {
+    ServiceResponse invokeCreateService(requestXml, String landingPageUrl) throws DoiMintingException {
         ServiceResponse result
 
         Map andsServiceStatus = serviceStatus()
@@ -85,8 +86,52 @@ class AndsService extends DoiProviderService {
         result
     }
 
-    def generateRequestPayload(Map metadata, String landingPageUrl) {
+    ServiceResponse invokeUpdateService(String doi, Map requestXml, String landingPageUrl) throws DoiMintingException {
+        ServiceResponse result
+
+        Map andsServiceStatus = serviceStatus()
+        if (andsServiceStatus.statusCode == ANDS_RESPONSE_STATUS_OK) {
+            log.debug "Requesting new DOI from ANDS..."
+            // The ANDS URL must have a trailing slash or you get an empty response back
+            //https://researchdata.ands.org.au/api/doi/update.{response_type}/?app_id={app_id}&doi={doi}&url={url}
+            String andsUrl = "${grailsApplication.config.ands.doi.service.url}update.json/"
+            String appId = "${grailsApplication.config.ands.doi.app.id}"
+
+            String secret = "${appId}:${grailsApplication.config.ands.doi.key}".encodeAsBase64()
+
+            Map query = [app_id: "${appId}", doi: doi]
+            if (landingPageUrl != null) {
+                query << [url: landingPageUrl]
+            }
+
+            Map headers = [Accept: ContentType.JSON, Authorization: "Basic ${secret}"]
+
+            Map response = restService.post(andsUrl, requestXml ? [xml: requestXml] : null, ContentType.JSON, ContentType.URLENC, headers, query)
+
+            if (response.status as int == HttpStatus.SC_OK) {
+                def json = response.data
+                log.debug "DOI response = ${json}"
+
+                if (json.response.responsecode == ANDS_RESPONSE_UPDATE_SUCCESS) {
+                    log.debug "Updated doi $doi"
+                    result = new ServiceResponse(json.response.doi)
+                } else {
+                    result = new ServiceResponse(HttpStatus.SC_OK, "${json?.response?.message}: ${json?.response?.verbosemessage}", json.response.responsecode)
+                }
+            } else {
+                result = new ServiceResponse(response.status, EnglishReasonPhraseCatalog.INSTANCE.getReason(response.status, null))
+            }
+        } else {
+            result = new ServiceResponse(ANDS_UNAVAILABLE_CODE, "The ANDS DOI minting service is not available.")
+        }
+
+        result
+    }
+
+    def generateRequestPayload(Map metadata, String landingPageUrl, String doi = null) {
         StringWriter writer = new StringWriter()
+
+        def doiValue = doi ?: "10.5072/example" // doi is a mandatory element in the schema, in a mint request the value is ignored
 
         MarkupBuilder xml = new MarkupBuilder(writer)
 
@@ -95,7 +140,7 @@ class AndsService extends DoiProviderService {
         xml.resource(xmlns: "http://datacite.org/schema/kernel-${DATA_CITE_XSD_VERSION}",
                 "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
                 "xsi:schemaLocation": "http://datacite.org/schema/kernel-${DATA_CITE_XSD_VERSION} ${DATA_CITE_XSD}") {
-            identifier(identifierType: "DOI", "10.5072/example") // doi is a mandatory element in the schema: this example value is ignored
+            identifier(identifierType: "DOI", doiValue)
             creators() {
                 creator() {
                     metadata.authors.each {

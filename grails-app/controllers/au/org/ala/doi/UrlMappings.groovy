@@ -10,11 +10,17 @@ class UrlMappings {
             post "/doi"(controller: "doi", action: "save", namespace: "v1")
             get "/doi/$id**/download"(controller: "doi", action: "download", namespace: "v1")
             get "/doi/$id**"(controller: "doi", action: "show", namespace: "v1")
+            post "/doi/$id**"(controller: "doi", action: "update", namespace: "v1")
+            put "/doi/$id**"(controller: "doi", action: "update", namespace: "v1")
+            patch "/doi/$id**"(controller: "doi", action: "patch", namespace: "v1")
 
             // Accept-Version: 1.0
             post "/doi"(version: "1.0", controller: "doi", action: "save", namespace: "v1")
             get "/doi/$id**/download"(version: "1.0", controller: "doi", action: "download", namespace: "v1")
             get "/doi/$id**"(version: "1.0", controller: "doi", action: "show", namespace: "v1")
+            post "/doi/$id**"(version: "1.0", controller: "doi", action: "update", namespace: "v1")
+            put "/doi/$id**"(version: "1.0", controller: "doi", action: "update", namespace: "v1")
+            patch "/doi/$id**"(version: "1.0", controller: "doi", action: "patch", namespace: "v1")
 
             "/" view: "/api/index"
 

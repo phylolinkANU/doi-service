@@ -168,20 +168,6 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         response.text == "file content"
     }
 
-    def "save should return a 400 BAD_REQUEST if the request is NOT multipart and there is no fileUrl JSON property"() {
-        when:
-        request.JSON.provider = DoiProvider.ANDS.name()
-        request.JSON.applicationUrl = "http://example.org/applicationUrl"
-        request.JSON.providerMetadata = '{"foo": "bar"}'
-        request.JSON.title = 'title'
-        request.JSON.authors = 'authors'
-        request.JSON.description = 'description'
-        controller.save()
-
-        then:
-        response.status == HttpStatus.SC_BAD_REQUEST
-    }
-
     def "save should return a 400 BAD_REQUEST if the provider is invalid"() {
         when:
         request.JSON.provider = "rubbish"
@@ -209,7 +195,7 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         controller.save()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "fileUrl", null, null, null) >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "fileUrl", null, null, null, null) >> [:]
     }
 
     def "save should invoke the DOI Service if provided all metadata and a file in a multipart requests"() {
@@ -230,7 +216,7 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         controller.save()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", null, file, null, null) >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", null, file, null, null, null) >> [:]
     }
 
 
