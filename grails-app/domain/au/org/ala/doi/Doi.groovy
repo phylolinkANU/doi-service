@@ -20,6 +20,8 @@ class Doi {
     String doi
     String title
     String authors
+    Long userId
+
     String description
     Date dateMinted
     DoiProvider provider

@@ -167,9 +167,12 @@ class DoiService extends BaseDataAccessService {
     }
 
     @ReadOnly
-    def listDois(int pageSize, int startFrom, String sortBy = "dateMinted", String sortOrder = "desc") {
+    def listDois(int pageSize, int startFrom, String sortBy = "dateMinted", String sortOrder = "desc", Map eqParams = null) {
         def criteria = Doi.createCriteria()
         criteria.list (max: pageSize, offset: startFrom) {
+            if (eqParams) {
+                allEq(eqParams)
+            }
             order(sortBy, sortOrder)
         }
     }

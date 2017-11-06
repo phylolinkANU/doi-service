@@ -13,6 +13,8 @@ class UrlMappings {
             post "/doi/$id**"(controller: "doi", action: "update", namespace: "v1")
             put "/doi/$id**"(controller: "doi", action: "update", namespace: "v1")
             patch "/doi/$id**"(controller: "doi", action: "patch", namespace: "v1")
+            get "/dois"(controller: "doi", action: "list", namespace:  "v1")
+
 
             // Accept-Version: 1.0
             post "/doi"(version: "1.0", controller: "doi", action: "save", namespace: "v1")

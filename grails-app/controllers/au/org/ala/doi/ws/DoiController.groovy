@@ -127,6 +127,17 @@ class DoiController extends BasicWSController {
         !json.fileUrl && (!(request instanceof MultipartHttpServletRequest) || !request.fileNames)
     }
 
+    def list() {
+
+        Map eqParams = [:]
+        if (request.getParameter("userId")) {
+            eqParams.put("userId", request.getParameter("userId")?.toLong())
+        }
+
+        def list = doiService.listDois(10, 0, "dateMinted", "desc", eqParams)
+        render list as JSON
+    }
+
     /**
      * Retrieve the metadata for a doi by either UUID or DOI
      *
@@ -205,4 +216,6 @@ class DoiController extends BasicWSController {
         String idString = id instanceof String ? id : id.toString()
         isUuid(idString) ? doiService.findByUuid(idString) : doiService.findByDoi(idString)
     }
+
+
 }
