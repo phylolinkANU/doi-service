@@ -131,7 +131,7 @@ class DoiController extends BasicWSController {
 
         Map eqParams = [:]
         if (request.getParameter("userId")) {
-            eqParams.put("userId", request.getParameter("userId")?.toLong())
+            eqParams.put("userId", request.getParameter("userId"))
         }
 
         def list = doiService.listDois(10, 0, "dateMinted", "desc", eqParams)
