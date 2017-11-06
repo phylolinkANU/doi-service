@@ -20,7 +20,7 @@ class Doi {
     String doi
     String title
     String authors
-    Long userId
+    String userId
 
     String description
     Date dateMinted
@@ -44,6 +44,7 @@ class Doi {
         applicationUrl nullable: true, url: true
         filename nullable: true
         contentType nullable: true
+        userId nullable: true
     }
 
     static mapping = {

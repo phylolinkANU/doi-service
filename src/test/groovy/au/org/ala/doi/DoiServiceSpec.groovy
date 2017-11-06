@@ -58,10 +58,10 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
     def "mintDoi should throw DoiMintingException if the given defaultDoi DOI already exists in the database"() {
         given: "a DOI is already recorded in the database"
         def doi = '10.1000/000000'
-        def entity = new Doi(uuid: UUID.randomUUID(), doi: doi, title: 'title', authors: 'authors', description: 'description', dateMinted: new Date(), provider: DoiProvider.ANDS, applicationUrl: 'http://example.org').save()
+        def entity = new Doi(uuid: UUID.randomUUID(), doi: doi, title: 'title', authors: 'authors', description: 'description', dateMinted: new Date(), provider: DoiProvider.ANDS, applicationUrl: 'http://example.org', userId: "1").save()
 
         when: "a mintDOI request is made with an existing DOI"
-        service.mintDoi(DoiProvider.ANDS, [foo: 'bar'], 'title', 'authors', 'description', 'http://example.org', null, null, [:], null, doi)
+        service.mintDoi(DoiProvider.ANDS, [foo: 'bar'], 'title', 'authors', 'description', 'http://example.org', null, null, [:], null, doi, "1")
 
         then:
         thrown DoiMintingException
