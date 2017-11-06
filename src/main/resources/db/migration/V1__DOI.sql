@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS doi (
   provider text NOT NULL,
   filename text NOT NULL,
   content_type text NOT NULL,
-  user_id text,
 
   provider_metadata jsonb NOT NULL,
   application_metadata jsonb,
