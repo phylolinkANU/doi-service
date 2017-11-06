@@ -56,6 +56,12 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="licence">Licence</label>
+                            <input id="licence" name="licence" type="text" class="form-control"
+                                   value="${mintParameters?.licence}"/>
+                        </div>
+
+                        <div class="form-group">
                             <label for="applicationUrl">Application Url<span class="req-field"/></label>
                             <input id="applicationUrl" name="applicationUrl" type="text" class="form-control"
                                    value="${mintParameters?.applicationUrl}"
@@ -140,6 +146,13 @@
                                         value="${mintParameters?.applicationMetadata}"
                                         data-validation-engine="validate[funcCall[isJson]]"/>
                         </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <g:checkBox name="linkToUser" value="${mintParameters?.linkToUser}" /> Link this DOI to your user id?
+                            </label>
+                        </div>
+
                         <button id="mintDoiSubmit" class="btn btn-ala btn-primary">Mint DOI</button>
                         <i id="spinner" class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i>
                         <span class="sr-only">Please wait...</span>

@@ -1,9 +1,13 @@
 package au.org.ala.doi.storage
 
 import au.org.ala.doi.Doi
+import com.google.common.io.BaseEncoding
 import com.google.common.io.ByteSource
+import com.google.common.io.Resources
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
+
+import static com.google.common.io.BaseEncoding.base16
 
 class FileStorageSpec extends Specification {
 
@@ -68,14 +72,17 @@ class FileStorageSpec extends Specification {
         setup:
         Doi doi = new Doi(uuid: UUID.randomUUID())
         File expectedTarget = new File("${System.getProperty("java.io.tmpdir")}/${doi.uuid}/newFile.txt")
+        byte[] nullHash = base16().decode('E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855')
 
         MultipartFile file = Mock(MultipartFile)
         file.originalFilename >> "newFile.txt"
-
+        file.inputStream >> { new ByteArrayInputStream(new byte[0]) }
         when:
         fileStorage.storeFileForDoi(doi, file)
 
         then:
+        doi.fileHash == nullHash
+        doi.fileSize == 0
         1 * file.transferTo(expectedTarget)
     }
 
@@ -96,6 +103,8 @@ class FileStorageSpec extends Specification {
         fileStorage.storeFileForDoi(doi, "http://ala.org.au")
 
         then:
+        doi.fileSize != null
+        doi.fileHash != null
         expectedTarget.exists()
     }
 

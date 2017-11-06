@@ -1,3 +1,4 @@
+<%@ page import="com.jakewharton.byteunits.BinaryByteUnit; com.google.common.io.BaseEncoding" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -57,6 +58,10 @@
                                             <th scope="row">Creation Date</th>
                                             <td>${doi.dateMinted}</td>
                                         </tr>
+                                        <tr>
+                                            <th scope="row">Licence</th>
+                                            <td>${doi.licence}</td>
+                                        </tr>
                                         <g:if test="${doi.customLandingPageUrl}">
                                             <tr>
                                                 <th scope="row">Landing page</th>
@@ -64,6 +69,18 @@
                                                     <br/>
                                                     <a href="${doi.customLandingPageUrl}">View the application landing page.</a>
                                                 </td>
+                                            </tr>
+                                        </g:if>
+                                        <g:if test="${doi.fileHash}">
+                                            <tr>
+                                                <th scope="row">File SHA-256</th>
+                                                <td>${BaseEncoding.base16().encode(doi.fileHash)}</td>
+                                            </tr>
+                                        </g:if>
+                                        <g:if test="${doi.fileSize}">
+                                            <tr>
+                                                <th scope="row">File size</th>
+                                                <td>${BinaryByteUnit.format(doi.fileSize)}</td>
                                             </tr>
                                         </g:if>
                                         <g:render template="metadata" model="[metadata: doi.applicationMetadata]"/>

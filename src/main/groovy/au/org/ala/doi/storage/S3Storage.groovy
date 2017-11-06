@@ -4,7 +4,10 @@ import au.org.ala.doi.Doi
 import com.amazonaws.services.s3.Headers
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.ObjectMetadata
+import com.google.common.hash.Hashing
+import com.google.common.hash.HashingInputStream
 import com.google.common.io.ByteSource
+import com.google.common.io.ByteStreams
 import grails.plugin.awssdk.s3.AmazonS3Service
 import org.springframework.web.multipart.MultipartFile
 

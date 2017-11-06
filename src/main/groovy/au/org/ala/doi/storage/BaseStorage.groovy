@@ -2,9 +2,10 @@ package au.org.ala.doi.storage
 
 import au.org.ala.doi.Doi
 import au.org.ala.doi.util.Utils
-import groovy.transform.stc.ClosureParams
-import groovy.transform.stc.FirstParam
-import groovy.transform.stc.SecondParam
+import com.google.common.hash.Hashing
+import com.google.common.hash.HashingInputStream
+import com.google.common.io.ByteStreams
+import com.google.common.io.CountingInputStream
 import org.springframework.web.multipart.MultipartFile
 
 import static au.org.ala.doi.util.StateAssertions.checkArgument
@@ -16,7 +17,7 @@ abstract class BaseStorage implements Storage {
 
     @Override
     void storeFileForDoi(Doi doi, MultipartFile mpf) {
-        storeMultipartFile(doi, mpf) { transferInputStream(doi, mpf.inputStream) }
+        storeMultipartFile(doi, mpf, this.&hashAndCountInputStream.curry(doi, mpf.inputStream))
     }
 
     protected void storeMultipartFile(Doi doi, MultipartFile mpf, Closure<Void> transfer) {
@@ -26,6 +27,10 @@ abstract class BaseStorage implements Storage {
         String filename = doi.filename ?: mpf.originalFilename ?: doi.uuid.toString()
         doi.filename = filename
         doi.contentType = mpf.contentType ?: DEFAULT_CONTENT_TYPE
+        doi.fileSize = mpf.size
+        // This is kind of a hack that relies on the MultipartFile implementation always buffering
+        // the input to memory or to disk and returning a new input stream each time getInputStream is called.
+        doi.fileHash = new HashingInputStream(Hashing.sha256(), mpf.inputStream).withStream { is -> ByteStreams.exhaust(is); is.hash().asBytes() }
 
         transfer()
     }
@@ -42,10 +47,19 @@ abstract class BaseStorage implements Storage {
         doi.contentType = contentType ?: DEFAULT_CONTENT_TYPE
         doi.filename = filename
 
-        urlObject.withInputStream { input ->
+        hashAndCountInputStream(doi, urlObject.newInputStream())
+    }
+
+    protected void hashAndCountInputStream(Doi doi, InputStream inputStream) {
+        def countingInput = new CountingInputStream(inputStream)
+        def hashingInput = new HashingInputStream(Hashing.sha256(), countingInput)
+
+        hashingInput.withStream { input ->
             transferInputStream(doi, input)
         }
 
+        doi.fileHash = hashingInput.hash().asBytes()
+        doi.fileSize = countingInput.count
     }
 
     abstract void transferInputStream(Doi doi, InputStream urlInputStream)

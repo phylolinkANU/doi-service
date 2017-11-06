@@ -3,6 +3,7 @@ package au.org.ala.doi.ui
 import au.org.ala.doi.DoiService
 import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.util.DoiProvider
+import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
@@ -13,6 +14,7 @@ class AdminController {
 
     DoiService doiService
     Storage storage
+    AuthService authService
 
     def index() {
         // Only used to render admin main page
@@ -83,18 +85,22 @@ class AdminController {
                 provider = DoiProvider.byName(params.provider)
             }
 
+            def userId = params.boolean('linkToUser', false) ? authService.userId : null
+
             def result = doiService.mintDoi(
                     provider,
                     providerMetadata,
                     params.title,
                     params.authors,
                     params.description,
+                    params.licence,
                     params.applicationUrl,
                     params.fileUrl,
                     file,
                     applicationMetadata,
                     params.customLandingPageUrl,
-                    params.existingDoi
+                    params.existingDoi,
+                    userId
             )
 
             log.debug("Result: ${result}")

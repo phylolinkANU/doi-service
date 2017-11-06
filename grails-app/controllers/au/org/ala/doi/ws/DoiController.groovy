@@ -8,7 +8,6 @@ import au.org.ala.doi.exceptions.DoiValidationException
 import au.org.ala.doi.storage.Storage
 import com.google.common.io.ByteSource
 import grails.web.http.HttpHeaders
-import org.grails.web.json.JSONArray
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
@@ -27,6 +26,8 @@ import static javax.servlet.http.HttpServletResponse.SC_OK
 
 @RequireApiKey
 class DoiController extends BasicWSController {
+
+    static responseFormats = ['json']
 
     static namespace = "v1"
 
@@ -78,8 +79,8 @@ class DoiController extends BasicWSController {
             }
 
             Map result = doiService.mintDoi(DoiProvider.byName(json.provider), json.providerMetadata, json.title,
-                    json.authors, json.description, json.applicationUrl, json.fileUrl, file, json.applicationMetadata,
-                    json.customLandingPageUrl, null)
+                    json.authors, json.description, json.licence, json.applicationUrl, json.fileUrl, file, json.applicationMetadata,
+                    json.customLandingPageUrl, null, json.userId)
 
             if (result.uuid) {
                 response.addHeader(HttpHeaders.LOCATION,
@@ -127,15 +128,19 @@ class DoiController extends BasicWSController {
         !json.fileUrl && (!(request instanceof MultipartHttpServletRequest) || !request.fileNames)
     }
 
-    def list() {
+    def index(Integer max) {
 
-        Map eqParams = [:]
-        if (request.getParameter("userId")) {
-            eqParams.put("userId", request.getParameter("userId"))
-        }
+        max = Math.min(max ?: 10, 100)
+        int offset = params.int('offset', 0)
+        String sort = params.get('sort', 'dateMinted')
+        String order = params.get('order', 'desc')
 
-        def list = doiService.listDois(10, 0, "dateMinted", "desc", eqParams)
-        render list as JSON
+        String userId = params.get('userId')
+        def eqParams = [:]
+        if (userId) eqParams << [ userId : userId ]
+
+        def list = doiService.listDois(max, offset, sort, order, eqParams)
+        respond list
     }
 
     /**

@@ -192,10 +192,11 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         request.JSON.authors = 'authors'
         request.JSON.description = 'description'
         request.JSON.fileUrl = "fileUrl"
+        request.JSON.userId = '1'
         controller.save()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", "fileUrl", null, null, null, null) >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", null, "http://example.org/applicationUrl", "fileUrl", null, null, null, null, '1') >> [:]
     }
 
     def "save should invoke the DOI Service if provided all metadata and a file in a multipart requests"() {
@@ -210,13 +211,14 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         data.title = 'title'
         data.authors = 'authors'
         data.description = 'description'
+        data.licence = 'licence'
 
         controller.request.addParameter("json", (data as JSON) as String)
         controller.request.addFile(file)
         controller.save()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "http://example.org/applicationUrl", null, file, null, null, null) >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", null, file, null, null, null, null) >> [:]
     }
 
 

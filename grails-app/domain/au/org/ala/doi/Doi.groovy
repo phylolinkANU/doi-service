@@ -10,7 +10,7 @@ import net.kaleidos.hibernate.usertype.JsonbMapType
 class Doi {
 
     static final Set<String> ALLOWED_UPDATABLE_PROPERTIES = [
-            'providerMetadata', 'customLandingPageUrl', 'title', 'authors', 'description', 'applicationUrl', 'fileUrl',
+            'providerMetadata', 'customLandingPageUrl', 'title', 'authors', 'description', 'applicationUrl',
             'applicationMetadata'
     ].toSet()
 
@@ -22,11 +22,15 @@ class Doi {
     String authors
     String userId
 
+    String licence
     String description
     Date dateMinted
     DoiProvider provider
+
     String filename
     String contentType
+    byte[] fileHash
+    Long fileSize
 
     Map providerMetadata
     Map applicationMetadata
@@ -44,6 +48,9 @@ class Doi {
         applicationUrl nullable: true, url: true
         filename nullable: true
         contentType nullable: true
+        licence nullable: true
+        fileHash nullable: true
+        fileSize nullable: true, min: 0l
         userId nullable: true
     }
 
