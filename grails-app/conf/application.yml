@@ -175,12 +175,14 @@ swagger:
             url: "http://www.ala.org.au/"
             email: "support@ala.org.au"
         license:
-            name: "Some licence"
+            name: "ALA licence"
             url: "http://www.ala.org.au/"
     schemes:
       - HTTP
+      - HTTPS
     consumes:
       - "application/json"
+      - "mutlipart/form-data"
 
 ---
 hibernate:
