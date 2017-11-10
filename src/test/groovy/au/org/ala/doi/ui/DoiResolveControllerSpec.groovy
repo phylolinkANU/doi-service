@@ -5,6 +5,7 @@ import au.org.ala.doi.DoiService
 import au.org.ala.doi.storage.Storage
 import com.google.common.io.ByteSource
 import com.google.common.io.Files
+import grails.gorm.PagedResultList
 import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
@@ -20,7 +21,7 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
         setup:
         Doi doi1 = new Doi(uuid: UUID.randomUUID())
         Doi doi2 = new Doi(uuid: UUID.randomUUID())
-        controller.doiService.listDois(_, _) >> [doi1, doi2]
+        controller.doiService.listDois(_, _) >> new PagedResultList(null).with { it.resultList = [doi1, doi2]; it.totalCount = 2; it }
         when:
         controller.index()
 

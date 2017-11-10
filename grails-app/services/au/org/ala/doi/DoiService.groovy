@@ -71,7 +71,7 @@ class DoiService extends BaseDataAccessService {
 
             boolean success = save entity
 
-            Map result
+            MintResponse result
             if (!success) {
                 log.error("A DOI was generated successfully through ${provider}, but the DB record failed to save. No default landing page will exist for this DOI!")
                 sendPostDOICreationErrorEmail(entity.doi, entity.errors)
