@@ -140,7 +140,10 @@ class DoiController extends BasicWSController {
         if (userId) eqParams << [ userId : userId ]
 
         def list = doiService.listDois(max, offset, sort, order, eqParams)
-        respond list
+        Map result = [:]
+        result << [ list: list ]
+        result << [ totalCount: list.totalCount ]
+        respond result
     }
 
     /**
