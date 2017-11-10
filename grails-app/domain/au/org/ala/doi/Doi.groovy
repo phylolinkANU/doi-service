@@ -10,7 +10,7 @@ import net.kaleidos.hibernate.usertype.JsonbMapType
 class Doi {
 
     static final Set<String> ALLOWED_UPDATABLE_PROPERTIES = [
-            'providerMetadata', 'customLandingPageUrl', 'title', 'authors', 'description', 'applicationUrl',
+            'providerMetadata', 'customLandingPageUrl', 'title', 'authors', 'description', 'licence', 'applicationUrl',
             'applicationMetadata'
     ].toSet()
 

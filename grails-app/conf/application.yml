@@ -164,6 +164,23 @@ file:
 
 googleAnalyticsId: UA-4355440-1
 
+swagger:
+    info:
+        description: "Generate DOIs for ALA applications"
+        version: "1.0"
+        title: "ALA DOI service"
+        termsOfServices: "http://www.ala.org.au/"
+        contact:
+            name: "ALA Support"
+            url: "http://www.ala.org.au/"
+            email: "support@ala.org.au"
+        license:
+            name: "Some licence"
+            url: "http://www.ala.org.au/"
+    schemes:
+      - HTTP
+    consumes:
+      - "application/json"
 
 ---
 hibernate:

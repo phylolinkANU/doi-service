@@ -1,6 +1,7 @@
 package au.org.ala.doi.ui
 
 import au.org.ala.doi.DoiService
+import au.org.ala.doi.MintResponse
 import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.util.DoiProvider
 import au.org.ala.web.AuthService
@@ -41,7 +42,7 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         controller.createDoi()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "applicationUrl", "fileUrl", null, null, null, null, null) >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "applicationUrl", "fileUrl", null, null, null, null, null) >> [:] as MintResponse
     }
 
     def "createDoi should invoke the DOI Service if provided all metadata and fileUrl for an existing DOI"() {
@@ -60,7 +61,7 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         controller.createDoi()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, null, "title", "authors", "description", "licence", "applicationUrl", "fileUrl", null, null, null, "A DOI", null) >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, null, "title", "authors", "description", "licence", "applicationUrl", "fileUrl", null, null, null, "A DOI", null) >> [:] as MintResponse
     }
 
     def "createDoi should add the current user id if linkToUser is set"() {
@@ -81,7 +82,7 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
 
         then:
         1 * authService.userId >> '1'
-        1 * doiService.mintDoi(DoiProvider.ANDS, null, "title", "authors", "description", "licence", "applicationUrl", "fileUrl", null, null, null, "A DOI", '1') >> [:]
+        1 * doiService.mintDoi(DoiProvider.ANDS, null, "title", "authors", "description", "licence", "applicationUrl", "fileUrl", null, null, null, "A DOI", '1') >> [:] as MintResponse
     }
 
     def "createDoi does not invoike doiService if parameters are invalid"() {
@@ -100,7 +101,7 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         controller.createDoi()
 
         then:
-        0 * doiService.mintDoi(_) >> [:]
+        0 * doiService.mintDoi(_) >> [:] as MintResponse
         controller.modelAndView.viewName == "/admin/mintDoi"
 
         when:
@@ -118,7 +119,7 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         controller.createDoi()
 
         then:
-        0 * doiService.mintDoi(_) >> [:]
+        0 * doiService.mintDoi(_) >> [:] as MintResponse
         controller.modelAndView.viewName == "/admin/mintDoi"
 
 
@@ -136,7 +137,7 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         controller.createDoi()
 
         then:
-        0 * doiService.mintDoi(_) >> [:]
+        0 * doiService.mintDoi(_) >> [:] as MintResponse
         controller.modelAndView.viewName == "/admin/mintDoi"
 
         when: "No provider metadata is provided for a new DOI"
@@ -153,7 +154,7 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         controller.createDoi()
 
         then:
-        0 * doiService.mintDoi(_) >> [:]
+        0 * doiService.mintDoi(_) >> [:] as MintResponse
         controller.modelAndView.viewName == "/admin/mintDoi"
     }
 

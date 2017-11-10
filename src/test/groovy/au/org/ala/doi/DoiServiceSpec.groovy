@@ -108,7 +108,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.mintDoi(_, _, _) >> null
 
         when:
-        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file)
+        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file)
 
         then:
         result.error != null
@@ -123,7 +123,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.generateLandingPageUrl(_, _) >> "http://landingpage.com"
 
         when:
-        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file)
+        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file)
 
         then:
         !result.error
@@ -139,7 +139,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.generateLandingPageUrl(_,null) >> "http://landingpage.com"
 
         when:
-        Map result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file, null, null, "defaultDOI")
+        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file, null, null, "defaultDOI")
 
         then:
 

@@ -1,9 +1,7 @@
 package au.org.ala.doi.storage
 
 import au.org.ala.doi.Doi
-import com.google.common.io.BaseEncoding
 import com.google.common.io.ByteSource
-import com.google.common.io.Resources
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 

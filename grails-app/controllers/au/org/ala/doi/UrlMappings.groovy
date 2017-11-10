@@ -15,17 +15,17 @@ class UrlMappings {
             put "/doi/$id**"(controller: "doi", action: "update", namespace: "v1")
             patch "/doi/$id**"(controller: "doi", action: "patch", namespace: "v1")
 
-
             // Accept-Version: 1.0
             get "/doi"(version: "1.0", controller: "doi", action: "index", namespace:  "v1")
             post "/doi"(version: "1.0", controller: "doi", action: "save", namespace: "v1")
+            put "/doi"(version: "1.0", controller: "doi", action: "save", namespace: "v1") // work around for swagger
             get "/doi/$id**/download"(version: "1.0", controller: "doi", action: "download", namespace: "v1")
             get "/doi/$id**"(version: "1.0", controller: "doi", action: "show", namespace: "v1")
             post "/doi/$id**"(version: "1.0", controller: "doi", action: "update", namespace: "v1")
             put "/doi/$id**"(version: "1.0", controller: "doi", action: "update", namespace: "v1")
             patch "/doi/$id**"(version: "1.0", controller: "doi", action: "patch", namespace: "v1")
 
-            "/" view: "/api/index"
+            "/"(controller: 'apiDoc', action: 'getDocuments', method: 'get')
 
             // legacy API mappings, DO NOT ADD V2 HERE!
             post "/v1/mintDoi"(controller: "doi", action: "save", namespace: "v1")

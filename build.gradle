@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.2"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.4"
     }
 }
 
@@ -23,7 +23,7 @@ apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
-apply from: 'https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_publish.gradle'
+//apply from: 'https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_publish.gradle'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -60,7 +60,7 @@ dependencies {
     runtime "org.glassfish.web:el-impl:2.1.2-b03"
 //    runtime "com.h2database:h2"
     runtime "org.apache.tomcat:tomcat-jdbc"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.2"
+    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.4"
     testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-web-testing-support"
@@ -78,6 +78,8 @@ dependencies {
     compile "org.grails.plugins:mail:2.0.0.RC6"
     compile 'org.grails.plugins:postgresql-extensions:5.1.0'
     compile 'org.grails.plugins:grails-java8:1.2.1'
+    compile 'org.grails.plugins:swagger:1.0.0'
+    compile 'org.webjars:swagger-ui:2.2.8'
 
     // DB related
     compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'

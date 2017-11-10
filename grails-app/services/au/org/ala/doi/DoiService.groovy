@@ -11,6 +11,7 @@ import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.util.DoiProvider
 import com.google.common.collect.Maps
 import grails.core.GrailsApplication
+import grails.gorm.PagedResultList
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 import org.springframework.validation.Errors
@@ -33,7 +34,7 @@ class DoiService extends BaseDataAccessService {
     }
 
     @Transactional
-    Map mintDoi(DoiProvider provider, Map providerMetadata, String title, String authors, String description,
+    MintResponse mintDoi(DoiProvider provider, Map providerMetadata, String title, String authors, String description,
                 String licence, String applicationUrl, String fileUrl, MultipartFile file,
                 Map applicationMetadata = [:], String customLandingPageUrl = null, String defaultDoi = null,
                 String userId = null) {
@@ -74,10 +75,10 @@ class DoiService extends BaseDataAccessService {
             if (!success) {
                 log.error("A DOI was generated successfully through ${provider}, but the DB record failed to save. No default landing page will exist for this DOI!")
                 sendPostDOICreationErrorEmail(entity.doi, entity.errors)
-                result = [uuid: null, doi: doi, error: "A DOI was generated, but the server failed to save to the local DB. No default landing page will exist for this DOI!", status: "error"]
+                result = new MintResponse(uuid: null, doi: doi, error: "A DOI was generated, but the server failed to save to the local DB. No default landing page will exist for this DOI!", status: "error")
             } else {
-                result = [uuid: uuid, doi: doi, landingPage: getProviderService(provider).generateLandingPageUrl(uuidString, customLandingPageUrl)
-                          , doiServiceLandingPage: getProviderService(provider).generateLandingPageUrl(uuidString, null), status: "ok"]
+                result = new MintResponse(uuid: uuid, doi: doi, landingPage: getProviderService(provider).generateLandingPageUrl(uuidString, customLandingPageUrl)
+                          , doiServiceLandingPage: getProviderService(provider).generateLandingPageUrl(uuidString, null), status: "ok")
             }
 
             return result
@@ -168,7 +169,7 @@ class DoiService extends BaseDataAccessService {
     }
 
     @ReadOnly
-    def listDois(int pageSize, int startFrom, String sortBy = "dateMinted", String sortOrder = "desc", Map eqParams = null) {
+    PagedResultList listDois(int pageSize, int startFrom, String sortBy = "dateMinted", String sortOrder = "desc", Map eqParams = null) {
         def criteria = Doi.createCriteria()
         criteria.list (max: pageSize, offset: startFrom) {
             if (eqParams) {

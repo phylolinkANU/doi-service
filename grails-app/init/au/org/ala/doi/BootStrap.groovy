@@ -1,6 +1,7 @@
 package au.org.ala.doi
 
 import au.org.ala.doi.util.DoiProvider
+import com.google.common.io.BaseEncoding
 import grails.converters.JSON
 
 class BootStrap {
@@ -12,6 +13,9 @@ class BootStrap {
         JSON.registerObjectMarshaller(DoiProvider) { provider ->
             provider.toString()
         }
+//        JSON.registerObjectMarshaller(byte[]) { bytes ->
+//            BaseEncoding.base16().encode(bytes)
+//        }
     }
     def destroy = {
     }
