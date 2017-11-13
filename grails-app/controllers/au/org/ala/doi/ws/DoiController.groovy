@@ -236,11 +236,13 @@ class DoiController extends BasicWSController {
             responseHeaders = [
                     @ResponseHeader(
                             name = 'Link',
-                            description = 'Paging links'
+                            description = 'Paging links',
+                            response = String
                     ),
                     @ResponseHeader(
                             name = 'X-Total-Count',
-                            description = 'Total number of results matching parameters'
+                            description = 'Total number of results matching parameters',
+                            response = Integer
                     )
             ]
     )
@@ -254,13 +256,13 @@ class DoiController extends BasicWSController {
                     required = false,
                     defaultValue = '10',
                     value = "max number of dois to return",
-                    dataType = "int"),
+                    dataType = "Integer"),
             @ApiImplicitParam(name = "offset",
                     paramType = "query",
                     required = false,
                     defaultValue = '0',
                     value = "index of the first record to return",
-                    dataType = "int"),
+                    dataType = "Integer"),
             @ApiImplicitParam(name = "sort",
                     paramType = "query",
                     required = false,
@@ -616,6 +618,5 @@ class DoiController extends BasicWSController {
         String idString = id instanceof String ? id : id.toString()
         isUuid(idString) ? doiService.findByUuid(idString) : doiService.findByDoi(idString)
     }
-
 
 }
