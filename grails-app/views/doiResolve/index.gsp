@@ -30,15 +30,13 @@
 <ala:systemMessage/>
 
 <div class="col-sm-12 col-md-9 col-lg-9">
-    <h2 class="heading-medium">DOI search</h2>
-
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-body">
 
                     <div class="word-limit">
-                        <h1 class="heading-xlarge">Search for DOI records</h1>
+                        <h1 class="heading-xlarge">ALA DOI records</h1>
 
                         <p class="lead color--primary-red">
                             A digital object identifier (DOI) is a unique alphanumeric string assigned by a registration agency (the International DOI Foundation) to identify content and provide a persistent link to its location on the Internet.
