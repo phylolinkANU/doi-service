@@ -90,7 +90,8 @@ class DoiController extends BasicWSController {
             responseHeaders = [
                     @ResponseHeader(
                             name = 'Location',
-                            description = 'URL for minted / registered / reserved DOI'
+                            description = 'URL for minted / registered / reserved DOI',
+                            response = String
                     )
             ]
     )
@@ -154,7 +155,8 @@ class DoiController extends BasicWSController {
             responseHeaders = [
                     @ResponseHeader(
                             name = 'Location',
-                            description = 'URL for minted / registered / reserved DOI'
+                            description = 'URL for minted / registered / reserved DOI',
+                            response = String
                     )
             ]
     )
@@ -431,7 +433,8 @@ class DoiController extends BasicWSController {
             responseHeaders = [
                     @ResponseHeader(
                             name = 'Location',
-                            description = 'URL for minted / registered / reserved DOI'
+                            description = 'URL for minted / registered / reserved DOI',
+                            response = String
                     )
             ]
     )
@@ -485,7 +488,8 @@ class DoiController extends BasicWSController {
             responseHeaders = [
                     @ResponseHeader(
                             name = 'Location',
-                            description = 'URL for minted / registered / reserved DOI'
+                            description = 'URL for minted / registered / reserved DOI',
+                            response = String
                     )
             ]
     )
@@ -564,7 +568,8 @@ class DoiController extends BasicWSController {
             responseHeaders = [
                     @ResponseHeader(
                             name = 'Location',
-                            description = 'URL for minted / registered / reserved DOI'
+                            description = 'URL for minted / registered / reserved DOI',
+                            response = String
                     )
             ]
     )

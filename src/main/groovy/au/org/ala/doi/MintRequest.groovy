@@ -14,7 +14,7 @@ class MintRequest {
     String licence
     String applicationUrl
     String fileUrl
-    String applicationMetadata
+    Map applicationMetadata
     String customLandingPageUrl
     String userId
 
