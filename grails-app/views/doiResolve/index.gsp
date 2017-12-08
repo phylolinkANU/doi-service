@@ -38,7 +38,7 @@
                     <div class="word-limit">
                         <h1 class="heading-xlarge">ALA DOI records</h1>
 
-                        <p class="lead color--primary-red">
+                        <p class="lead">
                             A digital object identifier (DOI) is a unique alphanumeric string assigned by a registration agency (the International DOI Foundation) to identify content and provide a persistent link to its location on the Internet.
                         </p>
 
@@ -65,24 +65,22 @@
                         </g:if>
 
                         <div class="row">
-                            <div class="col-md-offset-1 col-md-10">
+                            <div class="col-md-10">
 
                                 <ol class="list-unstyled">
                                     <g:each in="${dois}" var="doi">
                                         <li>
-                                            <h4 class="search-result"><a
-                                                    href="${request.contextPath}/doi/${doi.uuid}">${doi.title}</a>
-                                            </h4>
 
-                                            <p class="help-block"><strong>DOI:</strong> <a href="http://dx.doi.org/${doi.doi}">${doi.doi}</a></p>
+                                                <h4 class="search-result"><a
+                                                        href="${request.contextPath}/doi/${doi.uuid}">${doi.title}</a>
+                                                </h4>
 
-                                            <p class="help-block"><strong>Created:</strong> ${doi.dateMinted}</p>
-
-                                            <p class="help-block"><strong>Author(s):</strong> ${doi.authors}</p>
-
-                                            <p class="help-block">
-                                                ${doi.description}
-                                            </p>
+                                                <div class="padding-bottom-10"><a href="http://dx.doi.org/${doi.doi}" type="button" class="doi doi-sm"><span>DOI</span><span>${doi.doi}</a></div>
+                                                <div class="padding-bottom-10"><strong>Created:</strong> ${doi.dateMinted}</div>
+                                                <div class="padding-bottom-10"><strong>Author(s):</strong> ${doi.authors}</div>
+                                                <div class="padding-bottom-20">
+                                                    ${doi.description}
+                                                </div>
                                         </li>
                                     </g:each>
                                 </ol>
