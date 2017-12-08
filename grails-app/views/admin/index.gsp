@@ -10,6 +10,7 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
+    <meta name="breadcrumbParent" content="${grailsApplication.config.grails.serverURL},${message(code:"doi.homepage.title")}"/>
     %{--<meta name="section" content="home"/>--}%
     <title>DOI Service Administration</title>
     <asset:stylesheet src="doi.css"/>
@@ -18,19 +19,25 @@
 <ala:systemMessage/>
 <div class="col-sm-12">
     <h2 class="heading-medium">DOI Service Administration</h2>
-    <div class="panel panel-default" id="page-body" role="main">
+
+
+    <div class="panel panel-default well" id="page-body" role="main">
         <ul>
             <li><g:link controller="admin" action="mintDoi">Mint/Register a DOI</g:link></li>
-            <li>Using ${storageType}</li>
+            <li><g:link controller="alaAdmin" action="index">ALA Admin</g:link></li>
+            <li><g:link controller="apiDoc" action="getDocuments">API Documentation</g:link></li>
         </ul>
+        <p>
+            <span class="label label-default">Using ${storageType}</span>
+        </p>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading"><h2 class="panel-title">DOIs</h2></div>
         <table class="table">
             <thead>
                 <tr>
-                    <th>API (DOI)</th>
-                    <th>API (UUID)</th>
+                    <th>API (DOI) <small class="badge label-success"">JSON</small> </th>
+                    <th>API (UUID) <small class="badge label-success"">JSON</small></th>
                     <th>Resolve</th>
                     <th>Download</th>
                 </tr>

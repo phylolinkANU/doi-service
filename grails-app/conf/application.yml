@@ -120,6 +120,9 @@ environments:
                 props:
                     "mail.debug": "false"
 
+skin:
+    layout: "main"
+
 app:
     http:
         header:

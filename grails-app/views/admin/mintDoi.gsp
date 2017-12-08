@@ -10,6 +10,7 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
+    <meta name="breadcrumbParent" content="${grailsApplication.config.grails.serverURL}/admin,${message(code:"doi.adminPage.title")}"/>
     <title>Mint/Register DOI</title>
     <asset:stylesheet src="doi.css" />
     <asset:stylesheet src="jqueryValidationEngine.css" />
