@@ -37,7 +37,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <div class="word-limit">
+                    <div class="word-limit break-word">
                         <h2 class="heading-medium padding-bottom-10">${doi.authors}</h2>
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -54,7 +54,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
                                 <div class="padding-bottom-10">${doi.description}</div>
 
