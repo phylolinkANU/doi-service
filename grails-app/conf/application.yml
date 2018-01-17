@@ -119,6 +119,11 @@ environments:
                 port: 25
                 props:
                     "mail.debug": "false"
+server:
+  tomcat:
+    port-header: 'X-Forwarded-Port'
+    protocol-header: 'X-Forwarded-Proto'
+    remote-ip-header: 'X-Forwarded-For'
 
 skin:
     layout: "main"
