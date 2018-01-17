@@ -9,7 +9,7 @@ class DoiValidationException extends Exception {
     final Errors errors
 
     DoiValidationException(UUID uuid, String doi, Errors errors) {
-        super()
+        super(errors.toString())
         this.uuid = uuid
         this.doi = doi
         this.errors = errors

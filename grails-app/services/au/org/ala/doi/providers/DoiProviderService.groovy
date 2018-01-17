@@ -45,8 +45,8 @@ abstract class DoiProviderService {
         try {
             response = invokeCreateService(requestPayload, landingPageUrl)
         } catch (Exception e) {
-            log.error('Failed to invoke the provider web service', e)
-            throw new DoiMintingException("Failed to invoke the provider web service", e)
+            log.error('Failed to invoke the provider mint web service', e)
+            throw new DoiMintingException("Failed to invoke the provider mint web service", e)
         }
 
         if (response?.httpStatus == HttpStatus.SC_OK && response?.doi) {
@@ -54,7 +54,7 @@ abstract class DoiProviderService {
 
             response.doi
         } else {
-            throw new DoiMintingException("Failed to invoke the provider web service: ${response.getErrorMessage()}")
+            throw new DoiMintingException("Failed to invoke the provider web mint service: ${response.getErrorMessage()}")
         }
     }
 
@@ -86,16 +86,54 @@ abstract class DoiProviderService {
         try {
             response = invokeUpdateService(doi, requestPayload, landingPageUrl)
         } catch (Exception e) {
-            log.error('Failed to invoke the provider web service', e)
-            throw new DoiMintingException("Failed to invoke the provider web service", e)
+            log.error('Failed to invoke the provider update web service', e)
+            throw new DoiMintingException("Failed to invoke the provider update web service", e)
         }
 
         if (response?.httpStatus == HttpStatus.SC_OK && response?.doi) {
             log.info("DOI ${response.doi} generated for local id ${uuid}: resolves to ${landingPageUrl}")
         } else {
-            throw new DoiMintingException("Failed to invoke the provider web service: ${response.getErrorMessage()}")
+            throw new DoiMintingException("Failed to invoke the provider update web service: ${response.getErrorMessage()}")
         }
     }
+
+    void deactivateDoi(String doi) throws DoiMintingException {
+        checkArgument doi
+
+        ServiceResponse response
+        try {
+            response = invokeDeactivateService(doi)
+        } catch (Exception e) {
+            log.error('Failed to invoke the provider deactivate web service', e)
+            throw new DoiMintingException("Failed to invoke the provider deactivate web service", e)
+        }
+
+        if (response?.httpStatus == HttpStatus.SC_OK && response?.doi) {
+            log.info("DOI ${response.doi} deactivated for ${doi}")
+        } else {
+            throw new DoiMintingException("Failed to invoke the provider deactivate web service: ${response.getErrorMessage()}")
+        }
+    }
+
+
+    void activateDoi(String doi) throws DoiMintingException {
+        checkArgument doi
+
+        ServiceResponse response
+        try {
+            response = invokeActivateService(doi)
+        } catch (Exception e) {
+            log.error('Failed to invoke the provider activate web service', e)
+            throw new DoiMintingException("Failed to invoke the provider activate web service", e)
+        }
+
+        if (response?.httpStatus == HttpStatus.SC_OK && response?.doi) {
+            log.info("DOI ${response.doi} activated for ${doi}")
+        } else {
+            throw new DoiMintingException("Failed to invoke the provider activate web service: ${response.getErrorMessage()}")
+        }
+    }
+
 
     /**
      * Convert the provider metadata Map into whatever format is required for the web service (e.g. JSON, XML, etc)
@@ -142,4 +180,19 @@ abstract class DoiProviderService {
     String getGenericLandingPageUrlPrefix() {
         grailsLinkGenerator.link(uri: '/', absolute: true, method: 'GET')
     }
+
+    /**
+     * Invoke the DOI provider's deactivate service.
+     * @param doi The DOI to deactivate
+     * @return ServiceResponse object containing the doi if successful, or the error message, httpStatus and/or provider-specific error code if the call failed
+     */
+    abstract ServiceResponse invokeDeactivateService(String doi)
+
+    /**
+     * Invoke the DOI provider's activate service.
+     * @param doi The DOI to deactivate
+     * @return ServiceResponse object containing the doi if successful, or the error message, httpStatus and/or provider-specific error code if the call failed
+     */
+    abstract ServiceResponse invokeActivateService(String doi)
+
 }

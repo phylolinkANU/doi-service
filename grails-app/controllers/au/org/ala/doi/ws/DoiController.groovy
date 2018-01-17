@@ -130,7 +130,7 @@ class DoiController extends BasicWSController {
 
             MintResponse result = doiService.mintDoi(DoiProvider.byName(json.provider), json.providerMetadata, json.title,
                     json.authors, json.description, json.licence, json.applicationUrl, json.fileUrl, file, json.applicationMetadata,
-                    json.customLandingPageUrl, null, json.userId)
+                    json.customLandingPageUrl, null, json.userId, json.active)
 
             if (result.uuid) {
                 response.addHeader(HttpHeaders.LOCATION,
@@ -284,6 +284,11 @@ class DoiController extends BasicWSController {
                     required = false,
                     value = "Add a userid filter, userid should be the user's numeric user id",
                     dataType = "string"),
+            @ApiImplicitParam(name = "activeStatus",
+                    paramType = "query",
+                    required = false,
+                    value = "Filters DOIs returned based on active flag. Valid values are 'all', 'active' or 'inactive'. If omitted it defaults to 'active'",
+                    dataType = "string"),
             @ApiImplicitParam(name = "Accept-Version",
                     paramType = "header",
                     required = true,
@@ -304,11 +309,28 @@ class DoiController extends BasicWSController {
         String title = params.get('title')
         String authors = params.get('authors')
         String licence = params.get('licence')
+        String activeStatus = params.boolean("activeStatus")
+
+
         def eqParams = [:]
         if (userId) eqParams << [ userId : userId ]
         if (title) eqParams << [ title : title ]
         if (authors) eqParams << [ authors : authors ]
         if (licence) eqParams << [ licence : licence ]
+
+
+        if (activeStatus != null) {
+            if(activeStatus == 'inactive') {
+                eqParams << [ active : false ]
+            } else if(activeStatus == 'all') {
+                // just skip the filter completely
+            } else {
+                // Any other value will force default filter
+                eqParams << [ active : true ]
+            }
+        } else {
+            eqParams << [ active : true ]
+        }
 
         def list = doiService.listDois(max, offset, sort, order, eqParams)
         def totalCount = list.totalCount

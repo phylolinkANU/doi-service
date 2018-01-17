@@ -32,7 +32,13 @@
 <ala:systemMessage/>
 
 <div class="col-sm-12 col-md-9 col-lg-9">
-    <h1 class="heading-medium">${doi.title}</h1>
+    <h1 class="heading-medium ${doi.active? '': 'text-muted'}">${doi.title}
+        <g:if test="${!doi.active}">
+            <small class="badge badge-secondary"><g:message code="doi.inactive"/></small>
+        </g:if>
+    </h1>
+
+
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="panel panel-default">

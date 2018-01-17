@@ -14,6 +14,7 @@ import grails.core.GrailsApplication
 import grails.gorm.PagedResultList
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
+import org.hibernate.Transaction
 import org.springframework.validation.Errors
 import org.springframework.web.multipart.MultipartFile
 
@@ -37,7 +38,7 @@ class DoiService extends BaseDataAccessService {
     MintResponse mintDoi(DoiProvider provider, Map providerMetadata, String title, String authors, String description,
                 String licence, String applicationUrl, String fileUrl, MultipartFile file,
                 Map applicationMetadata = [:], String customLandingPageUrl = null, String defaultDoi = null,
-                String userId = null) {
+                String userId = null, Boolean active = true) {
         checkArgument provider
         if(!defaultDoi) {
             checkArgument providerMetadata, "No provider metadata has been sent"
@@ -55,7 +56,7 @@ class DoiService extends BaseDataAccessService {
         Doi entity = new Doi(uuid: uuid, customLandingPageUrl: customLandingPageUrl, dateMinted: new Date(),
                 title: title, authors: authors, description: description, licence: licence, provider: provider,
                 providerMetadata: providerMetadata, applicationMetadata: applicationMetadata,
-                applicationUrl: applicationUrl, userId: userId)
+                applicationUrl: applicationUrl, userId: userId, active: active)
 
         entity.doi = "dummyForValidation" // doi is a mandatory field, so we set a temp value to validate the rest of the entity
         if (entity.validate()) {
@@ -68,6 +69,10 @@ class DoiService extends BaseDataAccessService {
             String uuidString = uuid.toString()
             String doi = defaultDoi ?:  getProviderService(provider).mintDoi(uuidString, providerMetadata, customLandingPageUrl)
             entity.doi = doi
+
+            if(!active) { // DOIs are active by default, no need of explicit activation
+                getProviderService(provider).deactivateDoi(doi)
+            }
 
             boolean success = save entity
 
@@ -118,7 +123,9 @@ class DoiService extends BaseDataAccessService {
 
         def newProviderMetadata = objectToBind['providerMetadata'] as Map
         def newCustomLandingPageUrl = objectToBind['customLandingPageUrl']
+        def newActive = objectToBind['active']
         def updateProviderMetadata = newProviderMetadata != null && instance.providerMetadata != newProviderMetadata
+        def updateActive = newActive != null && instance.active != newActive
         if (updateProviderMetadata && log.isDebugEnabled()) {
             log.debug("updateDoi: providerMetadata difference: {}", Maps.difference(instance.providerMetadata, newProviderMetadata))
         }
@@ -142,6 +149,16 @@ class DoiService extends BaseDataAccessService {
             getProviderService(instance.provider).updateDoi(instance.doi, instance.uuid.toString(), updateProviderMetadata ? instance.providerMetadata : null, updateCustomLandingPageUrl ? instance.customLandingPageUrl : null)
         }
 
+        if(updateActive) {
+            if(newActive) {
+                // activate ANDS DOI
+                getProviderService(instance.provider).activateDoi(instance.doi)
+            } else {
+                // deactivate ANDS DOI
+                getProviderService(instance.provider).deactivateDoi(instance.doi)
+            }
+        }
+
         if (!instance.save()) {
             log.error("A DOI update for ${instance.doi} was successful through ${instance.provider}, but the DB record failed to save!")
             sendPostDOICreationErrorEmail(instance.doi, instance.errors)
@@ -149,6 +166,7 @@ class DoiService extends BaseDataAccessService {
 
         return instance
     }
+
 
     void sendPostDOICreationErrorEmail(String doi, Errors errors) {
         def recipient = grailsApplication.config.getProperty('support.email', String, 'support@ala.org.au')

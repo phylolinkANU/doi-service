@@ -11,13 +11,25 @@ class MockService extends DoiProviderService {
 
     @Override
     ServiceResponse invokeCreateService(Object requestPayload, String landingPageUrl) {
-        def response = new ServiceResponse(200, '', "ABC")
-        response.doi = "10.1000/${UUID.randomUUID()}"
-        return response
+        return successResponse()
     }
 
     @Override
     ServiceResponse invokeUpdateService(String doi, Map requestPayload, String landingPageUrl) {
+        return successResponse()
+    }
+
+    @Override
+    ServiceResponse invokeDeactivateService(String doi) {
+        return successResponse()
+    }
+
+    @Override
+    ServiceResponse invokeActivateService(String doi) {
+        return successResponse()
+    }
+
+    ServiceResponse successResponse() {
         def response = new ServiceResponse(200, '', "ABC")
         response.doi = "10.1000/${UUID.randomUUID()}"
         return response

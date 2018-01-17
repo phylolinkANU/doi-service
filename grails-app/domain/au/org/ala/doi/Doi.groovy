@@ -11,7 +11,7 @@ class Doi {
 
     static final Set<String> ALLOWED_UPDATABLE_PROPERTIES = [
             'providerMetadata', 'customLandingPageUrl', 'title', 'authors', 'description', 'licence', 'applicationUrl',
-            'applicationMetadata'
+            'applicationMetadata', 'active'
     ].toSet()
 
     Long id
@@ -38,6 +38,8 @@ class Doi {
     String customLandingPageUrl
     String applicationUrl
 
+    Boolean active
+
     Long version
     Date dateCreated
     Date lastUpdated
@@ -52,6 +54,7 @@ class Doi {
         fileHash nullable: true
         fileSize nullable: true, min: 0l
         userId nullable: true
+
     }
 
     static mapping = {
@@ -59,11 +62,16 @@ class Doi {
         provider defaultValue: DoiProvider.ANDS
         providerMetadata type: JsonbMapType
         applicationMetadata type: JsonbMapType
+        active defaultValue: true
     }
 
     def beforeValidate() {
         if (uuid == null) {
             uuid = UUID.randomUUID()
+        }
+
+        if(active == null) {
+            active = true
         }
     }
 }

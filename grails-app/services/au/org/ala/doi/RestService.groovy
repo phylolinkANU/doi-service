@@ -8,10 +8,15 @@ import static au.org.ala.doi.util.StateAssertions.*
 
 class RestService {
 
-    Map get(String url, ContentType contentType, ContentType requestContentType) {
+    Map get(String url, ContentType contentType, ContentType requestContentType, Map headers = [:], Map query = [:] ) {
         RESTClient client = new RESTClient(url)
 
-        HttpResponseDecorator response = client.get(requestContentType: requestContentType, contentType: contentType)
+        HttpResponseDecorator response = client.get(
+                headers: headers,
+                query: query,
+                requestContentType: requestContentType,
+                contentType: contentType
+        )
 
         [status: response.status, data: response.getData()]
     }

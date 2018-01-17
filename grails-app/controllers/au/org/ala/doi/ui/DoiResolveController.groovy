@@ -7,6 +7,7 @@ import au.org.ala.doi.storage.Storage
 import au.org.ala.ws.validation.constraints.UUID
 import com.google.common.io.ByteSource
 import org.springframework.web.context.request.RequestContextHolder
+import grails.converters.XML
 
 import javax.validation.constraints.NotNull
 
@@ -23,7 +24,7 @@ class DoiResolveController extends BasicWSController {
 
         def isAdmin = RequestContextHolder.currentRequestAttributes()?.isUserInRole("ROLE_ADMIN")
 
-        render view: "index", model: [dois    : doiService.listDois(pageSize, offset),
+        render view: "index", model: [dois    : doiService.listDois(pageSize, offset, "dateMinted", "desc", !isAdmin ? [active:true]:null),
                                       offset  : offset,
                                       pageSize: pageSize,
                                       isAdmin : isAdmin]

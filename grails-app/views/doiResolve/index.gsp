@@ -67,12 +67,15 @@
                         <div class="row">
                             <div class="col-md-10">
 
-                                <ol class="list-unstyled">
+                                <ol class="list-unstyled break-word">
                                     <g:each in="${dois}" var="doi">
                                         <li>
 
-                                                <h4 class="search-result"><a
+                                                <h4 class="search-result "><a class="${doi.active? '': 'text-muted'}"
                                                         href="${request.contextPath}/doi/${doi.uuid}">${doi.title}</a>
+                                                    <g:if test="${!doi.active}">
+                                                        <small class="badge badge-secondary"><g:message code="doi.inactive"/></small>
+                                                    </g:if>
                                                 </h4>
 
                                                 <div class="padding-bottom-10"><a href="http://dx.doi.org/${doi.doi}" type="button" class="doi doi-sm"><span>DOI</span><span>${doi.doi}</a></div>
