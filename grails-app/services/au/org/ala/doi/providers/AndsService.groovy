@@ -14,7 +14,7 @@ import org.apache.http.impl.EnglishReasonPhraseCatalog
  * ANDS schema documentation can be found here: https://schema.datacite.org/meta/kernel-3/doc/DataCite-MetadataKernel_v3.1.pdf
  */
 class AndsService extends DoiProviderService {
-    static final String DATA_CITE_XSD_VERSION = "4"
+    static final String DATA_CITE_XSD_VERSION = "3"
     static final String DATA_CITE_XSD = "http://schema.datacite.org/meta/kernel-${DATA_CITE_XSD_VERSION}/metadata.xsd"
 
     static final String ANDS_RESPONSE_STATUS_OK = "MT090"

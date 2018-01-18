@@ -21,7 +21,7 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
         setup:
         Doi doi1 = new Doi(uuid: UUID.randomUUID())
         Doi doi2 = new Doi(uuid: UUID.randomUUID())
-        controller.doiService.listDois(_, _) >> new PagedResultList(null).with { it.resultList = [doi1, doi2]; it.totalCount = 2; it }
+        controller.doiService.listDois(_, _, _ , _, _) >> new PagedResultList(null).with { it.resultList = [doi1, doi2]; it.totalCount = 2; it }
         when:
         controller.index()
 
