@@ -7,17 +7,21 @@
         </g:if>
         <g:elseif test="${metadata instanceof Map.Entry}">
             <div class="row padding-bottom-10">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <strong>${org.apache.commons.lang.StringUtils.capitalize(metadata.key?.replaceAll("([a-z])([A-Z])", '$1 $2'))}:</strong>
                 </div>
-                <div class="col-md-9">
-                    ${metadata.value}
+                <div class="col-md-10">
+                    <g:render template="metadata" model="[metadata: metadata.value]"/>
                 </div>
             </div>
         </g:elseif>
         <g:elseif test="${metadata instanceof Collection}">
             <g:each in="${metadata}" var="item" status="index">
-                <g:render template="metadata" model="[metadata: item]"/><g:if test="${index < metadata.size() - 1}">,</g:if>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <g:render template="metadata" model="[metadata: item]"/>
+                    </div>
+                </div>
             </g:each>
         </g:elseif>
         <g:else>
