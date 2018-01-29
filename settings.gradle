@@ -1,1 +1,12 @@
 rootProject.name = 'doi-service'
+
+// Inplace plugin config
+// Set to true it needed only for development
+boolean inplace = false
+
+if(inplace) {
+//    include ':ala-admin-plugin'
+//    project(':ala-admin-plugin').projectDir = new File(settingsDir,'../ala-admin-plugin')
+    include ':ala-auth-plugin'
+    project(':ala-auth-plugin').projectDir = new File(settingsDir,'../ala-auth-plugin')
+}

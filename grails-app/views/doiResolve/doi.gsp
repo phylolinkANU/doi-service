@@ -79,7 +79,13 @@
                                         <strong>Licence:</strong>
                                     </div>
                                     <div class="col-md-9">
-                                        ${doi.licence}
+                                        <g:if test="${doi.licence}">
+                                            <ul>
+                                            <g:each in="${doi.licence}" var="licence" >
+                                                <li>${licence}</li>
+                                            </g:each>
+                                            </ul>
+                                        </g:if>
                                     </div>
                                 </div>
                                 <g:if test="${doi.customLandingPageUrl}">

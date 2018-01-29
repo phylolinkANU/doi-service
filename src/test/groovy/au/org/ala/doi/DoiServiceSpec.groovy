@@ -33,7 +33,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
 
     def "mintDoi should throw IllegalArgumentException if no provider is given"() {
         when:
-        service.mintDoi(null, [foo: "bar"], "title", "authors", "description", "licence","applicationurl", "url", null)
+        service.mintDoi(null, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"] ,"applicationurl", "url", null)
 
         then:
         thrown IllegalArgumentException
@@ -41,7 +41,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
 
     def "mintDoi should throw IllegalArgumentException if no providerMetada is given"() {
         when:
-        service.mintDoi(DoiProvider.ANDS, [:], "title", "authors", "description", "licence","applicationurl", "url", null)
+        service.mintDoi(DoiProvider.ANDS, [:], "title", "authors", "description", ["licence 1", "licence 2"],"applicationurl", "url", null)
 
         then:
         thrown IllegalArgumentException
@@ -49,7 +49,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
 
     def "mintDoi should throw IllegalArgumentException if no applicationUrl is given"() {
         when:
-        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", null, "url", null)
+        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], null, "url", null)
 
         then:
         thrown IllegalArgumentException
@@ -62,7 +62,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
 
         when: "a mintDOI request is made with an existing DOI"
 
-        service.mintDoi(DoiProvider.ANDS, [foo: 'bar'], 'title', 'authors', 'description', "licence", 'http://example.org', null, null, [:], null, doi, "1")
+        service.mintDoi(DoiProvider.ANDS, [foo: 'bar'], 'title', 'authors', 'description', ["licence 1", "licence 2"], 'http://example.org', null, null, [:], null, doi, "1")
 
 
         then:
@@ -71,7 +71,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
 
     def "mintDoi should throw DoiValidationException if the local database record cannot be validated"() {
         when: "given data with missing mandatory entity parameters (i.e. no description)"
-        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", null, "licence", "applicationUrl", null, Mock(MultipartFile))
+        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", null, ["licence 1", "licence 2"], "applicationUrl", null, Mock(MultipartFile))
 
         then:
         thrown DoiValidationException
@@ -82,7 +82,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         MultipartFile file = Mock(MultipartFile)
         file.contentType >> "application/pdf"
         when:
-        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file)
+        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], "http://example.org/applicationUrl", "url", file)
 
         then:
         1 * service.andsService.mintDoi(_, _, _) >> "newDoi"
@@ -95,7 +95,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.mintDoi(_, _, _) >> null
 
         when:
-        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file)
+        service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], "http://example.org/applicationUrl", "url", file)
 
         then:
         1 * service.emailService.sendDoiFailureEmail("supportEmail", "doiservice <no-reply@ala.org.au>", null, _)
@@ -108,7 +108,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.mintDoi(_, _, _) >> null
 
         when:
-        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file)
+        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], "http://example.org/applicationUrl", "url", file)
 
         then:
         result.error != null
@@ -123,7 +123,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.generateLandingPageUrl(_, _) >> "http://landingpage.com"
 
         when:
-        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file)
+        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], "http://example.org/applicationUrl", "url", file)
 
         then:
         !result.error
@@ -139,7 +139,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         service.andsService.generateLandingPageUrl(_,null) >> "http://landingpage.com"
 
         when:
-        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", "url", file, null, null, "defaultDOI")
+        MintResponse result = service.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], "http://example.org/applicationUrl", "url", file, null, null, "defaultDOI")
 
         then:
 
@@ -369,7 +369,7 @@ class DoiServiceSpec extends Specification implements ServiceUnitTest<DoiService
         new Doi(uuid: UUID.randomUUID(), doi: doi,
                 title: 'title', authors: 'authors',
                 description: 'description',
-                licence: "licence",
+                licence: ["licence 1","licence 2"],
                 dateMinted: new Date(),
                 provider: DoiProvider.ANDS,
                 providerMetadata: userTypeExtractedMap('{"title": "<Title>", "authors": ["<Author>"], "subjects": ["<Subjects>"], "subtitle": "<Subtitle>", "publisher": "<Publisher>", "createdDate": "YYYY-MM-ddThh:mm:ssZ", "contributors": [{"name": "<Contributor>", "type": "<Editor|etc>"}], "descriptions": [{"text": "<Description>", "type": "<Other|etc>"}], "resourceText": "<Species information|etc>", "resourceType": "<Text|etc>", "publicationYear": 2017}'),

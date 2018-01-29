@@ -3,6 +3,7 @@ package au.org.ala.doi
 import au.org.ala.doi.util.DoiProvider
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import au.org.ala.doi.ArrayType
 import net.kaleidos.hibernate.usertype.JsonbMapType
 
 @ToString
@@ -22,7 +23,7 @@ class Doi {
     String authors
     String userId
 
-    String licence
+    List<String> licence
     String description
     Date dateMinted
     DoiProvider provider
@@ -50,7 +51,7 @@ class Doi {
         applicationUrl nullable: true, url: true
         filename nullable: true
         contentType nullable: true
-        licence nullable: true
+//        licence nullable: true
         fileHash nullable: true
         fileSize nullable: true, min: 0l
         userId nullable: true
@@ -63,6 +64,7 @@ class Doi {
         providerMetadata type: JsonbMapType
         applicationMetadata type: JsonbMapType
         active defaultValue: true
+        licence type:ArrayType, params:[type: String]
     }
 
     def beforeValidate() {

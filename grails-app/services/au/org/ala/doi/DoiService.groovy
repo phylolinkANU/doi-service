@@ -36,7 +36,7 @@ class DoiService extends BaseDataAccessService {
 
     @Transactional
     MintResponse mintDoi(DoiProvider provider, Map providerMetadata, String title, String authors, String description,
-                String licence, String applicationUrl, String fileUrl, MultipartFile file,
+                List<String> licence, String applicationUrl, String fileUrl, MultipartFile file,
                 Map applicationMetadata = [:], String customLandingPageUrl = null, String defaultDoi = null,
                 String userId = null, Boolean active = true) {
         checkArgument provider

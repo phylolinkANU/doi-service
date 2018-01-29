@@ -213,7 +213,7 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         data.title = 'title'
         data.authors = 'authors'
         data.description = 'description'
-        data.licence = 'licence'
+        data.licence = ['licence 1', 'licence 2']
         data.active = false
 
         controller.request.addParameter("json", (data as JSON) as String)
@@ -221,7 +221,7 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         controller.save()
 
         then:
-        1 * controller.doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", "licence", "http://example.org/applicationUrl", null, file, null, null, null, null, false) >> new MintResponse()
+        1 * controller.doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], "http://example.org/applicationUrl", null, file, null, null, null, null, false) >> new MintResponse()
     }
 
 
