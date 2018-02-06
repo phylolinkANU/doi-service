@@ -71,7 +71,7 @@ class DoiResolveControllerSpec extends Specification implements ControllerUnitTe
         then:
         response.status == HttpStatus.SC_OK
         controller.modelAndView.viewName == "/doiResolve/doi"
-        controller.modelAndView.model == [doi: doi]
+        controller.modelAndView.model == [doi: doi, isAdmin: false]
     }
 
 //    def "download should return a HTTP 400 (BAD_REQUEST) if no id is provided"() {
