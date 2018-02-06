@@ -35,6 +35,7 @@ class UrlMappings {
 
         // User interface
         get "/doi/$id/download"(controller: "doiResolve", action: "download")
+        get "/doi/$id/downloadAuth"(controller: "doiResolve", action: "download")
         get "/doi/$id"(controller: "doiResolve", action: "doi")
         get "/doi"(controller: "doiResolve", action: "index")
         get "/"(controller: "doiResolve", action: "index")

@@ -130,7 +130,7 @@ class DoiController extends BasicWSController {
 
             MintResponse result = doiService.mintDoi(DoiProvider.byName(json.provider), json.providerMetadata, json.title,
                     json.authors, json.description, json.licence, json.applicationUrl, json.fileUrl, file, json.applicationMetadata,
-                    json.customLandingPageUrl, null, json.userId, json.active)
+                    json.customLandingPageUrl, null, json.userId, json.active, json.authorisedRoles)
 
             if (result.uuid) {
                 response.addHeader(HttpHeaders.LOCATION,
@@ -409,7 +409,9 @@ class DoiController extends BasicWSController {
             @ApiResponse(code = 404,
                     message = "DOI or UUID not found in this system"),
             @ApiResponse(code = 405,
-                    message = "Method Not Allowed. Only GET is supported")
+                    message = "Method Not Allowed. Only GET is supported"),
+            @ApiResponse(code = 401,
+                    message = "The file contains sensitive data and requires authentication. Use the DOI Service Web UI to download the file")
     ])
     @ApiImplicitParams([
             @ApiImplicitParam(name = "id",
@@ -430,6 +432,9 @@ class DoiController extends BasicWSController {
 
         if (!doi) {
             notFound "No doi was found for ${id}"
+        } else if(doi.authorisedRoles) {
+            response.addHeader('Link', createLink(uri: "/doi/${doi.uuid}/download") + '; rel="alternate"')
+            notAuthorised "Sensitive data files can only be downloaded via DOI Service GUI for authenticated users only"
         } else {
             ByteSource byteSource = storage.getFileForDoi(doi)
             if (byteSource) {

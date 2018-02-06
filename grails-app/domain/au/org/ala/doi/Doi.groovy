@@ -22,6 +22,7 @@ class Doi {
     String title
     String authors
     String userId
+    List<String> authorisedRoles
 
     List<String> licence
     String description
@@ -40,7 +41,6 @@ class Doi {
     String applicationUrl
 
     Boolean active
-
     Long version
     Date dateCreated
     Date lastUpdated
@@ -51,10 +51,10 @@ class Doi {
         applicationUrl nullable: true, url: true
         filename nullable: true
         contentType nullable: true
-//        licence nullable: true
         fileHash nullable: true
         fileSize nullable: true, min: 0l
         userId nullable: true
+        authorisedRoles nullable: true
 
     }
 
@@ -65,6 +65,7 @@ class Doi {
         applicationMetadata type: JsonbMapType
         active defaultValue: true
         licence type:ArrayType, params:[type: String]
+        authorisedRoles type:ArrayType, params:[type: String]
     }
 
     def beforeValidate() {

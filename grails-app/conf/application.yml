@@ -144,7 +144,7 @@ security:
     cas:
         uriExclusionFilterPattern: '/images.*,/css.*,/js.*,/less.*'
         authenticateOnlyIfLoggedInFilterPattern: '/.*'
-        uriFilterPattern: '/admin, /admin/.*, /alaAdmin.*'
+        uriFilterPattern: '/admin, /admin/.*, /alaAdmin.*, /doi/.*/downloadAuth'
 
 support:
     email: support@ala.org.au
@@ -162,6 +162,8 @@ ands:
 ala:
     base:
         url: https://ala.org.au
+    contact:
+        form: https://www.ala.org.au/who-we-are/feedback-form/
 doi:
     service:
         mock: false
@@ -207,7 +209,7 @@ dataSource:
     driverClassName: org.postgresql.Driver
     username: root
     password: password
-    loggingSql: false
+    loggingSql: true
 
 environments:
     development:

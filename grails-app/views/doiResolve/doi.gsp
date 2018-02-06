@@ -121,7 +121,37 @@
 
                                 <g:render template="metadata" model="[metadata: doi.applicationMetadata]"/>
 
+                                <g:if test="${isAdmin}">
+                                    <div class=" padding-top-10">
+                                        <h3>Admin only fields</h3>
+                                    </div>
+                                    <div class="row padding-bottom-10">
+                                        <div class="col-md-3">
+                                            <strong>User Id:</strong>
+                                        </div>
+                                        <div class="col-md-9">
+                                            ${doi.userId}
+                                        </div>
+                                    </div>
 
+                                    <g:if test="${doi.authorisedRoles}">
+                                        <div>
+                                            The DOI contains sensitive data. The file can only be accessed by users that has all of the roles below
+                                        </div>
+                                        <div class="row padding-bottom-10">
+                                            <div class="col-md-3">
+                                                <strong>Sensitive roles:</strong>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <ul>
+                                                    <g:each var="role" in="${doi.authorisedRoles}">
+                                                        <li>${role}</li>
+                                                    </g:each>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </g:if>
+                                </g:if>
                             </div>
                         </div>
                         <div class="row">
