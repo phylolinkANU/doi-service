@@ -93,14 +93,16 @@ class AdminController {
                     params.title,
                     params.authors,
                     params.description,
-                    params.licence,
+                    [params.licence],
                     params.applicationUrl,
                     params.fileUrl,
                     file,
                     applicationMetadata,
                     params.customLandingPageUrl,
                     params.existingDoi,
-                    userId
+                    userId,
+                    true,
+                    []
             )
 
             log.debug("Result: ${result}")
