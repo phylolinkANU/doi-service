@@ -37,12 +37,12 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         params.description = 'description'
         params.fileUrl = "fileUrl"
         params.newExistingDoiRadio = "new"
-        params.licence = ['licence 1', 'licence 2']
+        params.licence = 'licence 1'
 
         controller.createDoi()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], "applicationUrl", "fileUrl", null, null, null, null, null) >> new MintResponse()
+        1 * doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1"], "applicationUrl", "fileUrl", null, null, null, null, null, true, []) >> new MintResponse()
     }
 
     def "createDoi should invoke the DOI Service if provided all metadata and fileUrl for an existing DOI"() {
@@ -56,12 +56,12 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         params.description = 'description'
         params.fileUrl = "fileUrl"
         params.newExistingDoiRadio = "existing"
-        params.licence = ['licence 1', 'licence 2']
+        params.licence = 'licence 1'
 
         controller.createDoi()
 
         then:
-        1 * doiService.mintDoi(DoiProvider.ANDS, null, "title", "authors", "description", ["licence 1", "licence 2"], "applicationUrl", "fileUrl", null, null, null, "A DOI", null) >> new MintResponse()
+        1 * doiService.mintDoi(DoiProvider.ANDS, null, "title", "authors", "description", ["licence 1"], "applicationUrl", "fileUrl", null, null, null, "A DOI", null, true, []) >> new MintResponse()
     }
 
     def "createDoi should add the current user id if linkToUser is set"() {
@@ -75,14 +75,14 @@ class AdminControllerSpec extends Specification implements ControllerUnitTest<Ad
         params.description = 'description'
         params.fileUrl = "fileUrl"
         params.newExistingDoiRadio = "existing"
-        params.licence = ['licence 1', 'licence 2']
+        params.licence = 'licence 1'
         params.linkToUser = 'true'
 
         controller.createDoi()
 
         then:
         1 * authService.userId >> '1'
-        1 * doiService.mintDoi(DoiProvider.ANDS, null, "title", "authors", "description", ["licence 1", "licence 2"], "applicationUrl", "fileUrl", null, null, null, "A DOI", '1') >> new MintResponse()
+        1 * doiService.mintDoi(DoiProvider.ANDS, null, "title", "authors", "description", ["licence 1"], "applicationUrl", "fileUrl", null, null, null, "A DOI", '1',true, []) >> new MintResponse()
     }
 
     def "createDoi does not invoike doiService if parameters are invalid"() {
