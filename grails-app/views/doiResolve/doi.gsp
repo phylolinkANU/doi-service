@@ -64,7 +64,7 @@
 
                                 <div class="padding-bottom-10">${doi.description}</div>
 
-                                <div class="padding-bottom-10"><a href="http://dx.doi.org/${doi.doi}" type="button" class="doi doi-sm"><span>DOI</span><span>${doi.doi}</a></div>
+                                <div class="padding-bottom-10"><a href="https://doi.org/${doi.doi}" type="button" class="doi doi-sm"><span>DOI</span><span>${doi.doi}</a></div>
 
                                 <div class="row padding-bottom-10">
                                     <div class="col-md-3">
