@@ -7,8 +7,11 @@ class UrlMappings {
         // service api
         group("/api") {
             // Default route, no Accept-Version, should dupe the latest version
-            get "/doi"(controller: "doi", action: "index", namespace:  "v1")
+            head "/doi"(controller: "doi", action: "index", namespace: "v1")
+            get "/doi"(controller: "doi", action: "index", namespace: "v1")
             post "/doi"(controller: "doi", action: "save", namespace: "v1")
+            head "/doi/$id**/download"(controller: "doi", action: "download", namespace: "v1")
+            head "/doi/$id**"(controller: "doi", action: "show", namespace: "v1")
             get "/doi/$id**/download"(controller: "doi", action: "download", namespace: "v1")
             get "/doi/$id**"(controller: "doi", action: "show", namespace: "v1")
             post "/doi/$id**"(controller: "doi", action: "update", namespace: "v1")
@@ -16,9 +19,12 @@ class UrlMappings {
             patch "/doi/$id**"(controller: "doi", action: "patch", namespace: "v1")
 
             // Accept-Version: 1.0
-            get "/doi"(version: "1.0", controller: "doi", action: "index", namespace:  "v1")
+            head "/doi"(version: "1.0", controller: "doi", action: "index", namespace: "v1")
+            get "/doi"(version: "1.0", controller: "doi", action: "index", namespace: "v1")
             post "/doi"(version: "1.0", controller: "doi", action: "save", namespace: "v1")
             put "/doi"(version: "1.0", controller: "doi", action: "save", namespace: "v1") // work around for swagger
+            head "/doi/$id**/download"(version: "1.0", controller: "doi", action: "download", namespace: "v1")
+            head "/doi/$id**"(version: "1.0", controller: "doi", action: "show", namespace: "v1")
             get "/doi/$id**/download"(version: "1.0", controller: "doi", action: "download", namespace: "v1")
             get "/doi/$id**"(version: "1.0", controller: "doi", action: "show", namespace: "v1")
             post "/doi/$id**"(version: "1.0", controller: "doi", action: "update", namespace: "v1")
@@ -35,10 +41,15 @@ class UrlMappings {
 
         // User interface
         get "/logout/logout"(controller: "logout", action: 'logout')
+        head "/doi/$id/download"(controller: "doiResolve", action: "download")
         get "/doi/$id/download"(controller: "doiResolve", action: "download")
+        head "/doi/$id/downloadAuth"(controller: "doiResolve", action: "download")
         get "/doi/$id/downloadAuth"(controller: "doiResolve", action: "download")
+        head "/doi/$id"(controller: "doiResolve", action: "doi")
         get "/doi/$id"(controller: "doiResolve", action: "doi")
+        head "/doi"(controller: "doiResolve", action: "index")
         get "/doi"(controller: "doiResolve", action: "index")
+        head "/"(controller: "doiResolve", action: "index")
         get "/"(controller: "doiResolve", action: "index")
 
         get "/admin"(controller:'admin', action:"index")
