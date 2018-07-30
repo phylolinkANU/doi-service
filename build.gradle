@@ -122,7 +122,13 @@ springBoot {
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')
     addResources = true
-    systemProperties = System.properties
+    System.properties.each { k,v->
+        if(!systemProperties[k]) {
+            systemProperties[k] = v
+            println "$k = $v"
+        }
+    }
+//    systemProperties = System.properties
 }
 
 bootRepackage {
