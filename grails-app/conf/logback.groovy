@@ -10,7 +10,7 @@ conversionRule 'clr', ColorConverter
 conversionRule 'wex', WhitespaceThrowableProxyConverter
 
 // See http://logback.qos.ch/manual/groovy.html for details on configuration
-def loggingDir = (System.getProperty('catalina.base') ? System.getProperty('catalina.base') + '/logs' : './logs')
+def loggingDir = (System.getProperty('catalina.base') ? System.getProperty('catalina.base') + '/logs' : '/data/doi-service/logs/')
 def appName = 'doi-service'
 def TOMCAT_LOG = 'TOMCAT_LOG'
 switch (Environment.current) {
