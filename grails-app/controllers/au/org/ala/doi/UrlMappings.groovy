@@ -49,9 +49,10 @@ class UrlMappings {
         get "/doi/$id"(controller: "doiResolve", action: "doi")
         head "/doi"(controller: "doiResolve", action: "index")
         get "/doi"(controller: "doiResolve", action: "index")
+        head "/myDownloads"(controller: "doiResolve", action: "myDownloads")
+        get "/myDownloads"(controller: "doiResolve", action: "myDownloads")
         head "/"(controller: "doiResolve", action: "index")
         get "/"(controller: "doiResolve", action: "index")
-
         get "/admin"(controller:'admin', action:"index")
         get "/admin/mintDoi"(controller:'admin', action:"mintDoi")
         post "/admin/createDoi"(controller:'admin', action: "createDoi")

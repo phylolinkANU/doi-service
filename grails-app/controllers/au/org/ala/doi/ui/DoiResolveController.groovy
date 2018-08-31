@@ -33,6 +33,27 @@ class DoiResolveController extends BasicWSController {
                                       isAdmin : isAdmin]
     }
 
+    /**
+     * Paginated list of downloads for logged-in user
+     *
+     * @return
+     */
+    def myDownloads() {
+        String userId = authService?.getUserId()
+        Integer max = Math.min(params.int('max', 10), 100)
+        int offset = params.int('offset', 0)
+        String sort = params.get('sort', 'dateCreated')
+        String order = params.get('order', 'desc')
+        log.debug "myDownloads params = ${params}"
+
+        if (userId) {
+            def result = doiService.listDois(max, offset, sort, order, [active:true, userId:userId])
+            render view: 'myDownloads', model: [dois: result, totalRecords: result.totalCount]
+        } else {
+            render(status: "401", text: "No UserId provided - check user is logged in and page is protected by AUTH")
+        }
+    }
+
     def doi(@NotNull @UUID String id) {
         Doi doi = doiService.findByUuid(id)
 

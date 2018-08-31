@@ -110,6 +110,7 @@ dependencies {
 
     compile 'org.grails.plugins:aws-sdk-s3:2.1.5'
     compile 'org.javaswift:joss:0.9.17'
+    compile 'org.jsoup:jsoup:1.11.3'
 
     testCompile "org.apache.httpcomponents:httpmime:4.3.3"
 }
