@@ -41,7 +41,25 @@
                         <p class="lead">
                             A digital object identifier (DOI) is a unique alphanumeric string assigned by a registration agency (the International DOI Foundation) to identify content and provide a persistent link to its location on the Internet.
                         </p>
+                    </div>
+                </div>
+            </div>
+            <g:if test="${dois.totalCount > pageSize}">
 
+                <div class="row">
+                    <nav class="col-sm-12 col-centered text-center">
+                        <div class="pagination pagination-lg">
+                            <hf:paginate total="${dois.totalCount}" controller="doiResolve" action="index"
+                                         omitLast="false" omitFirst="false" prev="&laquo;" next="&raquo;"
+                                         max="${pageSize}" offset="${offset}"/>
+                        </div>
+                    </nav>
+                </div>
+            </g:if>
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <div class="word-limit">
                         <g:if test="${false}"><!-- filter to be implemented at a later date -->
                             <div class="well">
                                 <form class="form-horizontal">

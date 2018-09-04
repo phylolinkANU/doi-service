@@ -13,12 +13,20 @@ import grails.converters.XML
 
 import javax.validation.constraints.NotNull
 
+import static au.org.ala.doi.util.Utils.isUuid
+
 class DoiResolveController extends BasicWSController {
 
     static final int DEFAULT_PAGE_SIZE = 20
+    static final String DEFAULT_DISPLAY_TEMPLATE = "default"
     DoiService doiService
     Storage storage
     AuthService authService
+
+    protected Doi queryForResource(Serializable id) {
+        String idString = id instanceof String ? id : id.toString()
+        isUuid(idString) ? doiService.findByUuid(idString) : doiService.findByDoi(idString)
+    }
 
 
     def index() {
@@ -38,6 +46,8 @@ class DoiResolveController extends BasicWSController {
      *
      * @return
      */
+    //TODO Implement myDois page in the same fashion as myDownloads when there is another client minting DOIs
+    // for a specific application (profiles for instance).
     def myDownloads() {
         String userId = authService?.getUserId()
         Integer max = Math.min(params.int('max', 10), 100)
@@ -47,22 +57,28 @@ class DoiResolveController extends BasicWSController {
         log.debug "myDownloads params = ${params}"
 
         if (userId) {
-            def result = doiService.listDois(max, offset, sort, order, [active:true, userId:userId])
+            def result = doiService.listDois(max, offset, sort, order, [active:true, userId:userId, displayTemplate:"biocache"])
             render view: 'myDownloads', model: [dois: result, totalRecords: result.totalCount]
         } else {
             render(status: "401", text: "No UserId provided - check user is logged in and page is protected by AUTH")
         }
     }
 
-    def doi(@NotNull @UUID String id) {
-        Doi doi = doiService.findByUuid(id)
-
-        def isAdmin = RequestContextHolder.currentRequestAttributes()?.isUserInRole("ROLE_ADMIN")
-
+    def doi(@NotNull String id) {
+        Doi doi = queryForResource(id)
         if (doi) {
-            render view: "doi", model: [doi: doi, isAdmin : isAdmin]
+            def isAdmin = RequestContextHolder.currentRequestAttributes()?.isUserInRole("ROLE_ADMIN")
+
+            // Get the right template
+            String displayTemplate = params.boolean('useDefaultTemplate', false) ? DEFAULT_DISPLAY_TEMPLATE : doi.displayTemplate
+            List<String> availableDisplayTemplates = grailsApplication.config.getProperty('doi.displayTemplates', List)
+
+            if(!availableDisplayTemplates.contains(displayTemplate)) {
+                displayTemplate = DEFAULT_DISPLAY_TEMPLATE
+        }
+            render view: "doi", model: [doi: doi, isAdmin : isAdmin, displayTemplate: displayTemplate]
         } else {
-            notFound "No DOI record was found for UUID ${id}"
+            notFound "No DOI record was found for ${id}"
         }
     }
 

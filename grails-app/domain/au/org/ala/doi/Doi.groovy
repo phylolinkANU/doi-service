@@ -44,6 +44,7 @@ class Doi {
     Long version
     Date dateCreated
     Date lastUpdated
+    String displayTemplate
 
     static constraints = {
         applicationMetadata nullable: true
@@ -55,7 +56,7 @@ class Doi {
         fileSize nullable: true, min: 0l
         userId nullable: true
         authorisedRoles nullable: true
-
+        displayTemplate nullable: true
     }
 
     static mapping = {

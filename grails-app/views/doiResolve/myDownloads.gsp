@@ -19,6 +19,9 @@
     </g:if>
     <g:else>
         <div class="row" id="table-metadata">
+            <g:set var="offset" value="${params.getInt('offset')?:0}"/>
+            <g:set var="max" value="${params.getInt('max')?:10}"/>
+            <g:set var="start" value="${((params.getInt('offset')?:0) + 1)}"/>
             <g:set var="start" value="${((params.getInt('offset')?:0) + 1)}"/>
             <g:set var="end" value="${(start + ((params.getInt('max')?:10) - 1))}"/>
             <g:set var="end" value="${(end > totalRecords ? totalRecords : end)}"/>
@@ -31,7 +34,6 @@
             <div class="col-md-7" id="sort-widgets">
                 <g:message code="download.mydownloads.items.per.page" default="items per page"/>:
                 <select id="per-page" name="per-page" class="input-small" onchange="location = this.value;">
-                    <option value="${g.createLink(action:'myDownloads',params:params + [max:'5'])}" ${params.max == '5' ? 'selected': ''}>5</option>
                     <option value="${g.createLink(action:'myDownloads',params:params + [max:'10'])}" ${params.max == '10' ? 'selected': ''}>10</option>
                     <option value="${g.createLink(action:'myDownloads',params:params + [max:'20'])}" ${params.max == '20' ? 'selected': ''}>20</option>
                     <option value="${g.createLink(action:'myDownloads',params:params + [max:'50'])}" ${params.max == '50' ? 'selected': ''}>50</option>
@@ -54,40 +56,60 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12 fwtable table-responsive">
-                <table class="table table-bordered table-striped ">
-                    <thead>
-                        <tr>
-                            <th class="col-sm-2">Download</th>
-                            <th class="col-sm-2">Date</th>
-                            %{--<th class="col-xs-2">Title</th>--}%
-                            <th class="col-sm-1">Records</th>
-                            <th class="col-sm-1">Datasets</th>
-                            <th class="col-sm-6">Search Query</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <g:each in="${dois}" var="doi">
-                           <tr>
-                               <td>
-                                   <a href="${g.createLink(controller: 'download', action: 'doi')}?doi=${doi.doi}" type="button" class="doi doi-sm"><span>DOI</span><span>${doi.doi}</span></a>
-                                   <br>
-                                   Download file: <a href="${request.contextPath}/doi/${doi.uuid}/download"> ${doi.filename}</a>
-                               </td>
-                               <td><span class="no-wrap"><g:formatDate date="${doi.dateMinted}" format="yyyy-MM-dd"/></span>
-                                   <span class="no-wrap"><g:formatDate date="${doi.dateMinted}" format="h:mm a"/></span></td>
-                               %{--<td>${doi.title}</td>--}%
-                               <td><g:formatNumber number="${doi.applicationMetadata?.recordCount}" type="number" /></td>
-                               <td><g:formatNumber number="${doi.applicationMetadata?.datasets?.size()}" type="number" /></td>
-                               <td><a href="${doi?.applicationMetadata?.searchUrl}">Re-run search</a> <doi:formatSearchQuery searchUrl="${doi?.applicationMetadata?.searchUrl}" queryTitle="${doi.applicationMetadata?.queryTitle?.encodeAsRaw()}"/></td>
-                           </tr>
-                        </g:each>
-                    </tbody>
-                </table>
+            <g:if test="${totalRecords > max}">
+                <div class="row">
+                    <nav class="col-sm-12 col-centered text-center">
+                        <div class="pagination pagination-lg">
+                            <hf:paginate total="${totalRecords}"  action="myDownloads"
+                                         omitLast="false" omitFirst="false" prev="&laquo;" next="&raquo;"
+                                         max="${max}" offset="${offset}" params="${[filter:params.filter]}"/>
+                        </div>
+                    </nav>
+                </div>
+            </g:if>
+            <div class="row">
+                <div class="col-md-12 fwtable table-responsive">
+                    <table class="table table-bordered table-striped ">
+                        <thead>
+                            <tr>
+                                <th class="col-sm-2">Download</th>
+                                <th class="col-sm-2">Date</th>
+                                <th class="col-sm-1">Records</th>
+                                <th class="col-sm-1">Datasets</th>
+                                <th class="col-sm-6">Search Query</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <g:each in="${dois}" var="doi">
+                               <tr>
+                                   <td>
+                                       <a href="${g.createLink(uri: '/doi')}/${doi.doi}" type="button" class="doi doi-sm"><span>DOI</span><span>${doi.doi}</span></a>
+                                       <br>
+                                       Download file: <a href="${request.contextPath}/doi/${doi.uuid}/download"> ${doi.filename}</a>
+                                   </td>
+                                   <td><span class="no-wrap"><g:formatDate date="${doi.dateMinted}" format="yyyy-MM-dd"/></span>
+                                       <span class="no-wrap"><g:formatDate date="${doi.dateMinted}" format="h:mm a"/></span></td>
+                                   %{--<td>${doi.title}</td>--}%
+                                   <td><g:formatNumber number="${doi.applicationMetadata?.recordCount}" type="number" /></td>
+                                   <td><g:formatNumber number="${doi.applicationMetadata?.datasets?.size()}" type="number" /></td>
+                                   <td><a href="${doi?.applicationMetadata?.searchUrl}">Re-run search</a> <doi:formatSearchQuery searchUrl="${doi?.applicationMetadata?.searchUrl}" queryTitle="${doi.applicationMetadata?.queryTitle?.encodeAsRaw()}"/></td>
+                               </tr>
+                            </g:each>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="col-md-12 pagination">
-                <g:paginate total="${totalRecords}" params="${[filter:params.filter]}"/>
-            </div>
+            <g:if test="${totalRecords > max}">
+                <div class="row">
+                    <nav class="col-sm-12 col-centered text-center">
+                        <div class="pagination pagination-lg">
+                            <hf:paginate total="${totalRecords}"  action="myDownloads"
+                                         omitLast="false" omitFirst="false" prev="&laquo;" next="&raquo;"
+                                         max="${max}" offset="${offset}" params="${[filter:params.filter]}"/>
+                        </div>
+                    </nav>
+                </div>
+            </g:if>
         </div>
     </g:else>
 </div>

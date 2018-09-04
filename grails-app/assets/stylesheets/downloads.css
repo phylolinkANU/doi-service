@@ -17,7 +17,7 @@
  * font-awesome and jquery are provided by ala-bootstrap3
  **** = require jquery
  **** = require font-awesome/css/font-awesome-4.3.0.css
- *= require pagination.css
+ ****   = require pagination.css
  */
 
 .font-xxsmall{

@@ -169,6 +169,10 @@ doi:
         mock: false
     storage:
         provider: LOCAL
+    resolverUrl: https://doi.org/
+    displayTemplates:
+      - "template"
+      - "biocache"
 file:
     store: /data/doi-service/files
 
