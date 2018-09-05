@@ -38,7 +38,7 @@ class DoiService extends BaseDataAccessService {
     MintResponse mintDoi(DoiProvider provider, Map providerMetadata, String title, String authors, String description,
                 List<String> licence, String applicationUrl, String fileUrl, MultipartFile file,
                 Map applicationMetadata = [:], String customLandingPageUrl = null, String defaultDoi = null,
-                String userId = null, Boolean active = true, List<String> authorisedRoles=[]) {
+                String userId = null, Boolean active = true, List<String> authorisedRoles=[], String displayTemplate = null) {
         checkArgument provider
         if(!defaultDoi) {
             checkArgument providerMetadata, "No provider metadata has been sent"
@@ -56,7 +56,8 @@ class DoiService extends BaseDataAccessService {
         Doi entity = new Doi(uuid: uuid, customLandingPageUrl: customLandingPageUrl, dateMinted: new Date(),
                 title: title, authors: authors, description: description, licence: licence, provider: provider,
                 providerMetadata: providerMetadata, applicationMetadata: applicationMetadata,
-                applicationUrl: applicationUrl, userId: userId, authorisedRoles: authorisedRoles, active: active)
+                applicationUrl: applicationUrl, userId: userId, authorisedRoles: authorisedRoles,
+                displayTemplate: displayTemplate, active: active)
 
         entity.doi = "dummyForValidation" // doi is a mandatory field, so we set a temp value to validate the rest of the entity
         if (entity.validate()) {

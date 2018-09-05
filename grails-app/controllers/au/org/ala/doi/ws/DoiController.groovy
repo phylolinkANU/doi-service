@@ -130,9 +130,9 @@ class DoiController extends BasicWSController {
 
             MintResponse result = doiService.mintDoi(DoiProvider.byName(json.provider), json.providerMetadata, json.title,
                     json.authors, json.description, json.licence, json.applicationUrl, json.fileUrl, file, json.applicationMetadata,
-                    json.customLandingPageUrl, null, json.userId, json.active, json.authorisedRoles)
+                    json.customLandingPageUrl, null, json.userId, json.active, json.authorisedRoles, json.displayTemplate)
 
-            if (result.uuid) {
+            if (result?.uuid) {
                 response.addHeader(HttpHeaders.LOCATION,
                         grailsLinkGenerator.link( method: 'GET', resource: this.controllerName, action: 'show',id: result.uuid, absolute: true,
                                 namespace: hasProperty('namespace') ? this.namespace : null ))
