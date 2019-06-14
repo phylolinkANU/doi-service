@@ -126,7 +126,7 @@ server:
     remote-ip-header: 'X-Forwarded-For'
 
 skin:
-    layout: "main"
+    layout: "ala-main"
 
 app:
     http:
