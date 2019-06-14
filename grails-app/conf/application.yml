@@ -180,6 +180,16 @@ file:
 
 googleAnalyticsId: UA-4355440-1
 
+elasticSearch:
+  datastoreImpl: hibernateDatastore
+  client:
+    mode: transport
+    hosts:
+      - {host: localhost, port: 9300}
+  cluster.name: elasticsearch
+  disableAutoIndex: false
+  bulkIndexOnStartup: false
+
 swagger:
     info:
         description: "Generate DOIs for ALA applications"
@@ -225,6 +235,11 @@ environments:
             username: "postgres"
             passowrd: "password"
             logSql: false
+
+        elasticSearch:
+            client:
+                mode: local
+            bulkIndexOnStartup: true
     test:
         dataSource:
             dbCreate: validate
