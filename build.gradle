@@ -48,6 +48,8 @@ if(inplace) {
     }
 }
 
+def elasticsearchVersion = '5.4.3'
+ext['elasticsearch.version'] = elasticsearchVersion
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-logging"
@@ -84,6 +86,9 @@ dependencies {
 
     compile "org.grails.plugins:converters"
     compile 'org.grails.plugins:external-config:1.1.2'
+
+    compile 'org.grails.plugins:elasticsearch:2.4.1'
+    runtime 'org.elasticsearch.plugin:mapper-attachments:2.4.6'
 
     compile "org.grails.plugins:ala-ws-security-plugin:2.0"
     compile "org.grails.plugins:ala-ws-plugin:2.0"

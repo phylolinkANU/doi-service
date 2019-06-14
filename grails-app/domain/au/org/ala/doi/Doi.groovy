@@ -69,6 +69,10 @@ class Doi {
         authorisedRoles type:ArrayType, params:[type: String]
     }
 
+    static searchable = {
+        only = ['title', 'authors', 'description', 'providerMetadata', 'applicationMetadata']
+    }
+
     def beforeValidate() {
         if (uuid == null) {
             uuid = UUID.randomUUID()
