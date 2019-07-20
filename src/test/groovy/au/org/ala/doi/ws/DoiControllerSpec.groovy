@@ -8,6 +8,7 @@ import au.org.ala.doi.util.DoiProvider
 import com.google.common.io.ByteSource
 import com.google.common.io.Files
 import grails.converters.JSON
+import grails.plugins.elasticsearch.ElasticSearchResult
 import grails.testing.gorm.DataTest
 import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
@@ -224,5 +225,51 @@ class DoiControllerSpec extends Specification implements ControllerUnitTest<DoiC
         1 * controller.doiService.mintDoi(DoiProvider.ANDS, [foo: "bar"], "title", "authors", "description", ["licence 1", "licence 2"], "http://example.org/applicationUrl", null, file, null, null, null, null, false, null, null) >> new MintResponse()
     }
 
+    def "search applies defaults to all parameters"() {
+
+        setup:
+        ElasticSearchResult result = new ElasticSearchResult([total:20])
+
+        when:
+        controller.search()
+
+        then:
+        1 * controller.doiService.searchDois(10, 0, "", null, "dateMinted", "desc") >> result
+        response.status == HttpStatus.SC_OK
+    }
+
+    def "search will pass user supplied parameters to the search service"() {
+        setup:
+        ElasticSearchResult result = new ElasticSearchResult([total:20])
+
+        when:
+        params.max = 20
+        params.offset = 10
+        params.sort = "title"
+        params.order = "asc"
+        params.q = "query string"
+        params.fq = ["field1:value1", "field2:value2"]
+        controller.search()
+
+        then:
+        1 * controller.doiService.searchDois(20, 10, "query string", [field1:'value1', field2:'value2'], "title", "asc") >> result
+        response.status == HttpStatus.SC_OK
+    }
+
+    def "search will return a 422 if invalid fq parameters are supplied"() {
+        when:
+        params.fq = ["field1:value1", "field1:value2"]
+        controller.search()
+
+        then:
+        response.status == HttpStatus.SC_UNPROCESSABLE_ENTITY
+
+        when:
+        params.fq = ["malformed filter"]
+        controller.search()
+
+        then:
+        response.status == HttpStatus.SC_UNPROCESSABLE_ENTITY
+    }
 
 }

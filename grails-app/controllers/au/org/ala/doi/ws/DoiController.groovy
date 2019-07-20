@@ -4,11 +4,13 @@ import au.ala.org.ws.security.RequireApiKey
 import au.ala.org.ws.security.SkipApiKeyCheck
 import au.org.ala.doi.BasicWSController
 import au.org.ala.doi.MintResponse
+import au.org.ala.doi.SearchDoisCommand
 import au.org.ala.doi.exceptions.DoiNotFoundException
 import au.org.ala.doi.exceptions.DoiUpdateException
 import au.org.ala.doi.exceptions.DoiValidationException
 import au.org.ala.doi.storage.Storage
 import com.google.common.io.ByteSource
+import grails.plugins.elasticsearch.ElasticSearchResult
 import grails.web.http.HttpHeaders
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
@@ -335,18 +337,110 @@ class DoiController extends BasicWSController {
         def list = doiService.listDois(max, offset, sort, order, eqParams)
         def totalCount = list.totalCount
 
-        response.addIntHeader('X-Total-Count', list.totalCount)
-        if (offset + max < totalCount) {
-            response.addHeader('Link', createLink(params: eqParams + [max: max, offset: offset + max, sort: sort, order: order]) + '; rel="next"')
-        }
-        if (offset > 0) {
-            response.addHeader('Link', createLink(params: eqParams + [max: max, offset: Math.max(0, offset - max), sort: sort, order: order]) + '; rel="prev"')
-        }
-        response.addHeader('Link', createLink(params: eqParams + [max: max, offset: 0, sort: sort, order: order]) + '; rel="first"')
-        response.addHeader('Link', createLink(params: eqParams + [max: max, offset: Math.max(0, totalCount - max), sort: sort, order: order]) + '; rel="last"')
+        addPaginationHeaders(eqParams, totalCount, offset, max, sort, order)
 
         respond list
     }
+
+    private void addPaginationHeaders(Map nonPaginationParams, int totalCount, int offset, int max, String sort, String order) {
+        response.addIntHeader('X-Total-Count', totalCount)
+        if (offset + max < totalCount) {
+            response.addHeader('Link', createLink(params: nonPaginationParams + [max: max, offset: offset + max, sort: sort, order: order]) + '; rel="next"')
+        }
+        if (offset > 0) {
+            response.addHeader('Link', createLink(params: nonPaginationParams + [max: max, offset: Math.max(0, offset - max), sort: sort, order: order]) + '; rel="prev"')
+        }
+        response.addHeader('Link', createLink(params: nonPaginationParams + [max: max, offset: 0, sort: sort, order: order]) + '; rel="first"')
+        response.addHeader('Link', createLink(params: nonPaginationParams + [max: max, offset: Math.max(0, totalCount - max), sort: sort, order: order]) + '; rel="last"')
+    }
+
+
+    @ApiOperation(
+            value = "Search DOIs",
+            nickname = "doi",
+            produces = "application/json",
+            httpMethod = "GET",
+            response = Doi,
+            responseContainer = "List",
+            responseHeaders = [
+                    @ResponseHeader(
+                            name = 'Link',
+                            description = 'Paging links',
+                            response = String
+                    ),
+                    @ResponseHeader(
+                            name = 'X-Total-Count',
+                            description = 'Total number of results matching parameters',
+                            response = Integer
+                    )
+            ]
+    )
+    @ApiResponses([
+            @ApiResponse(code = 405,
+                    message = "Method Not Allowed. Only GET is allowed")
+    ])
+    @ApiImplicitParams([
+            @ApiImplicitParam(name = "q",
+                    paramType = "query",
+                    required = false,
+                    defaultValue = "",
+                    value = "An elasticsearch Simple Query String formatted string.",
+                    dataType = "string"),
+            @ApiImplicitParam(name = "max",
+                    paramType = "query",
+                    required = false,
+                    defaultValue = '10',
+                    value = "max number of dois to return",
+                    dataType = "Integer"),
+            @ApiImplicitParam(name = "offset",
+                    paramType = "query",
+                    required = false,
+                    defaultValue = '0',
+                    value = "index of the first record to return",
+                    dataType = "Integer"),
+            @ApiImplicitParam(name = "sort",
+                    paramType = "query",
+                    required = false,
+                    defaultValue = 'dateMinted',
+                    value = "the field to sort the results by",
+                    allowableValues = 'dateMinted,dateCreated,lastUpdated,title',
+                    dataType = "string"),
+            @ApiImplicitParam(name = "order",
+                    paramType = "query",
+                    required = false,
+                    defaultValue = 'asc',
+                    value = "the direction to sort the results by",
+                    allowableValues = 'asc,desc',
+                    dataType = "string"),
+            @ApiImplicitParam(name = "fq",
+                    required = false,
+                    value = "filters the search results by by supplied fields.  Each value must be a string of the form fieldName:filterTerm.  To filter on DOI applicationMetadata, use a fieldName of 'applicationMetadata.field'",
+                    dataType = "array"),
+            @ApiImplicitParam(name = "Accept-Version",
+                    paramType = "header",
+                    required = true,
+                    dataType = "string",
+                    defaultValue = "1.0",
+                    allowableValues = "1.0",
+                    value = "The API version")
+    ])
+    @SkipApiKeyCheck
+    def search(SearchDoisCommand command) {
+
+        if (!command.validate()) {
+            respond command
+        }
+        else {
+            ElasticSearchResult result = doiService.searchDois(command.max, command.offset, command.q, command.filters, command.sort, command.order)
+            def totalCount = result.total as int
+
+            Map queryParams = [q:command.q, fq:command.fq]
+            addPaginationHeaders(queryParams, totalCount, command.offset, command.max, command.sort, command.order)
+
+            respond result
+        }
+    }
+
 
     /**
      * Retrieve the metadata for a doi by either UUID or DOI
