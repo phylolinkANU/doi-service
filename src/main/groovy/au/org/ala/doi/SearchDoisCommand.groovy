@@ -10,7 +10,7 @@ class SearchDoisCommand implements Validateable {
     Integer max = 10
     Integer offset = 0
     String q = ""
-    List fq = null
+    List<String> fq = null
     String sort = 'dateMinted'
     String order = 'desc'
 
