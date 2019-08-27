@@ -183,7 +183,7 @@ googleAnalyticsId: UA-4355440-1
 elasticSearch:
   datastoreImpl: hibernateDatastore
   client:
-    mode: local
+    mode: transport
     hosts:
       - {host: localhost, port: 9300}
   cluster.name: elasticsearch
