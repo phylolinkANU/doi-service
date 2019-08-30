@@ -10,17 +10,23 @@ class SwiftStorage extends BaseStorage {
 
     Account account
     String containerName
+    private boolean privateStorage
 
-    SwiftStorage(Account account, String container) {
+    SwiftStorage(Account account, String container, boolean privateStorage) {
         this.account = account
         this.containerName = container
+        this.privateStorage = privateStorage
     }
 
     private Container acquireContainer() {
         def container = account.getContainer(containerName)
         if (!container.exists()) {
             container = container.create()
-            container.makePublic()
+        }
+        if (privateStorage && container.isPublic()) {
+            container.makePrivate()
+        } else if (!privateStorage && !container.isPublic()) {
+            container.makePrivate()
         }
         return container
     }

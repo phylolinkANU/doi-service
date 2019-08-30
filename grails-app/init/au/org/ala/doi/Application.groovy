@@ -6,6 +6,7 @@ import au.org.ala.doi.storage.FileStorage
 import au.org.ala.doi.storage.S3Storage
 import au.org.ala.doi.storage.Storage
 import au.org.ala.doi.storage.SwiftStorage
+import com.amazonaws.services.s3.model.CannedAccessControlList
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
 import groovy.util.logging.Slf4j
@@ -26,18 +27,21 @@ class Application extends GrailsAutoConfiguration {
     Storage storage(DoiAmazonS3Service doiAmazonS3Service) {
         String doiStorageProvider = grailsApplication.config.getProperty('doi.storage.provider', String)
         String fileStoreLocation = grailsApplication.config.getProperty('file.store', String)
+        Boolean privateCloudStorage = grailsApplication.config.getProperty('doi.storage.cloud.private', Boolean, true)
 
         DoiStorageProvider provider = DoiStorageProvider.fromString(doiStorageProvider)
         switch(provider) {
             case DoiStorageProvider.S3:
                 log.debug("Using S3 for storage provider")
-                return new S3Storage(doiAmazonS3Service)
+                def acl = privateCloudStorage ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead
+                return new S3Storage(doiAmazonS3Service, acl)
             case DoiStorageProvider.LOCAL:
                 log.debug("Using local file system for storage provider")
                 return new FileStorage(fileStoreLocation)
             case DoiStorageProvider.SWIFT:
                 log.debug("Using SwiftStack for storage provider")
-                return new SwiftStorage(account(), grailsApplication.config.getProperty('doi.storage.swift.container', String))
+                def container = grailsApplication.config.getProperty('doi.storage.swift.container', String)
+                return new SwiftStorage(account(), container, privateCloudStorage)
             default:
                 throw new IllegalStateException("Configuration property doi.storage.provider not supported.  Value is ${doiStorageProvider}.")
         }

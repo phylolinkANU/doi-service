@@ -67,11 +67,11 @@ root(WARN, [TOMCAT_LOG])
         (OFF): [],
         (ERROR): [
                 'grails.spring.BeanBuilder',
-                "grails.plugin.mail",
                 'grails.plugin.cache.web.filter',
         ],
         (WARN): [
-                'au.org.ala.cas'
+                'au.org.ala.cas',
+                'grails.plugin'
         ],
         (INFO): [
                 'grails.plugin.externalconfig.ExternalConfig',

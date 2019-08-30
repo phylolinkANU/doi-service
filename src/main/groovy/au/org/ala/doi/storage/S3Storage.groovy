@@ -16,9 +16,11 @@ import static au.org.ala.doi.util.StateAssertions.checkArgument
 class S3Storage extends BaseStorage {
 
     AmazonS3Service amazonS3Service
+    private CannedAccessControlList acl
 
-    S3Storage(AmazonS3Service amazonS3Service) {
+    S3Storage(AmazonS3Service amazonS3Service, CannedAccessControlList acl) {
         this.amazonS3Service = amazonS3Service
+        this.acl = acl
     }
 
     @Override
@@ -37,7 +39,7 @@ class S3Storage extends BaseStorage {
     void storeFileForDoi(Doi doi, MultipartFile incoming) {
         storeMultipartFile(doi, incoming) {
             def key = keyForDoi(doi)
-            def url = amazonS3Service.storeMultipartFile(key, incoming, CannedAccessControlList.PublicRead)
+            def url = amazonS3Service.storeMultipartFile(key, incoming, acl)
             if (!url) {
                 throw new IOException("Couldn't store $incoming.originalFilename in S3")
             }
@@ -54,7 +56,10 @@ class S3Storage extends BaseStorage {
         String key = "${doi.uuid}/${doi.filename}"
         ObjectMetadata om = new ObjectMetadata()
         om.contentType = doi.contentType
-        om.setHeader(Headers.S3_CANNED_ACL, CannedAccessControlList.PublicRead.toString())
+        if (doi.fileSize) {
+            om.contentLength = doi.fileSize
+        }
+        om.setHeader(Headers.S3_CANNED_ACL, acl.toString())
 
         def s3Url = amazonS3Service.storeInputStream(key, input, om)
         if (!s3Url) {

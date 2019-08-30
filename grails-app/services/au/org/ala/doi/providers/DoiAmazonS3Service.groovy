@@ -7,6 +7,9 @@ import grails.artefact.Artefact
 import grails.plugin.awssdk.s3.AmazonS3Service
 import reactor.bus.Bus
 
+/**
+ * Overrides the AWS plugin's S3 Service to allow path style access and a custom endpoint to be used.
+ */
 @Artefact('Service')
 class DoiAmazonS3Service extends AmazonS3Service {
 

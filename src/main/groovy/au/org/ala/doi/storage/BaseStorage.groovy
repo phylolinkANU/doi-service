@@ -43,9 +43,13 @@ abstract class BaseStorage implements Storage {
         URL urlObject = new URL(url)
         def connection = urlObject.openConnection()
         def contentType = connection.contentType
+        def contentLength = connection.contentLengthLong
         String filename = Utils.extractFilename(connection.getHeaderField(CONTENT_DISPOSITION)) ?: Utils.extractLastPathSegment(urlObject) ?: doi.uuid.toString()
-        doi.contentType = contentType ?: DEFAULT_CONTENT_TYPE
         doi.filename = filename
+        doi.contentType = contentType ?: DEFAULT_CONTENT_TYPE
+        if (contentLength != -1) {
+            doi.fileSize = contentLength
+        }
 
         hashAndCountInputStream(doi, urlObject.newInputStream())
     }

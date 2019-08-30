@@ -169,6 +169,8 @@ doi:
         mock: false
     storage:
         provider: LOCAL
+        cloud:
+          private: true
     resolverUrl: https://doi.org/
     displayTemplates:
       - "template"
