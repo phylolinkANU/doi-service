@@ -144,7 +144,7 @@ security:
     cas:
         uriExclusionFilterPattern: '/images.*,/css.*,/js.*,/less.*'
         authenticateOnlyIfLoggedInFilterPattern: '/.*'
-        uriFilterPattern: '/admin, /admin/.*, /alaAdmin.*, /doi/.*/downloadAuth'
+        uriFilterPattern: '/admin, /admin/.*, /alaAdmin.*, /doi/.*/downloadAuth, /myDownloads.*'
 
 support:
     email: support@ala.org.au
