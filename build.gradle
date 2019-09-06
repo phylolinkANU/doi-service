@@ -14,6 +14,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.gorylenko.gradle-git-properties" version "2.1.0"
+}
+
 version "1.0.3-SNAPSHOT"
 group "au.org.ala"
 
@@ -88,11 +92,11 @@ dependencies {
     compile "org.grails.plugins:ala-ws-security-plugin:2.0"
     compile "org.grails.plugins:ala-ws-plugin:2.0"
     if(!inplace) {
-        compile "org.grails.plugins:ala-auth:3.0.2"
+        compile "org.grails.plugins:ala-auth:3.0.4"
     }
-    compile "org.grails.plugins:ala-admin-plugin:2.0"
+    compile "org.grails.plugins:ala-admin-plugin:2.2"
 
-    compile "org.grails.plugins:ala-bootstrap3:3.0.0"
+    compile "org.grails.plugins:ala-bootstrap3:3.2.1"
     compile "org.grails.plugins:quartz:2.0.12"
     compile "org.grails.plugins:mail:2.0.0.RC6"
     compile 'org.grails.plugins:grails-java8:1.2.1'
